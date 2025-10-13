@@ -1,0 +1,52 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+}
+const { title = 'Quarks & Qubits', description = 'Research and projects by AJ Wildridge' } = Astro.props as Props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-blue-700 text-white px-3 py-2 rounded">Skip to content</a>
+    <header class="border-b border-gray-200 dark:border-gray-800">
+      <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
+        <a class="font-semibold text-lg" href="/">Quarks & Qubits</a>
+        <nav aria-label="Primary">
+          <ul class="flex gap-4">
+            <li><a class="nav-link" href="/">Home</a></li>
+            <li><a class="nav-link" href="/research">Research</a></li>
+            <li><a class="nav-link" href="/projects">Projects</a></li>
+            <li><a class="nav-link" href="/publications">Publications</a></li>
+            <li><a class="nav-link" href="/cv">CV</a></li>
+            <li><a class="nav-link" href="/contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1" class="mx-auto max-w-6xl px-4 py-8">
+      <slot />
+    </main>
+    <footer class="border-t border-gray-200 dark:border-gray-800">
+      <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-gray-600 dark:text-gray-400">
+        © {new Date().getFullYear()} AJ Wildridge
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style global>
+  .nav-link {
+    @apply text-blue-700 dark:text-blue-400 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-1 py-0.5;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+</style>

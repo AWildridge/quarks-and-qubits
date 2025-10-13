@@ -16,7 +16,7 @@
 ## M0 — Repo, Tooling, and CI Scaffold
 
 **USER / TASK**
-Create repo `aj-wildridge-site` and scaffold an Astro+MDX site with TypeScript, Tailwind, and CI gates (build, link-check, axe, Lighthouse, Playwright smoke). Enforce formatting (Prettier), linting (ESLint), and commit hooks.
+Create repo `quarks-and-qubits` and scaffold an Astro+MDX site with TypeScript, Tailwind, and CI gates (build, link-check, axe, Lighthouse, Playwright smoke). Enforce formatting (Prettier), linting (ESLint), and commit hooks.
 
 **CONSTRAINTS**
 

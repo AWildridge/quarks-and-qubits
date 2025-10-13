@@ -1,10 +1,29 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/global.css';
+import Card from '../components/Card';
+import Tag from '../components/Tag';
+import Tabs from '../components/Tabs';
 ---
-
-<main class="p-6">
-	<h1 class="text-3xl font-bold">AJ Wildridge — Astro Site</h1>
+<BaseLayout title="Quarks & Qubits — Home">
+	<h1>AJ Wildridge — Astro Site</h1>
 	<p class="mt-4 text-gray-700 dark:text-gray-300">Welcome to Quarks & Qubits.</p>
-	<a class="mt-6 inline-block text-blue-600 underline" href="/">Home</a>
-  
+
+	<div class="mt-6 grid gap-4 md:grid-cols-2">
+		<Card title="Latest Project" href="/projects">
+			Exploring spin correlations and quantum-inspired methods.
+			<div class="mt-2 flex gap-2"><Tag>HepTop</Tag><Tag>Astro</Tag></div>
+		</Card>
+		<Card title="Publications" href="/publications">
+			Recent work and preprints.
+		</Card>
+	</div>
+
+	<div class="mt-8">
+		<Tabs client:load tabs={[
+			{ id: 'one', label: 'Overview', content: <p>Brief overview.</p> },
+			{ id: 'two', label: 'News', content: <p>Updates and notes.</p> },
+		]} />
+	</div>
+</BaseLayout>
 </main>
