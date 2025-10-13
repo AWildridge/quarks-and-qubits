@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+const pubs = await getCollection('publications');
 ---
-
-import {getCollection} from 'astro:content'; const pubs = await getCollection('publications');
 
 <BaseLayout title="Publications">
   <h1>Publications</h1>
