@@ -2,7 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
+import {getCollection} from 'astro:content'; const items = await getCollection('projects');
+
 <BaseLayout title="Projects">
   <h1>Projects</h1>
-  <p>Coming soon.</p>
+  <ul class="mt-4 list-disc pl-6">
+    {items.map((it) => <li>{it.data.title}</li>)}
+  </ul>
 </BaseLayout>

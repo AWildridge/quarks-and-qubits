@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+const posts = await getCollection('posts');
+---
+
+<BaseLayout title="Posts">
+  <h1>Posts</h1>
+  <ul class="mt-4 list-disc pl-6">
+    {
+      posts.map((p) => (
+        <li>
+          {p.data.title} — {new Date(p.data.date).toLocaleDateString()}
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

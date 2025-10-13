@@ -2,7 +2,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
+import {getCollection} from 'astro:content'; const pubs = await getCollection('publications');
+
 <BaseLayout title="Publications">
   <h1>Publications</h1>
-  <p>Coming soon.</p>
+  <ul class="mt-4 list-disc pl-6">
+    {
+      pubs.map((p) => (
+        <li>
+          {p.data.title} ({p.data.year})
+        </li>
+      ))
+    }
+  </ul>
 </BaseLayout>
