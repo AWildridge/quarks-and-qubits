@@ -24,6 +24,7 @@ export default function Tabs({ tabs }: { tabs: Tab[] }) {
         {tabs.map((t, i) => (
           <button
             key={t.id}
+            type="button"
             role="tab"
             id={`tab-${t.id}`}
             aria-selected={i === active}
