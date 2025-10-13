@@ -1,0 +1,7 @@
+node_modules
+dist
+.out
+.vercel
+.netlify
+.cache
+.DS_Store

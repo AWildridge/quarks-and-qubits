@@ -1,0 +1,12 @@
+import { defineConfig } from 'astro/config';
+import tailwind from '@astrojs/tailwind';
+import mdx from '@astrojs/mdx';
+
+export default defineConfig({
+  integrations: [tailwind(), mdx()],
+  output: 'static',
+  prefetch: true,
+  vite: {
+    build: { target: 'es2022' }
+  }
+});
