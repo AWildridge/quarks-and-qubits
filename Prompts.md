@@ -2,14 +2,14 @@
 
 **SYSTEM / ORCHESTRATOR**
 
-* You are a senior full-stack engineer. Follow the milestone prompt exactly. Never skip acceptance tests. Prefer Astro + MDX + Tailwind, TypeScript, and minimal JS by default. Use pnpm.
-* When choices are needed, pick the simplest option that meets acceptance criteria.
-* Produce a final summary containing: (1) file diffs or new files, (2) commands run, (3) how acceptance was verified, (4) next steps.
+- You are a senior full-stack engineer. Follow the milestone prompt exactly. Never skip acceptance tests. Prefer Astro + MDX + Tailwind, TypeScript, and minimal JS by default. Use pnpm.
+- When choices are needed, pick the simplest option that meets acceptance criteria.
+- Produce a final summary containing: (1) file diffs or new files, (2) commands run, (3) how acceptance was verified, (4) next steps.
 
 **TOOLS**
 
-* Node ≥ 20, pnpm ≥ 8, git, GitHub Actions, Playwright, Lighthouse CI, axe, HTMLProofer (or similar), cspell.
-* Optional: turborepo, rehype/remark plugins, KaTeX, Plausible.
+- Node ≥ 20, pnpm ≥ 8, git, GitHub Actions, Playwright, Lighthouse CI, axe, HTMLProofer (or similar), cspell.
+- Optional: turborepo, rehype/remark plugins, KaTeX, Plausible.
 
 ---
 
@@ -20,23 +20,23 @@ Create repo `quarks-and-qubits` and scaffold an Astro+MDX site with TypeScript, 
 
 **CONSTRAINTS**
 
-* Package manager: pnpm
-* CI: GitHub Actions with required checks on PR + main
-* No failing warnings in TypeScript build
+- Package manager: pnpm
+- CI: GitHub Actions with required checks on PR + main
+- No failing warnings in TypeScript build
 
 **DELIVERABLES**
 
-* `README.md` (local dev, content model, how to run checks)
-* `.github/workflows/ci.yml` (build + lint + test + axe + lighthouse + links)
-* `astro` app with MDX enabled; Tailwind configured
-* `playwright` smoke test: open `/` and assert h1 exists
-* `cspell.json`, `.editorconfig`, `.prettier*`, `.eslintrc.*`
+- `README.md` (local dev, content model, how to run checks)
+- `.github/workflows/ci.yml` (build + lint + test + axe + lighthouse + links)
+- `astro` app with MDX enabled; Tailwind configured
+- `playwright` smoke test: open `/` and assert h1 exists
+- `cspell.json`, `.editorconfig`, `.prettier*`, `.eslintrc.*`
 
 **ACCEPTANCE TESTS**
 
-* `pnpm build` passes with 0 TS errors
-* CI: all jobs pass on PR; failing gates block merge
-* Lighthouse (in CI): Home page performance ≥95
+- `pnpm build` passes with 0 TS errors
+- CI: all jobs pass on PR; failing gates block merge
+- Lighthouse (in CI): Home page performance ≥95
 
 **COMMAND HINTS**
 
@@ -56,21 +56,21 @@ Implement responsive layout (header, footer, skip link), primary nav (Home, Rese
 
 **CONSTRAINTS**
 
-* WCAG 2.2 AA, visible focus states, `prefers-reduced-motion`
-* JS budget on Home ≤ 200KB gzipped
+- WCAG 2.2 AA, visible focus states, `prefers-reduced-motion`
+- JS budget on Home ≤ 200KB gzipped
 
 **DELIVERABLES**
 
-* `/src/layouts/BaseLayout.astro`
-* `/src/components/*` (Button.tsx, Card.tsx, Tag.tsx, FigureWithCaption.astro, Tabs.tsx)
-* `src/styles/theme.css` with tokens (spacing, radii, typography scale)
-* Navigation integration in `src/pages/index.astro`
+- `/src/layouts/BaseLayout.astro`
+- `/src/components/*` (Button.tsx, Card.tsx, Tag.tsx, FigureWithCaption.astro, Tabs.tsx)
+- `src/styles/theme.css` with tokens (spacing, radii, typography scale)
+- Navigation integration in `src/pages/index.astro`
 
 **ACCEPTANCE TESTS**
 
-* Keyboard-only nav reaches all links and controls, logical order
-* Axe CI: 0 critical violations
-* Lighthouse perf ≥95, a11y ≥100 on Home
+- Keyboard-only nav reaches all links and controls, logical order
+- Axe CI: 0 critical violations
+- Lighthouse perf ≥95, a11y ≥100 on Home
 
 ---
 
@@ -81,20 +81,20 @@ Create MDX content collections for Projects, Publications, Talks, Posts, and a P
 
 **CONSTRAINTS**
 
-* Type-safe frontmatter schemas using Astro Content Collections
-* Build-time validation; fail build on schema errors
+- Type-safe frontmatter schemas using Astro Content Collections
+- Build-time validation; fail build on schema errors
 
 **DELIVERABLES**
 
-* `src/content/config.ts` (collections + zod schemas)
-* Example MDX: `src/content/projects/example.mdx`, etc.
-* Build script verifies content and emits type defs
+- `src/content/config.ts` (collections + zod schemas)
+- Example MDX: `src/content/projects/example.mdx`, etc.
+- Build script verifies content and emits type defs
 
 **ACCEPTANCE TESTS**
 
-* `pnpm build` fails on invalid frontmatter (prove with a bad commit, then fix)
-* Pages for each collection render with example items
-* Zero broken internal links (link-check CI)
+- `pnpm build` fails on invalid frontmatter (prove with a bad commit, then fix)
+- Pages for each collection render with example items
+- Zero broken internal links (link-check CI)
 
 ---
 
@@ -105,21 +105,21 @@ Ship a filterable Projects index (by topic/year/language) with search, and a Pro
 
 **CONSTRAINTS**
 
-* Accessible filters (labels, roles, SR text)
-* Pagination or progressive loading without CLS
+- Accessible filters (labels, roles, SR text)
+- Pagination or progressive loading without CLS
 
 **DELIVERABLES**
 
-* `src/pages/projects/index.astro` (filter UI + grid)
-* `src/pages/projects/[slug].astro` (detail)
-* `src/lib/search.ts` (client-side minimal search; or server-side filtering)
-* Copy-to-clipboard for repo URL; FigureWithCaption used
+- `src/pages/projects/index.astro` (filter UI + grid)
+- `src/pages/projects/[slug].astro` (detail)
+- `src/lib/search.ts` (client-side minimal search; or server-side filtering)
+- Copy-to-clipboard for repo URL; FigureWithCaption used
 
 **ACCEPTANCE TESTS**
 
-* Filters operable via keyboard and screen reader
-* No layout shift when filters are toggled
-* Playwright test: apply a filter and see results change
+- Filters operable via keyboard and screen reader
+- No layout shift when filters are toggled
+- Playwright test: apply a filter and see results change
 
 ---
 
@@ -130,19 +130,19 @@ Build Publications list with filters (year/venue/tags), BibTeX export (selected 
 
 **CONSTRAINTS**
 
-* BibTeX export must be valid; run a BibTeX linter in CI
+- BibTeX export must be valid; run a BibTeX linter in CI
 
 **DELIVERABLES**
 
-* `src/pages/publications/index.astro`
-* `src/lib/bibtex.ts` (exporter)
-* Optional `src/pages/publications/[slug].astro` with abstract, links (arXiv/DOI/PDF)
+- `src/pages/publications/index.astro`
+- `src/lib/bibtex.ts` (exporter)
+- Optional `src/pages/publications/[slug].astro` with abstract, links (arXiv/DOI/PDF)
 
 **ACCEPTANCE TESTS**
 
-* Exported `.bib` validates in CI
-* All external links pass link-checker
-* Structured data passes rich results test (schema.org)
+- Exported `.bib` validates in CI
+- All external links pass link-checker
+- Structured data passes rich results test (schema.org)
 
 ---
 
@@ -153,21 +153,21 @@ Create a single data source (YAML/JSON) that renders an HTML CV and a downloadab
 
 **CONSTRAINTS**
 
-* Avoid CAPTCHAs; obfuscate `mailto:` or use a simple serverless handler
-* Same data drives both HTML and PDF
+- Avoid CAPTCHAs; obfuscate `mailto:` or use a simple serverless handler
+- Same data drives both HTML and PDF
 
 **DELIVERABLES**
 
-* `src/data/cv.json` (or `.yaml`)
-* `src/pages/cv.astro` + PDF generation script (e.g., `@sparticuz/chromium` in a node script or `puppeteer`)
-* `src/pages/contact.astro` with obfuscated email and links
-* `/public/press/*` (headshots, logos, bio.txt)
+- `src/data/cv.json` (or `.yaml`)
+- `src/pages/cv.astro` + PDF generation script (e.g., `@sparticuz/chromium` in a node script or `puppeteer`)
+- `src/pages/contact.astro` with obfuscated email and links
+- `/public/press/*` (headshots, logos, bio.txt)
 
 **ACCEPTANCE TESTS**
 
-* `pnpm run cv:pdf` creates `/dist/AJ_Wildridge_CV.pdf`
-* Press assets downloadable; links work on mobile
-* Keyboard + SR can reach and activate all contact options
+- `pnpm run cv:pdf` creates `/dist/AJ_Wildridge_CV.pdf`
+- Press assets downloadable; links work on mobile
+- Keyboard + SR can reach and activate all contact options
 
 ---
 
@@ -178,22 +178,22 @@ Implement a React-island interactive demo: basis selector (helicity/beam/off-dia
 
 **CONSTRAINTS**
 
-* Precomputed JSON grids for performance; computation in TS only for small ops
-* Full keyboard operation + textual output of current C_ij
-* 60 fps target on mid-range laptop at default grid size
+- Precomputed JSON grids for performance; computation in TS only for small ops
+- Full keyboard operation + textual output of current C_ij
+- 60 fps target on mid-range laptop at default grid size
 
 **DELIVERABLES**
 
-* `src/components/spin/Explorer.tsx` (+ Worker if needed)
-* `public/data/spin-grids/*.json` (sample grids)
-* `src/lib/export.ts` (SVG/PNG + JSON param export)
-* `src/pages/demos/spin-explorer.astro`
+- `src/components/spin/Explorer.tsx` (+ Worker if needed)
+- `public/data/spin-grids/*.json` (sample grids)
+- `src/lib/export.ts` (SVG/PNG + JSON param export)
+- `src/pages/demos/spin-explorer.astro`
 
 **ACCEPTANCE TESTS**
 
-* Playwright: change basis & sliders → canvas updates and JSON export downloaded
-* Axe: 0 criticals; SR can read the currently focused slider value and the selected cell C_ij
-* Manual perf check: 60 fps in default mode; fall back to lower resolution if needed
+- Playwright: change basis & sliders → canvas updates and JSON export downloaded
+- Axe: 0 criticals; SR can read the currently focused slider value and the selected cell C_ij
+- Manual perf check: 60 fps in default mode; fall back to lower resolution if needed
 
 ---
 
@@ -204,21 +204,21 @@ Enforce performance budgets (LCP ≤ 2.5s, CLS ≤ 0.1, TBT ≤ 200ms; Home JS �
 
 **CONSTRAINTS**
 
-* Add CI thresholds that fail on regressions
-* CSP must allow only required origins (self + analytics)
+- Add CI thresholds that fail on regressions
+- CSP must allow only required origins (self + analytics)
 
 **DELIVERABLES**
 
-* `lighthouserc.json` with thresholds
-* `axe` CI step (0 critical)
-* `security-headers.config` or adapter-level headers
-* `robots.txt`, `sitemap.xml`, OpenGraph/Twitter tags, schema.org across entities
+- `lighthouserc.json` with thresholds
+- `axe` CI step (0 critical)
+- `security-headers.config` or adapter-level headers
+- `robots.txt`, `sitemap.xml`, OpenGraph/Twitter tags, schema.org across entities
 
 **ACCEPTANCE TESTS**
 
-* CI fails if budgets are exceeded
-* No mixed content or CSP violations in console during e2e run
-* Rich results test passes
+- CI fails if budgets are exceeded
+- No mixed content or CSP violations in console during e2e run
+- Rich results test passes
 
 ---
 
@@ -229,20 +229,20 @@ Add Talks & Teaching index with filters and slide/video embeds; site-wide RSS/At
 
 **CONSTRAINTS**
 
-* Color contrast AA in both themes
-* Respects `prefers-reduced-motion`
+- Color contrast AA in both themes
+- Respects `prefers-reduced-motion`
 
 **DELIVERABLES**
 
-* `src/pages/talks/index.astro`, `src/pages/teaching/index.astro`
-* `src/pages/rss.xml.ts` (Astro feed)
-* Theme toggle component; persisted with `localStorage` (no FOUC)
+- `src/pages/talks/index.astro`, `src/pages/teaching/index.astro`
+- `src/pages/rss.xml.ts` (Astro feed)
+- Theme toggle component; persisted with `localStorage` (no FOUC)
 
 **ACCEPTANCE TESTS**
 
-* RSS validates
-* Embeds are keyboard accessible; work on mobile
-* Contrast checks pass in both themes
+- RSS validates
+- Embeds are keyboard accessible; work on mobile
+- Contrast checks pass in both themes
 
 ---
 
@@ -253,20 +253,20 @@ Add: (1) Quantum Minor-Embedding Visualizer (Pegasus P_16) with K_m×K_n inputs 
 
 **CONSTRAINTS**
 
-* Embedding tool interactions <100ms for moderate sizes
-* Export mapping schema documented
+- Embedding tool interactions <100ms for moderate sizes
+- Export mapping schema documented
 
 **DELIVERABLES**
 
-* `src/pages/demos/pegasus-embedder.astro` + `src/components/pegasus/*`
-* `src/pages/demos/model-card.astro` + `src/components/model/*`
-* Blog/Notes routes, KaTeX configured
+- `src/pages/demos/pegasus-embedder.astro` + `src/components/pegasus/*`
+- `src/pages/demos/model-card.astro` + `src/components/model/*`
+- Blog/Notes routes, KaTeX configured
 
 **ACCEPTANCE TESTS**
 
-* JSON mapping round-trips (import → visualize → export) unchanged
-* Model card loads offline (bundled sample)
-* Axe criticals = 0
+- JSON mapping round-trips (import → visualize → export) unchanged
+- Model card loads offline (bundled sample)
+- Axe criticals = 0
 
 ---
 
@@ -289,10 +289,10 @@ Generate GitHub issues for M0–M9, each with: title, description, checklist (ta
 
 **DELIVERABLES**
 
-* `/project/Issues-M0-M9.json`
-* `/project/Issues-M0-M9.md`
+- `/project/Issues-M0-M9.json`
+- `/project/Issues-M0-M9.md`
 
 **ACCEPTANCE TESTS**
 
-* JSON validates with GitHub issue importer
-* Each issue has at least one testable acceptance criterion tied to CI
+- JSON validates with GitHub issue importer
+- Each issue has at least one testable acceptance criterion tied to CI

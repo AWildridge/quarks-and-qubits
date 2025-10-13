@@ -8,6 +8,6 @@ export default defineConfig({
   output: 'static',
   prefetch: true,
   vite: {
-    build: { target: 'es2022' }
-  }
+    build: { target: 'es2022' },
+  },
 });

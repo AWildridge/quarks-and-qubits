@@ -3,6 +3,24 @@
   "version": "0.2",
   "language": "en",
   "useGitignore": true,
-  "ignorePaths": ["dist", "node_modules", ".git", "playwright-report"],
-  "words": ["Astro", "Wildridge", "Quark", "Qubits", "Playwright", "Lighthouse", "KaTeX"]
+  "ignorePaths": [
+    "dist",
+    "node_modules",
+    ".git",
+    "playwright-report",
+    "pnpm-lock.yaml",
+    "Plan.md",
+    "Prompts.md",
+    "Requirements.md"
+  ],
+  "words": [
+    "Astro",
+    "Wildridge",
+    "Quark",
+    "Qubits",
+    "Playwright",
+    "Lighthouse",
+    "KaTeX",
+    "linkinator"
+  ]
 }

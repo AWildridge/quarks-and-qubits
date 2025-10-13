@@ -11,7 +11,7 @@
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-  "types": ["node", "@playwright/test"]
+    "types": ["node", "@playwright/test"]
   },
   "include": ["src", "playwright.config.ts", "tests", "**/*.astro"],
   "exclude": ["node_modules", "dist"]

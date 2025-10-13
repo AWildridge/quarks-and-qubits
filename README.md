@@ -1,5 +1,7 @@
 # quarks-and-qubits
+
 My personal website.
+
 ## Quarks and Qubits
 
 Astro + MDX + Tailwind site scaffold with CI gates for build, lint, spellcheck, link-check, axe, Lighthouse, and a Playwright smoke test.

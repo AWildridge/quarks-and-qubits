@@ -1,65 +1,69 @@
 {
-    "name": "quarks-and-qubits",
-    "private": true,
-    "version": "0.1.0",
-    "type": "module",
-    "description": "Astro + MDX + Tailwind site with CI gates (build, lint, links, axe, Lighthouse, Playwright).",
-    "engines": {
-        "node": ">=20.0.0"
-    },
-    "packageManager": "pnpm@9.12.0",
-    "scripts": {
-        "dev": "astro dev",
-        "build": "astro build",
-        "preview": "astro preview --host --port 4321",
-        "typecheck": "tsc -p tsconfig.json --noEmit",
-        "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx,.astro",
-        "format": "prettier --write .",
-        "format:check": "prettier --check .",
-        "cspell": "cspell --no-progress --no-must-find-files .",
-        "html:validate": "html-validate \"dist/**/*.html\"",
-        "test": "playwright test",
-        "pretest": "if [ ! -d \"./playwright/.cache\" ]; then echo 'Ensuring Playwright browsers are installed'; npx --yes playwright install --with-deps; fi",
-        "prepare": "husky",
-        "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm cspell",
-        "ci:serve": "astro preview --host --port 4321"
-    },
-    "dependencies": {
-        "@astrojs/mdx": "^3.1.0",
-        "@astrojs/tailwind": "^5.1.0",
-        "astro": "^4.10.0",
-        "katex": "^0.16.11",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1"
-    },
-    "devDependencies": {
-        "astro-eslint-parser": "^1.0.3",
-        "@axe-core/cli": "^4.10.0",
-        "@playwright/test": "^1.49.0",
-        "@types/node": "^20.12.12",
-        "@typescript-eslint/eslint-plugin": "^8.7.0",
-        "@typescript-eslint/parser": "^8.7.0",
-        "autoprefixer": "^10.4.20",
-        "cspell": "^8.14.2",
-        "eslint": "^9.11.1",
-        "eslint-config-prettier": "^9.1.0",
-        "eslint-plugin-astro": "^1.3.1",
-        "html-validate": "^8.7.4",
-        "husky": "^9.1.6",
-        "lint-staged": "^15.2.10",
-        "linkinator": "^6.1.2",
-        "lighthouse": "^12.1.0",
-        "postcss": "^8.4.45",
-        "prettier": "^3.3.3",
-        "tailwindcss": "^3.4.10",
-        "typescript": "^5.5.4"
-    },
-    "lint-staged": {
-        "*.{js,jsx,ts,tsx,astro,css,md,mdx,json,yml,yaml}": [
-            "prettier --write"
-        ],
-        "*.{js,jsx,ts,tsx,astro}": [
-            "eslint --fix"
-        ]
-    }
+  "name": "quarks-and-qubits",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Astro + MDX + Tailwind site with CI gates (build, lint, links, axe, Lighthouse, Playwright).",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview --host --port 4321",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx,.astro",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "cspell": "cspell --no-progress --no-must-find-files .",
+    "html:validate": "html-validate \"dist/**/*.html\"",
+  "test": "playwright test",
+  "pretest": "pnpm exec playwright install chromium",
+    "prepare": "husky",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm cspell",
+    "ci:serve": "astro preview --host --port 4321"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^3.1.0",
+    "@astrojs/react": "^3.6.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "astro": "^4.10.0",
+    "katex": "^0.16.11",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "astro-eslint-parser": "^1.0.3",
+    "@axe-core/cli": "^4.10.0",
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.8",
+    "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "autoprefixer": "^10.4.20",
+    "cspell": "^8.14.2",
+    "eslint": "^9.11.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-astro": "^1.3.1",
+    "globals": "^15.11.0",
+    "html-validate": "^8.7.4",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "linkinator": "^6.1.2",
+    "lighthouse": "^12.1.0",
+    "postcss": "^8.4.45",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,astro,css,md,mdx,json,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.{js,jsx,ts,tsx,astro}": [
+      "eslint --fix"
+    ]
+  }
 }

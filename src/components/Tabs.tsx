@@ -1,6 +1,6 @@
 import React from 'react';
 
-type Tab = { id: string; label: string; content: React.ReactNode };
+type Tab = { id: string; label: string; content: string };
 
 export default function Tabs({ tabs }: { tabs: Tab[] }) {
   const [active, setActive] = React.useState(0);
@@ -10,11 +10,17 @@ export default function Tabs({ tabs }: { tabs: Tab[] }) {
     if (e.key === 'ArrowRight') setActive((i) => (i + 1) % tabs.length);
     if (e.key === 'ArrowLeft') setActive((i) => (i - 1 + tabs.length) % tabs.length);
   }
-  React.useEffect(() => { tabRefs.current[active]?.focus(); }, [active]);
+  React.useEffect(() => {
+    tabRefs.current[active]?.focus();
+  }, [active]);
 
   return (
     <div onKeyDown={onKeyDown}>
-      <div role="tablist" aria-label="Tabs" className="flex gap-2 border-b border-gray-200 dark:border-gray-800">
+      <div
+        role="tablist"
+        aria-label="Tabs"
+        className="flex gap-2 border-b border-gray-200 dark:border-gray-800"
+      >
         {tabs.map((t, i) => (
           <button
             key={t.id}
@@ -39,7 +45,7 @@ export default function Tabs({ tabs }: { tabs: Tab[] }) {
           hidden={i !== active}
           className="p-4 border border-t-0 border-gray-200 dark:border-gray-800"
         >
-          {t.content}
+          <p>{t.content}</p>
         </div>
       ))}
     </div>

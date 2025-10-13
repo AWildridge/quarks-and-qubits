@@ -16,7 +16,13 @@
     outline: none;
     box-shadow: 0 0 0 2px theme('colors.blue.500');
   }
-  h1 { @apply text-3xl font-semibold; }
-  h2 { @apply text-2xl font-semibold; }
-  h3 { @apply text-xl font-semibold; }
+  h1 {
+    @apply text-3xl font-semibold;
+  }
+  h2 {
+    @apply text-2xl font-semibold;
+  }
+  h3 {
+    @apply text-xl font-semibold;
+  }
 }

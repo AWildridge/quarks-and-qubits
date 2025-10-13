@@ -14,7 +14,10 @@ export default function Card({ title, children, href }: Props) {
     </div>
   );
   return href ? (
-    <a href={href} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg">
+    <a
+      href={href}
+      className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg"
+    >
       {content}
     </a>
   ) : (
