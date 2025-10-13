@@ -92,6 +92,9 @@ importers:
       prettier:
         specifier: ^3.3.3
         version: 3.6.2
+      prettier-plugin-astro:
+        specifier: ^0.14.1
+        version: 0.14.1
       tailwindcss:
         specifier: ^3.4.10
         version: 3.4.18(yaml@2.8.1)
@@ -5686,6 +5689,13 @@ packages:
       }
     engines: { node: '>= 0.8.0' }
 
+  prettier-plugin-astro@0.14.1:
+    resolution:
+      {
+        integrity: sha512-RiBETaaP9veVstE4vUwSIcdATj6dKmXljouXc/DDNwBSPTp8FRkLGDSGFClKsAFeeg+13SB0Z1JZvbD76bigJw==,
+      }
+    engines: { node: ^14.15.0 || >=16.0.0 }
+
   prettier@3.6.2:
     resolution:
       {
@@ -6032,10 +6042,22 @@ packages:
         integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==,
       }
 
+  s.color@0.0.15:
+    resolution:
+      {
+        integrity: sha512-AUNrbEUHeKY8XsYr/DYpl+qk5+aM+DChopnWOPEzn8YKzOhv4l2zH6LzZms3tOZP3wwdOyc0RmTciyi46HLIuA==,
+      }
+
   safe-buffer@5.1.2:
     resolution:
       {
         integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==,
+      }
+
+  sass-formatter@0.7.9:
+    resolution:
+      {
+        integrity: sha512-CWZ8XiSim+fJVG0cFLStwDvft1VI7uvXdCNJYXhDvowiv+DsbD1nXLiQ4zrE5UBvj5DWZJ93cwN0NX5PMsr1Pw==,
       }
 
   scheduler@0.23.2:
@@ -6339,6 +6361,12 @@ packages:
       }
     engines: { node: '>=16 || 14 >=14.17' }
     hasBin: true
+
+  suf-log@2.5.3:
+    resolution:
+      {
+        integrity: sha512-KvC8OPjzdNOe+xQ4XWJV2whQA0aM1kGVczMQ8+dStAO6KfEB140JEVQ9dE76ONZ0/Ylf67ni4tILPJB41U0eow==,
+      }
 
   supports-color@7.2.0:
     resolution:
@@ -10771,6 +10799,12 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
+  prettier-plugin-astro@0.14.1:
+    dependencies:
+      '@astrojs/compiler': 2.13.0
+      prettier: 3.6.2
+      sass-formatter: 0.7.9
+
   prettier@3.6.2: {}
 
   prismjs@1.30.0: {}
@@ -11070,7 +11104,13 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
+  s.color@0.0.15: {}
+
   safe-buffer@5.1.2: {}
+
+  sass-formatter@0.7.9:
+    dependencies:
+      suf-log: 2.5.3
 
   scheduler@0.23.2:
     dependencies:
@@ -11272,6 +11312,10 @@ snapshots:
       mz: 2.7.0
       pirates: 4.0.7
       ts-interface-checker: 0.1.13
+
+  suf-log@2.5.3:
+    dependencies:
+      s.color: 0.0.15
 
   supports-color@7.2.0:
     dependencies:

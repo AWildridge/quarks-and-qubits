@@ -3,20 +3,25 @@ export interface Props {
   title?: string;
   description?: string;
 }
-const { title = 'Quarks & Qubits', description = 'Research and projects by AJ Wildridge' } = Astro.props as Props;
+const { title = 'Quarks & Qubits', description = 'Research and projects by AJ Wildridge' } =
+  Astro.props as Props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
   <body>
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-blue-700 text-white px-3 py-2 rounded">Skip to content</a>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-blue-700 text-white px-3 py-2 rounded"
+      >Skip to content</a
+    >
     <header class="border-b border-gray-200 dark:border-gray-800">
       <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
         <a class="font-semibold text-lg" href="/">Quarks & Qubits</a>
@@ -48,6 +53,11 @@ const { title = 'Quarks & Qubits', description = 'Research and projects by AJ Wi
     @apply text-blue-700 dark:text-blue-400 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-1 py-0.5;
   }
   @media (prefers-reduced-motion: reduce) {
-    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+    * {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 </style>

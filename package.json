@@ -18,8 +18,8 @@
     "format:check": "prettier --check .",
     "cspell": "cspell --no-progress --no-must-find-files .",
     "html:validate": "html-validate \"dist/**/*.html\"",
-  "test": "playwright test",
-  "pretest": "pnpm exec playwright install chromium",
+    "test": "playwright test",
+    "pretest": "pnpm exec playwright install chromium",
     "prepare": "husky",
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm cspell",
     "ci:serve": "astro preview --host --port 4321"
@@ -55,6 +55,7 @@
     "lighthouse": "^12.1.0",
     "postcss": "^8.4.45",
     "prettier": "^3.3.3",
+    "prettier-plugin-astro": "^0.14.1",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4"
   },
