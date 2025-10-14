@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FigureWithCaption from '../../components/FigureWithCaption.astro';
+import CopyButton from '../../components/CopyButton.tsx';
+import { getEntry, getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('projects');
+  return entries.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+if (!slug) throw new Error('Missing slug');
+const entry = await getEntry('projects', slug);
+if (!entry) throw new Error(`Project not found: ${slug}`);
+const { title, tags = [], summary, repo } = entry.data as any;
+---
+
+<BaseLayout title={title}>
+  <h1>{title}</h1>
+  {summary && <p class="mt-2 text-gray-700 dark:text-gray-300">{summary}</p>}
+
+  {
+    tags.length > 0 && (
+      <ul class="mt-4 flex flex-wrap gap-2" aria-label="Tags">
+        {tags.map((t: string) => (
+          <li>
+            <span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">
+              {t}
+            </span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <section class="mt-8" aria-labelledby="reproduce-heading">
+    <h2 id="reproduce-heading" class="text-lg font-semibold">Reproduce</h2>
+    <ul class="list-disc pl-6 mt-2">
+      {
+        repo && (
+          <li>
+            <span>Repo: </span>
+            <a href={repo} class="underline" rel="noopener noreferrer" target="_blank">
+              {repo}
+            </a>
+            <CopyButton
+              client:load
+              text={repo}
+              className="ml-2 text-sm underline"
+              ariaLabel="Copy repository URL"
+            />
+          </li>
+        )
+      }
+      <li>Data: add link(s) here</li>
+      <li>Instructions: add brief setup steps</li>
+    </ul>
+  </section>
+
+  <section class="mt-8" aria-labelledby="architecture-heading">
+    <h2 id="architecture-heading" class="text-lg font-semibold">Architecture</h2>
+    <FigureWithCaption
+      src="/images/placeholder-arch.svg"
+      alt="Architecture diagram placeholder"
+      caption="High-level architecture."
+    />
+  </section>
+</BaseLayout>

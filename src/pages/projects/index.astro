@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { filterProjects, type ProjectRecord } from '../../lib/search';
+const all = await getCollection('projects');
+
+const q = (Astro.url.searchParams.get('q') || '').toLowerCase();
+const tag = Astro.url.searchParams.get('tag') || '';
+const year = Astro.url.searchParams.get('year') || '';
+const language = Astro.url.searchParams.get('language') || '';
+
+const tags = Array.from(new Set(all.flatMap((p) => (p.data.tags as string[]) || []))).sort();
+const languages = Array.from(
+  new Set(all.map((p) => (p.data.language as string) || '').filter(Boolean)),
+).sort();
+const years = Array.from(new Set(all.map((p) => new Date(p.data.date as any).getFullYear()))).sort(
+  (a, b) => b - a,
+);
+
+const records: ProjectRecord[] = all.map((p) => ({
+  slug: p.slug,
+  title: p.data.title as string,
+  summary: p.data.summary as string | undefined,
+  tags: (p.data.tags as string[]) || [],
+  year: new Date(p.data.date as any).getFullYear(),
+  language: (p.data.language as string) || undefined,
+}));
+const filtered = filterProjects(records, { q, tag, year, language });
+---
+
+<BaseLayout title="Projects">
+  <h1>Projects</h1>
+
+  <form
+    role="search"
+    aria-label="Project filters"
+    class="mt-4 grid gap-3 md:grid-cols-3"
+    method="get"
+    preventdefault:submit
+  >
+    <label class="block">
+      <span class="block text-sm mb-1">Search</span>
+      <input
+        class="w-full border rounded px-2 py-1"
+        type="search"
+        name="q"
+        value={q}
+        placeholder="Search projects"
+      />
+    </label>
+    <label class="block">
+      <span class="block text-sm mb-1">Tag</span>
+      <select
+        class="w-full border rounded px-2 py-1"
+        name="tag"
+        value={tag}
+        aria-label="Filter by tag"
+      >
+        <option value="">All</option>
+        {tags.map((t) => <option value={t}>{t}</option>)}
+      </select>
+    </label>
+    <label class="block">
+      <span class="block text-sm mb-1">Year</span>
+      <select
+        class="w-full border rounded px-2 py-1"
+        name="year"
+        value={year}
+        aria-label="Filter by year"
+      >
+        <option value="">All</option>
+        {years.map((y) => <option value={y}>{y}</option>)}
+      </select>
+    </label>
+    <label class="block">
+      <span class="block text-sm mb-1">Language</span>
+      <select
+        class="w-full border rounded px-2 py-1"
+        name="language"
+        value={language}
+        aria-label="Filter by language"
+      >
+        <option value="">All</option>
+        {languages.map((l) => <option value={l}>{l}</option>)}
+      </select>
+    </label>
+    <div class="md:col-span-3">
+      <button type="submit" class="px-3 py-1 rounded bg-blue-600 text-white">Apply</button>
+    </div>
+  </form>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite" aria-busy={false}>
+    {
+      filtered.map((p) => (
+        <a
+          class="block border rounded p-3 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          href={`/projects/${p.slug}/`}
+        >
+          <h3 class="font-semibold">{p.title}</h3>
+          {p.summary && <p class="text-sm mt-1 text-gray-700 dark:text-gray-300">{p.summary}</p>}
+          <div class="mt-2 flex gap-2 flex-wrap">
+            {p.tags.slice(0, 3).map((t) => (
+              <span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">
+                {t}
+              </span>
+            ))}
+          </div>
+        </a>
+      ))
+    }
+  </div>
+
+  <script>
+    // minimal enhancement: update on change without CLS by submitting the form, SSR handles rendering
+    const form = document.currentScript?.previousElementSibling
+      ?.previousElementSibling as HTMLFormElement | null;
+    if (form) {
+      form.addEventListener('change', () => form.requestSubmit());
+    }
+  </script>
+</BaseLayout>

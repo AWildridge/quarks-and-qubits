@@ -1,12 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-const items = await getCollection('projects');
 ---
 
 <BaseLayout title="Projects">
-  <h1>Projects</h1>
-  <ul class="mt-4 list-disc pl-6">
-    {items.map((it) => <li>{it.data.title}</li>)}
-  </ul>
+  <meta http-equiv="refresh" content="0;url=/projects/" />
+  <p>If you are not redirected, <a href="/projects/">click here</a>.</p>
 </BaseLayout>
