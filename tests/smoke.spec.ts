@@ -19,8 +19,8 @@ test('projects filtering changes results', async ({ page }) => {
   const choice = options.find((t) => t && t !== 'All');
   if (choice) {
     await tagSelect.selectOption({ label: choice });
-    // submit happens via change listener
-    await page.waitForLoadState('networkidle');
+    // submit happens via change listener which requests a reload
+    await page.waitForLoadState('load');
     const newCount = await grid.locator('a').count();
     expect(newCount).toBeLessThanOrEqual(initialCount);
   }
