@@ -1,0 +1,254 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { exportBibTeX, type PublicationRecord } from '../../lib/bibtex';
+
+const all = await getCollection('publications');
+
+// For static build, we'll render all and filter client-side
+const years = Array.from(new Set(all.map((p) => p.data.year))).sort((a, b) => b - a);
+const venues = Array.from(new Set(all.map((p) => p.data.venue || '').filter(Boolean))).sort();
+const tags = Array.from(new Set(all.flatMap((p) => p.data.tags || []))).sort();
+
+const records: PublicationRecord[] = all.map((p) => ({
+  slug: p.slug,
+  title: p.data.title,
+  authors: p.data.authors,
+  year: p.data.year,
+  venue: p.data.venue,
+  doi: p.data.doi,
+  url: p.data.url,
+  tags: p.data.tags || [],
+}));
+---
+
+<BaseLayout title="Publications">
+  <h1>Publications</h1>
+  <p class="mt-2 text-sm" aria-live="polite" id="pub-count">
+    Showing {records.length} of {records.length} publications
+  </p>
+
+  <form
+    role="search"
+    aria-label="Publication filters"
+    class="mt-4 grid gap-3 md:grid-cols-4"
+    id="pub-filters"
+  >
+    <label class="block">
+      <span class="block text-sm mb-1">Year</span>
+      <select class="w-full border rounded px-2 py-1" name="year" aria-label="Filter by year">
+        <option value="">All</option>
+        {years.map((y) => <option value={y}>{y}</option>)}
+      </select>
+    </label>
+    <label class="block">
+      <span class="block text-sm mb-1">Venue</span>
+      <select class="w-full border rounded px-2 py-1" name="venue" aria-label="Filter by venue">
+        <option value="">All</option>
+        {venues.map((v) => <option value={v}>{v}</option>)}
+      </select>
+    </label>
+    <label class="block">
+      <span class="block text-sm mb-1">Tag</span>
+      <select class="w-full border rounded px-2 py-1" name="tag" aria-label="Filter by tag">
+        <option value="">All</option>
+        {tags.map((t) => <option value={t}>{t}</option>)}
+      </select>
+    </label>
+    <div class="flex items-end">
+      <button
+        type="button"
+        id="reset-filters"
+        class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+        >Reset</button
+      >
+    </div>
+  </form>
+
+  <div class="mt-4 flex gap-2">
+    <button
+      type="button"
+      id="export-bibtex"
+      class="px-3 py-1 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      aria-label="Export filtered publications to BibTeX"
+    >
+      Export BibTeX
+      <span class="ml-1" id="export-count">({records.length})</span>
+    </button>
+  </div>
+
+  <ul class="mt-6 space-y-6" aria-label="Publications list" id="pub-list">
+    {
+      records.map((p) => (
+        <li
+          class="border-l-4 border-blue-500 pl-4 pb-4 pub-item"
+          itemscope
+          itemtype="https://schema.org/ScholarlyArticle"
+          data-year={p.year}
+          data-venue={p.venue || ''}
+          data-tags={JSON.stringify(p.tags)}
+        >
+          <h3 class="font-semibold text-lg" itemprop="name">
+            {p.url ? (
+              <a
+                href={p.url}
+                class="text-blue-700 dark:text-blue-400 hover:underline"
+                rel="noopener noreferrer"
+                target="_blank"
+                itemprop="url"
+              >
+                {p.title}
+              </a>
+            ) : (
+              p.title
+            )}
+          </h3>
+          <p class="mt-1 text-sm text-gray-700 dark:text-gray-300" itemprop="author">
+            {p.authors.join(', ')}
+          </p>
+          <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {p.venue && (
+              <span itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+                <span itemprop="name">{p.venue}</span>
+                {' · '}
+              </span>
+            )}
+            <time itemprop="datePublished" content={String(p.year)}>
+              {p.year}
+            </time>
+          </p>
+          {p.doi && (
+            <p class="mt-1 text-sm">
+              <span class="text-gray-600 dark:text-gray-400">DOI: </span>
+              <a
+                href={`https://doi.org/${p.doi}`}
+                class="text-blue-700 dark:text-blue-400 hover:underline"
+                rel="noopener noreferrer"
+                target="_blank"
+                itemprop="identifier"
+              >
+                {p.doi}
+              </a>
+            </p>
+          )}
+          {p.tags.length > 0 && (
+            <div class="mt-2 flex gap-2 flex-wrap">
+              {p.tags.map((t) => (
+                <span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="mt-8 text-center text-gray-500 hidden" id="no-results">
+    No publications match the current filters.
+  </p>
+
+  <script>
+    import { exportBibTeX, type PublicationRecord } from '../../lib/bibtex';
+
+    // Client-side filtering for static site
+    const form = document.getElementById('pub-filters') as HTMLFormElement;
+    const yearSelect = form.querySelector('select[name="year"]') as HTMLSelectElement;
+    const venueSelect = form.querySelector('select[name="venue"]') as HTMLSelectElement;
+    const tagSelect = form.querySelector('select[name="tag"]') as HTMLSelectElement;
+    const resetBtn = document.getElementById('reset-filters') as HTMLButtonElement;
+    const exportBtn = document.getElementById('export-bibtex') as HTMLButtonElement;
+    const pubList = document.getElementById('pub-list') as HTMLUListElement;
+    const pubCount = document.getElementById('pub-count') as HTMLParagraphElement;
+    const exportCount = document.getElementById('export-count') as HTMLSpanElement;
+    const noResults = document.getElementById('no-results') as HTMLParagraphElement;
+
+    const allItems = Array.from(pubList.querySelectorAll('.pub-item')) as HTMLElement[];
+
+    function filterPublications() {
+      const yearValue = yearSelect.value;
+      const venueValue = venueSelect.value;
+      const tagValue = tagSelect.value;
+
+      let visibleCount = 0;
+      const visiblePubs: PublicationRecord[] = [];
+
+      allItems.forEach((item) => {
+        const year = item.dataset.year || '';
+        const venue = item.dataset.venue || '';
+        const tags = JSON.parse(item.dataset.tags || '[]');
+
+        const matchesYear = !yearValue || year === yearValue;
+        const matchesVenue = !venueValue || venue === venueValue;
+        const matchesTag = !tagValue || tags.includes(tagValue);
+
+        if (matchesYear && matchesVenue && matchesTag) {
+          item.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+
+      const total = allItems.length;
+      pubCount.textContent = `Showing ${visibleCount} of ${total} publications`;
+      exportCount.textContent = `(${visibleCount})`;
+
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+      }
+    }
+
+    yearSelect.addEventListener('change', filterPublications);
+    venueSelect.addEventListener('change', filterPublications);
+    tagSelect.addEventListener('change', filterPublications);
+
+    resetBtn.addEventListener('click', () => {
+      yearSelect.value = '';
+      venueSelect.value = '';
+      tagSelect.value = '';
+      filterPublications();
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const visiblePubs: PublicationRecord[] = [];
+
+      allItems.forEach((item) => {
+        if (!item.classList.contains('hidden')) {
+          const tags = JSON.parse(item.dataset.tags || '[]');
+          const titleEl = item.querySelector('h3');
+          const authorsEl = item.querySelector('[itemprop="author"]');
+          const yearEl = item.querySelector('[itemprop="datePublished"]');
+          const doiEl = item.querySelector('[itemprop="identifier"]');
+          const venueEl = item.querySelector('[itemprop="publisher"] [itemprop="name"]');
+          const urlEl = item.querySelector('a[itemprop="url"]');
+
+          if (titleEl && authorsEl && yearEl) {
+            visiblePubs.push({
+              slug: '',
+              title: titleEl.textContent?.trim() || '',
+              authors: authorsEl.textContent?.split(',').map((a) => a.trim()) || [],
+              year: parseInt(yearEl.getAttribute('content') || '0'),
+              venue: venueEl?.textContent?.trim(),
+              doi: doiEl?.textContent?.trim(),
+              url: (urlEl as HTMLAnchorElement)?.href,
+              tags,
+            });
+          }
+        }
+      });
+
+      const bibtex = exportBibTeX(visiblePubs);
+      const blob = new Blob([bibtex], { type: 'application/x-bibtex' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'publications.bib';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</BaseLayout>

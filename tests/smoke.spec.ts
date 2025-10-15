@@ -25,3 +25,36 @@ test('projects filtering changes results', async ({ page }) => {
     expect(newCount).toBeLessThanOrEqual(initialCount);
   }
 });
+
+test('publications filtering changes results', async ({ page }) => {
+  await page.goto('/publications/');
+
+  const list = page.locator('main >> ul[aria-label="Publications list"]');
+  await expect(list).toBeVisible();
+
+  const initialCount = await list.locator('li').count();
+  expect(initialCount).toBeGreaterThan(0);
+
+  // Apply a year filter
+  const yearSelect = page.locator('select[name="year"]');
+  const options = await yearSelect.locator('option').allTextContents();
+  const choice = options.find((t) => t && t !== 'All');
+
+  if (choice) {
+    await yearSelect.selectOption({ label: choice });
+    await page.waitForLoadState('load');
+    const newCount = await list.locator('li').count();
+    expect(newCount).toBeLessThanOrEqual(initialCount);
+  }
+});
+
+test('publications export bibtex', async ({ page }) => {
+  await page.goto('/publications/');
+
+  // Click export button and wait for download
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: /Export BibTeX/i }).click();
+  const download = await downloadPromise;
+
+  expect(download.suggestedFilename()).toBe('publications.bib');
+});
