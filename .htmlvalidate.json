@@ -6,6 +6,7 @@
     "no-implicit-button-type": "error",
     "no-raw-characters": "error",
     "void-style": "off",
-    "doctype-style": "off"
+    "doctype-style": "off",
+    "no-trailing-whitespace": "off"
   }
 }
