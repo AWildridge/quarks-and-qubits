@@ -1,0 +1,26 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1d4ed8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#grad)"/>
+  
+  <!-- Title -->
+  <text x="600" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="bold" fill="white" text-anchor="middle">
+    Quarks · Qubits
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="600" y="350" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="#e0e7ff" text-anchor="middle">
+    Machine Learning
+  </text>
+  
+  <!-- Author -->
+  <text x="600" y="520" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#c7d2fe" text-anchor="middle">
+    AJ Wildridge · CERN · Purdue University
+  </text>
+</svg>

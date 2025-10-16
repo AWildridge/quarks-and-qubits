@@ -28,9 +28,34 @@ const record: PublicationRecord = {
 };
 
 const bibtex = toBibTeX(record);
+
+// Schema.org structured data for ScholarlyArticle
+const publicationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ScholarlyArticle',
+  headline: title,
+  author: authors.map((name) => ({
+    '@type': 'Person',
+    name,
+  })),
+  datePublished: `${year}-01-01`,
+  publisher: {
+    '@type': 'Organization',
+    name: venue,
+  },
+  ...(doi && { doi }),
+  ...(url && { url }),
+  keywords: tags.join(', '),
+};
 ---
 
-<BaseLayout title={title}>
+<BaseLayout
+  title={title}
+  description={`Publication: ${title} by ${authors.join(', ')} (${year})`}
+  type="article"
+  publishedTime={`${year}-01-01`}
+  schema={publicationSchema}
+>
   <article itemscope itemtype="https://schema.org/ScholarlyArticle">
     <header>
       <h1 itemprop="name">{title}</h1>

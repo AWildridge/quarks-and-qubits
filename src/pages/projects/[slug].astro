@@ -15,9 +15,25 @@ const entry = await getEntry('projects', slug);
 if (!entry) throw new Error(`Project not found: ${slug}`);
 const { title, tags = [], summary, repo, language, date } = entry.data as any;
 const year = new Date(date).getFullYear();
+
+// Schema.org structured data for SoftwareSourceCode
+const projectSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name: title,
+  description: summary,
+  ...(repo && { codeRepository: repo }),
+  ...(language && { programmingLanguage: language }),
+  dateCreated: date.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'Andrew James Wildridge',
+  },
+  keywords: tags.join(', '),
+};
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} description={summary || `Project: ${title}`} schema={projectSchema}>
   <h1>{title}</h1>
   {summary && <p class="mt-2 text-gray-700 dark:text-gray-300">{summary}</p>}
 

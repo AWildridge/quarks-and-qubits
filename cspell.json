@@ -60,6 +60,24 @@
     "antiquark",
     "xlink",
     "WCAG",
-    "pkill"
+    "pkill",
+    "contentful",
+    "stylesheet",
+    "HSTS",
+    "urlset",
+    "lastmod",
+    "changefreq",
+    "clickjacking",
+    "nosniff",
+    "lhci",
+    "autorun",
+    "ECONNREFUSED",
+    "srcset",
+    "Googlebot",
+    "Bingbot",
+    "Precomputes",
+    "htmlvalidate",
+    "Pyodide",
+    "ipynb"
   ]
 }

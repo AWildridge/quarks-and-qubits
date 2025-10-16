@@ -1,0 +1,26 @@
+# robots.txt for AJ Wildridge Research Site
+# All crawlers welcome
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://aj-wildridge.web.cern.ch/sitemap.xml
+
+# Common bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Disallow common non-content paths
+Disallow: /api/
+Disallow: /_astro/
+Disallow: /*.json$
+
+# Crawl delay (be respectful)
+Crawl-delay: 1
