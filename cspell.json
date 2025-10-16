@@ -21,6 +21,12 @@
     "Playwright",
     "Lighthouse",
     "KaTeX",
-    "linkinator"
+    "linkinator",
+    "Prereqs",
+    "lighthouserc",
+    "frontmatter",
+    "bibtex",
+    "JHEP",
+    "jhep"
   ]
 }
