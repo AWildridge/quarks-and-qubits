@@ -4,6 +4,8 @@
     "element-permitted-content": "off",
     "attribute-boolean-style": ["error", { "style": "empty" }],
     "no-implicit-button-type": "error",
-    "no-raw-characters": "error"
+    "no-raw-characters": "error",
+    "void-style": "off",
+    "doctype-style": "off"
   }
 }
