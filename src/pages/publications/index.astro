@@ -36,26 +36,27 @@ const records: PublicationRecord[] = all.map((p) => ({
   >
     <label class="block">
       <span class="block text-sm mb-1">Year</span>
-      <select class="w-full border rounded px-2 py-1" name="year" aria-label="Filter by year">
+      <select class="w-full border rounded px-2 py-1" name="year">
         <option value="">All</option>
         {years.map((y) => <option value={y}>{y}</option>)}
       </select>
     </label>
     <label class="block">
       <span class="block text-sm mb-1">Venue</span>
-      <select class="w-full border rounded px-2 py-1" name="venue" aria-label="Filter by venue">
+      <select class="w-full border rounded px-2 py-1" name="venue">
         <option value="">All</option>
         {venues.map((v) => <option value={v}>{v}</option>)}
       </select>
     </label>
     <label class="block">
       <span class="block text-sm mb-1">Tag</span>
-      <select class="w-full border rounded px-2 py-1" name="tag" aria-label="Filter by tag">
+      <select class="w-full border rounded px-2 py-1" name="tag">
         <option value="">All</option>
         {tags.map((t) => <option value={t}>{t}</option>)}
       </select>
     </label>
-    <div class="flex items-end">
+    <div class="flex items-end gap-2">
+      <button type="submit" class="sr-only"> Apply filters </button>
       <button
         type="button"
         id="reset-filters"
@@ -77,7 +78,7 @@ const records: PublicationRecord[] = all.map((p) => ({
     </button>
   </div>
 
-  <ul class="mt-6 space-y-6" aria-label="Publications list" id="pub-list">
+  <ul class="mt-6 space-y-6" id="pub-list">
     {
       records.map((p) => (
         <li

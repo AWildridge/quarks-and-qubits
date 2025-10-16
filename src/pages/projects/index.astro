@@ -55,36 +55,21 @@ const displayed = filtered.slice(0, n);
     </label>
     <label class="block">
       <span class="block text-sm mb-1">Tag</span>
-      <select
-        class="w-full border rounded px-2 py-1"
-        name="tag"
-        value={tag}
-        aria-label="Filter by tag"
-      >
+      <select class="w-full border rounded px-2 py-1" name="tag" value={tag}>
         <option value="">All</option>
         {tags.map((t) => <option value={t}>{t}</option>)}
       </select>
     </label>
     <label class="block">
       <span class="block text-sm mb-1">Year</span>
-      <select
-        class="w-full border rounded px-2 py-1"
-        name="year"
-        value={year}
-        aria-label="Filter by year"
-      >
+      <select class="w-full border rounded px-2 py-1" name="year" value={year}>
         <option value="">All</option>
         {years.map((y) => <option value={y}>{y}</option>)}
       </select>
     </label>
     <label class="block">
       <span class="block text-sm mb-1">Language</span>
-      <select
-        class="w-full border rounded px-2 py-1"
-        name="language"
-        value={language}
-        aria-label="Filter by language"
-      >
+      <select class="w-full border rounded px-2 py-1" name="language" value={language}>
         <option value="">All</option>
         {languages.map((l) => <option value={l}>{l}</option>)}
       </select>

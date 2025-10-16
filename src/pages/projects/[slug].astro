@@ -21,7 +21,8 @@ const year = new Date(date).getFullYear();
   <h1>{title}</h1>
   {summary && <p class="mt-2 text-gray-700 dark:text-gray-300">{summary}</p>}
 
-  <div class="mt-3 flex gap-2 flex-wrap" aria-label="Metadata">
+  <div class="mt-3 flex gap-2 flex-wrap">
+    <span class="sr-only">Project metadata:</span>
     {
       language && (
         <span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">
@@ -40,15 +41,18 @@ const year = new Date(date).getFullYear();
 
   {
     tags.length > 0 && (
-      <ul class="mt-4 flex flex-wrap gap-2" aria-label="Tags">
-        {tags.map((t: string) => (
-          <li>
-            <span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">
-              {t}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <span class="sr-only">Tags:</span>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {tags.map((t: string) => (
+            <li>
+              <span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">
+                {t}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     )
   }
 
