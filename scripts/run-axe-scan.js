@@ -8,7 +8,7 @@ import puppeteer from 'puppeteer';
 import { AxePuppeteer } from '@axe-core/puppeteer';
 
 const BASE_URL = 'http://127.0.0.1:4321';
-const PAGES = ['/cv', '/contact'];
+const PAGES = ['/cv', '/contact', '/demos/spin-explorer'];
 
 async function scanPage(browser, url) {
   console.log(`\n🔍 Scanning: ${url}`);
@@ -17,7 +17,16 @@ async function scanPage(browser, url) {
   const page = await browser.newPage();
 
   try {
-    await page.goto(url, { waitUntil: 'networkidle0', timeout: 10000 });
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 15000 });
+
+    // For demo pages, wait for React to hydrate
+    if (url.includes('/demos/')) {
+      try {
+        await page.waitForSelector('canvas', { timeout: 10000 });
+      } catch {
+        console.log('⚠️  No canvas found, continuing scan...');
+      }
+    }
 
     const results = await new AxePuppeteer(page).analyze();
 

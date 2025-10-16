@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Explorer } from '../../components/spin/Explorer';
+---
+
+<BaseLayout
+  title="Spin Correlation Explorer | AJ Wildridge"
+  description="Interactive exploration of top-quark spin correlations. Visualize C_ij correlation matrices and spin axes across different production modes, bases, and energies."
+>
+  <article class="max-w-5xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold mb-4">Interactive Spin Correlation Explorer</h1>
+      <p class="text-lg text-gray-700 dark:text-gray-300">
+        Explore quantum spin correlations in top-quark pair production at the LHC. Adjust production
+        mechanisms, spin bases, and kinematic angles to visualize the resulting correlation matrix C<sub
+          >ij</sub
+        > and spin-axis orientations.
+      </p>
+    </header>
+
+    <!-- Introduction -->
+    <section class="mb-8 prose dark:prose-invert max-w-none">
+      <h2>What are Spin Correlations?</h2>
+      <p>
+        When top-quark pairs are produced at the LHC, their spins are correlated due to the quantum
+        nature of the production mechanism. The <strong
+          >spin correlation matrix C<sub>ij</sub></strong
+        >
+        quantifies the correlation between the i-th spin component of the top quark and the j-th spin
+        component of the anti-top quark.
+      </p>
+
+      <p>Key features:</p>
+      <ul>
+        <li>
+          <strong>Production mode:</strong> Gluon fusion (gg) vs quark-antiquark annihilation (qq̄) produce
+          different correlation patterns
+        </li>
+        <li>
+          <strong>Basis choice:</strong> Helicity, beam, or off-diagonal bases emphasize different correlation
+          components
+        </li>
+        <li>
+          <strong>Energy dependence:</strong> Higher collision energies affect correlation strength
+        </li>
+        <li>
+          <strong>Angular dependence:</strong> Polar (θ) and azimuthal (φ) angles determine the correlation
+          structure
+        </li>
+      </ul>
+
+      <h3>How to Use This Tool</h3>
+      <ol>
+        <li>Select production mode, spin basis, and center-of-mass energy from the dropdowns</li>
+        <li>Adjust the polar angle θ and azimuthal angle φ with the sliders</li>
+        <li>
+          Observe the correlation matrix heatmap update in real-time (blue = negative correlation,
+          red = positive)
+        </li>
+        <li>View the 3D spin-axis orientation showing how top and anti-top spins align in space</li>
+        <li>
+          Use keyboard arrow keys to navigate the heatmap cells and hear C<sub>ij</sub> values announced
+        </li>
+        <li>Export visualizations as PNG/SVG or download parameters as JSON</li>
+      </ol>
+
+      <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg my-4">
+        <h4 class="text-lg font-semibold mb-2">Physics Note</h4>
+        <p class="text-sm">
+          The correlations shown here are simplified analytical approximations based on
+          leading-order (LO) QCD calculations for demonstration purposes. Real measurements require
+          full next-to-next-to-leading-order (NNLO) predictions and detailed detector simulations.
+          For research-grade calculations, see the linked papers below.
+        </p>
+      </div>
+    </section>
+
+    <!-- Interactive Demo -->
+    <section class="mb-8">
+      <Explorer client:load />
+    </section>
+
+    <!-- References and Links -->
+    <section class="prose dark:prose-invert max-w-none">
+      <h2>Related Work &amp; Resources</h2>
+
+      <h3>Key Publications</h3>
+      <ul>
+        <li>
+          <strong>Entanglement of top quarks at the LHC</strong> — First observation of quantum entanglement
+          in top-quark pairs
+          <br />
+          <span class="text-sm text-gray-600 dark:text-gray-400">
+            arXiv:2311.07288 (ATLAS Collaboration, 2023)
+          </span>
+        </li>
+        <li>
+          <strong>Spin density matrix elements in hadronic decays</strong> — Measurement techniques and
+          theoretical predictions
+          <br />
+          <span class="text-sm text-gray-600 dark:text-gray-400">
+            Phys. Rev. D (CMS Collaboration)
+          </span>
+        </li>
+      </ul>
+
+      <h3>Code &amp; Data</h3>
+      <ul>
+        <li>
+          <a
+            href="https://github.com/AWildridge/spin-correlation-explorer"
+            target="_blank"
+            rel="noopener noreferrer">GitHub Repository</a
+          > — Source code for this interactive tool
+        </li>
+        <li>
+          Grid data format — JSON schema for precomputed correlation grids (see export function)
+        </li>
+      </ul>
+
+      <h3>Learn More</h3>
+      <ul>
+        <li>
+          <a href="/research">Research Overview</a> — My work on top-quark physics and quantum information
+        </li>
+        <li>
+          <a href="/publications">Publications</a> — Full list of papers and conference proceedings
+        </li>
+        <li>
+          <a href="/contact">Contact</a> — Questions or collaboration inquiries
+        </li>
+      </ul>
+    </section>
+
+    <!-- Footer note -->
+    <footer
+      class="mt-12 pt-6 border-t border-gray-300 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400"
+    >
+      <p>
+        <strong>Keyboard Accessibility:</strong> All controls are keyboard-navigable. Use Tab to move
+        between controls, arrow keys to navigate the correlation matrix cells, and Enter/Space to activate
+        buttons.
+      </p>
+      <p class="mt-2">
+        <strong>Citation:</strong> If you use this tool or data in your work, please cite this page and
+        link to the source repository.
+      </p>
+    </footer>
+  </article>
+</BaseLayout>
