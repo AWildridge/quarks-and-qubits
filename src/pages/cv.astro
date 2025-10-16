@@ -1,8 +1,372 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import cvData from '../data/cv.json';
+
+const pageTitle = `CV - ${cvData.name}`;
+const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
 ---
 
-<BaseLayout title="CV">
-  <h1>CV</h1>
-  <p>Coming soon.</p>
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <div class="cv-container max-w-4xl mx-auto px-4 py-8 print:p-0">
+    <!-- Header -->
+    <header class="cv-header mb-8 print:mb-6">
+      <h1 class="text-4xl font-bold mb-2 print:text-3xl">{cvData.name}</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-300 mb-4 print:text-lg">{cvData.title}</p>
+
+      <div class="contact-info text-sm space-y-1 print:text-xs">
+        <p>{cvData.location}</p>
+        <p>
+          <a
+            href={`mailto:${cvData.email}`}
+            class="text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            {cvData.email}
+          </a>
+        </p>
+        <p>
+          <a href={cvData.website} class="text-blue-600 dark:text-blue-400 hover:underline">
+            {cvData.website}
+          </a>
+        </p>
+      </div>
+
+      <!-- Download PDF button (hidden in print) -->
+      <div class="mt-4 print:hidden">
+        <a
+          href="/AJ_Wildridge_CV.pdf"
+          download
+          class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+          Download PDF
+        </a>
+      </div>
+    </header>
+
+    <!-- Summary -->
+    {
+      cvData.summary && (
+        <section class="cv-section mb-8 print:mb-6">
+          <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
+            Summary
+          </h2>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed print:text-sm">
+            {cvData.summary}
+          </p>
+        </section>
+      )
+    }
+
+    <!-- Education -->
+    {
+      cvData.education && cvData.education.length > 0 && (
+        <section class="cv-section mb-8 print:mb-6">
+          <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
+            Education
+          </h2>
+          <div class="space-y-4">
+            {cvData.education.map((edu) => (
+              <div class="education-entry">
+                <div class="flex justify-between items-start mb-1">
+                  <h3 class="text-lg font-semibold print:text-base">{edu.degree}</h3>
+                  <span class="text-sm text-gray-600 dark:text-gray-400 print:text-xs">
+                    {edu.startDate} – {edu.endDate}
+                  </span>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 print:text-sm">
+                  {edu.institution}, {edu.location}
+                </p>
+                {edu.distinction && (
+                  <p class="text-sm text-gray-600 dark:text-gray-400 italic print:text-xs">
+                    {edu.distinction}
+                  </p>
+                )}
+                {edu.thesis && (
+                  <p class="text-sm text-gray-700 dark:text-gray-300 mt-1 print:text-xs">
+                    <span class="font-medium">Thesis:</span> {edu.thesis}
+                  </p>
+                )}
+                {edu.advisor && (
+                  <p class="text-sm text-gray-600 dark:text-gray-400 print:text-xs">
+                    <span class="font-medium">Advisor:</span> {edu.advisor}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Experience -->
+    {
+      cvData.experience && cvData.experience.length > 0 && (
+        <section class="cv-section mb-8 print:mb-6 print:break-inside-avoid">
+          <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
+            Experience
+          </h2>
+          <div class="space-y-4">
+            {cvData.experience.map((exp) => (
+              <div class="experience-entry print:break-inside-avoid">
+                <div class="flex justify-between items-start mb-1">
+                  <h3 class="text-lg font-semibold print:text-base">{exp.title}</h3>
+                  <span class="text-sm text-gray-600 dark:text-gray-400 print:text-xs">
+                    {exp.startDate} – {exp.endDate}
+                  </span>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 mb-2 print:text-sm">
+                  {exp.organization}, {exp.location}
+                </p>
+                {exp.highlights && exp.highlights.length > 0 && (
+                  <ul class="list-disc list-inside space-y-1 text-sm text-gray-700 dark:text-gray-300 print:text-xs">
+                    {exp.highlights.map((highlight) => (
+                      <li>{highlight}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Selected Publications -->
+    {
+      cvData.publications && cvData.publications.length > 0 && (
+        <section class="cv-section mb-8 print:mb-6 print:break-inside-avoid">
+          <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
+            Selected Publications
+          </h2>
+          <div class="space-y-3">
+            {cvData.publications.map((pub) => (
+              <div class="publication-entry print:text-sm">
+                <p class="text-gray-700 dark:text-gray-300 print:text-xs">
+                  <span class="font-medium">{pub.authors.join(', ')}</span>. "{pub.title}".
+                  <span class="italic">{pub.venue}</span>, {pub.year}.
+                  {pub.doi && (
+                    <>
+                      {' '}
+                      DOI:{' '}
+                      <a
+                        href={`https://doi.org/${pub.doi}`}
+                        class="text-blue-600 dark:text-blue-400 underline hover:no-underline print:text-black"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {pub.doi}
+                      </a>
+                    </>
+                  )}
+                  {pub.citations && (
+                    <span class="text-sm text-gray-600 dark:text-gray-400 ml-2 print:text-xs">
+                      ({pub.citations} citations)
+                    </span>
+                  )}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Skills -->
+    {
+      cvData.skills && (
+        <section class="cv-section mb-8 print:mb-6">
+          <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
+            Skills
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2 print:gap-2">
+            {cvData.skills.programming && (
+              <div>
+                <h3 class="font-semibold mb-2 print:text-sm">Programming Languages</h3>
+                <p class="text-sm text-gray-700 dark:text-gray-300 print:text-xs">
+                  {cvData.skills.programming.join(', ')}
+                </p>
+              </div>
+            )}
+            {cvData.skills.frameworks && (
+              <div>
+                <h3 class="font-semibold mb-2 print:text-sm">Frameworks & Libraries</h3>
+                <p class="text-sm text-gray-700 dark:text-gray-300 print:text-xs">
+                  {cvData.skills.frameworks.join(', ')}
+                </p>
+              </div>
+            )}
+            {cvData.skills.tools && (
+              <div>
+                <h3 class="font-semibold mb-2 print:text-sm">Tools & Technologies</h3>
+                <p class="text-sm text-gray-700 dark:text-gray-300 print:text-xs">
+                  {cvData.skills.tools.join(', ')}
+                </p>
+              </div>
+            )}
+            {cvData.skills.domains && (
+              <div>
+                <h3 class="font-semibold mb-2 print:text-sm">Research Domains</h3>
+                <p class="text-sm text-gray-700 dark:text-gray-300 print:text-xs">
+                  {cvData.skills.domains.join(', ')}
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Awards & Honors -->
+    {
+      cvData.awards && cvData.awards.length > 0 && (
+        <section class="cv-section mb-8 print:mb-6 print:break-inside-avoid">
+          <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
+            Awards & Honors
+          </h2>
+          <div class="space-y-2">
+            {cvData.awards.map((award) => (
+              <div class="award-entry">
+                <div class="flex justify-between items-start">
+                  <p class="text-gray-700 dark:text-gray-300 print:text-sm">
+                    <span class="font-medium">{award.title}</span>, {award.organization}
+                  </p>
+                  <span class="text-sm text-gray-600 dark:text-gray-400 print:text-xs">
+                    {award.year}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Teaching -->
+    {
+      cvData.teaching && cvData.teaching.length > 0 && (
+        <section class="cv-section mb-8 print:mb-6 print:break-inside-avoid">
+          <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
+            Teaching Experience
+          </h2>
+          <div class="space-y-2">
+            {cvData.teaching.map((teach) => (
+              <div class="teaching-entry">
+                <div class="flex justify-between items-start">
+                  <p class="text-gray-700 dark:text-gray-300 print:text-sm">
+                    <span class="font-medium">{teach.course}</span> - {teach.role},{' '}
+                    {teach.institution}
+                  </p>
+                  <span class="text-sm text-gray-600 dark:text-gray-400 print:text-xs">
+                    {teach.year}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Service -->
+    {
+      cvData.service && cvData.service.length > 0 && (
+        <section class="cv-section mb-8 print:mb-6 print:break-inside-avoid">
+          <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
+            Professional Service
+          </h2>
+          <div class="space-y-2">
+            {cvData.service.map((serv) => (
+              <div class="service-entry">
+                <div class="flex justify-between items-start">
+                  <p class="text-gray-700 dark:text-gray-300 print:text-sm">
+                    <span class="font-medium">{serv.role}</span>, {serv.organization}
+                  </p>
+                  <span class="text-sm text-gray-600 dark:text-gray-400 print:text-xs">
+                    {serv.startDate} – {serv.endDate}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </div>
 </BaseLayout>
+
+<style is:global>
+  @media print {
+    /* Print-specific styles */
+    body {
+      font-size: 11pt;
+      line-height: 1.4;
+    }
+
+    .cv-container {
+      max-width: 100%;
+    }
+
+    /* Hide navigation, footer, and other non-CV elements */
+    nav,
+    footer,
+    .skip-link {
+      display: none !important;
+    }
+
+    /* Avoid breaking inside sections */
+    .cv-section {
+      page-break-inside: avoid;
+    }
+
+    /* Ensure links are visible */
+    a {
+      color: #000;
+      text-decoration: underline;
+    }
+
+    /* Remove shadows and backgrounds */
+    * {
+      box-shadow: none !important;
+      background: white !important;
+      color: black !important;
+    }
+
+    /* Preserve link colors for DOIs */
+    a[href^="https://doi.org/"]
+    {
+      color: #0066cc !important;
+    }
+  }
+
+  /* Screen-specific responsive improvements */
+  @media screen and (max-width: 640px) {
+    .cv-header .contact-info {
+      font-size: 0.875rem;
+    }
+
+    .cv-section h2 {
+      font-size: 1.5rem;
+    }
+
+    .experience-entry .flex,
+    .education-entry .flex,
+    .award-entry .flex,
+    .teaching-entry .flex,
+    .service-entry .flex {
+      flex-direction: column;
+    }
+  }
+</style>

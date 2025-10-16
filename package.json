@@ -22,7 +22,8 @@
     "pretest": "pnpm exec playwright install chromium",
     "prepare": "husky",
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm cspell",
-    "ci:serve": "astro preview --host --port 4321"
+    "ci:serve": "astro preview --host --port 4321",
+    "cv:pdf": "pnpm build && node scripts/generate-cv-pdf.js"
   },
   "dependencies": {
     "@astrojs/mdx": "^3.1.0",
@@ -34,14 +35,15 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "astro-eslint-parser": "^1.0.3",
     "@axe-core/cli": "^4.10.0",
+    "@axe-core/puppeteer": "^4.10.2",
     "@playwright/test": "^1.49.0",
     "@types/node": "^20.12.12",
     "@types/react": "^18.3.8",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
+    "astro-eslint-parser": "^1.0.3",
     "autoprefixer": "^10.4.20",
     "cspell": "^8.14.2",
     "eslint": "^9.11.1",
@@ -50,12 +52,13 @@
     "globals": "^15.11.0",
     "html-validate": "^8.7.4",
     "husky": "^9.1.6",
-    "lint-staged": "^15.2.10",
-    "linkinator": "^6.1.2",
     "lighthouse": "^12.1.0",
+    "linkinator": "^6.1.2",
+    "lint-staged": "^15.2.10",
     "postcss": "^8.4.45",
     "prettier": "^3.3.3",
     "prettier-plugin-astro": "^0.14.1",
+    "puppeteer": "^24.25.0",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4"
   },

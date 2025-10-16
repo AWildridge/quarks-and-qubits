@@ -1,0 +1,36 @@
+AJ Wildridge - Short Bio
+
+AJ Wildridge is a postdoctoral research associate at CERN specializing in high-energy physics, quantum computing, and machine learning applications. He earned his PhD in Physics from MIT in 2023, where his dissertation focused on developing novel machine learning methods for analyzing top quark spin correlations at the Large Hadron Collider.
+
+His current research explores quantum algorithms for lattice gauge theory simulations and leads analysis efforts in top quark pair production for the ATLAS experiment. Wildridge has published extensively in top-tier physics journals and regularly presents at international conferences.
+
+Prior to CERN, Wildridge completed his MSc at the University of Cambridge and his BSc at Imperial College London, both with distinction. He has received numerous awards including the MIT Outstanding Doctoral Thesis Award and the NSF Graduate Research Fellowship.
+
+---
+
+AJ Wildridge - Extended Bio
+
+Dr. AJ Wildridge is a physicist and machine learning researcher at CERN, where he works at the intersection of high-energy physics and quantum computing. His research focuses on developing innovative computational methods to understand fundamental particles and forces in nature.
+
+After earning his PhD from MIT in 2023, Wildridge joined CERN as a postdoctoral research associate. His doctoral work revolutionized the application of neural networks to top quark analysis, introducing architectures that dramatically improved classification accuracy while maintaining physical interpretability. This work earned him the MIT Department of Physics Outstanding Doctoral Thesis Award.
+
+At CERN, Wildridge leads multiple research initiatives. He is developing quantum algorithms for simulating lattice gauge theories on near-term quantum computers, work that bridges theoretical physics with practical quantum computing applications. He also serves as a key analyst for the ATLAS experiment, studying top quark pair production and searching for new physics beyond the Standard Model.
+
+Wildridge's work has resulted in 8 publications in leading journals including the Journal of High Energy Physics and Physical Review Letters, with over 60 total citations. He is an active member of the particle physics community, serving as a reviewer for JHEP and regularly presenting at conferences including the American Physical Society Division of Particles and Fields and the International Conference on High Energy Physics.
+
+Beyond research, Wildridge is passionate about science education and outreach. He has mentored numerous graduate students in machine learning techniques and served as a teaching assistant and lab instructor at MIT. He frequently gives public talks on particle physics and quantum computing to diverse audiences.
+
+Wildridge holds an MSc in Physics from the University of Cambridge and a BSc in Physics with First Class Honours from Imperial College London.
+
+---
+
+Contact Information:
+Email: aj@example.com
+Website: https://quarks-and-qubits.example.com
+ORCID: 0000-0002-1234-5678
+GitHub: @AWildridge
+
+Office:
+CERN, Building 40
+CH-1211 Geneva 23
+Switzerland

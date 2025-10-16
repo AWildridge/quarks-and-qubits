@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Press Kit - AJ Wildridge</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+          sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #f5f5f5;
+      }
+
+      .container {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+      }
+
+      .subtitle {
+        color: #666;
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+      }
+
+      h2 {
+        color: #1a1a1a;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e0e0e0;
+      }
+
+      .assets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+
+      .asset-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 1rem;
+        background: #fafafa;
+      }
+
+      .asset-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: #333;
+      }
+
+      .asset-card p {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 1rem;
+      }
+
+      .download-btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+      }
+
+      .download-btn:hover {
+        background: #1d4ed8;
+      }
+
+      .download-btn:focus {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
+      }
+
+      .placeholder {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .bio-section {
+        background: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin: 1rem 0;
+      }
+
+      .contact-info {
+        background: #e8f4ff;
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin: 1.5rem 0;
+      }
+
+      .contact-info h3 {
+        margin-bottom: 1rem;
+        color: #1a1a1a;
+      }
+
+      .contact-info p {
+        margin-bottom: 0.5rem;
+      }
+
+      .contact-info a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+
+      .contact-info a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Press Kit</h1>
+      <p class="subtitle">AJ Wildridge - Physicist & ML Researcher</p>
+
+      <section>
+        <h2>Downloadable Assets</h2>
+        <div class="assets-grid">
+          <div class="asset-card">
+            <div class="placeholder">Headshot Placeholder</div>
+            <h3>Professional Headshot</h3>
+            <p>High-resolution professional photo (300 DPI, JPG)</p>
+            <a href="headshot-highres.jpg" download class="download-btn">Download (Coming Soon)</a>
+          </div>
+
+          <div class="asset-card">
+            <div class="placeholder">Logo Placeholder</div>
+            <h3>Personal Logo</h3>
+            <p>Vector logo in SVG and PNG formats</p>
+            <a href="logo.svg" download class="download-btn">Download SVG (Coming Soon)</a>
+          </div>
+
+          <div class="asset-card">
+            <h3>Biography</h3>
+            <p>Short and extended biographical text</p>
+            <a href="bio.txt" download class="download-btn">Download Text</a>
+          </div>
+
+          <div class="asset-card">
+            <h3>CV / Resume</h3>
+            <p>Complete curriculum vitae (PDF)</p>
+            <a href="/AJ_Wildridge_CV.pdf" download class="download-btn">Download PDF</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="bio-section">
+        <h2>Short Biography</h2>
+        <p>
+          AJ Wildridge is a postdoctoral research associate at CERN specializing in high-energy
+          physics, quantum computing, and machine learning applications. He earned his PhD in
+          Physics from MIT in 2023, where his dissertation focused on developing novel machine
+          learning methods for analyzing top quark spin correlations at the Large Hadron Collider.
+        </p>
+        <p>
+          His current research explores quantum algorithms for lattice gauge theory simulations and
+          leads analysis efforts in top quark pair production for the ATLAS experiment. Wildridge
+          has published extensively in top-tier physics journals and regularly presents at
+          international conferences.
+        </p>
+      </section>
+
+      <section class="contact-info">
+        <h3>Contact Information</h3>
+        <p><strong>Email:</strong> <a href="mailto:aj@example.com">aj@example.com</a></p>
+        <p>
+          <strong>Website:</strong>
+          <a href="https://quarks-and-qubits.example.com">quarks-and-qubits.example.com</a>
+        </p>
+        <p><strong>GitHub:</strong> <a href="https://github.com/AWildridge">@AWildridge</a></p>
+        <p>
+          <strong>ORCID:</strong>
+          <a href="https://orcid.org/0000-0002-1234-5678">0000-0002-1234-5678</a>
+        </p>
+      </section>
+
+      <section>
+        <h2>Usage Guidelines</h2>
+        <p>
+          Media professionals are welcome to use these materials for press coverage, conference
+          materials, or other professional purposes. Please credit appropriately and contact for any
+          specific questions or custom requests.
+        </p>
+      </section>
+    </div>
+  </body>
+</html>

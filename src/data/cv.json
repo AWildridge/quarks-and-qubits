@@ -1,0 +1,147 @@
+{
+  "name": "AJ Wildridge",
+  "title": "Physicist & Machine Learning Researcher",
+  "email": "aj@example.com",
+  "website": "https://quarks-and-qubits.example.com",
+  "location": "Cambridge, MA",
+  "summary": "Physicist specializing in high-energy physics, quantum computing, and machine learning applications. Experienced in developing novel computational methods for particle physics analysis and quantum optimization.",
+  "education": [
+    {
+      "degree": "PhD in Physics",
+      "institution": "Massachusetts Institute of Technology",
+      "location": "Cambridge, MA",
+      "startDate": "2018",
+      "endDate": "2023",
+      "thesis": "Machine Learning Methods for Top Quark Spin Correlation Analysis at the LHC",
+      "advisor": "Prof. Jane Smith"
+    },
+    {
+      "degree": "MSc in Physics",
+      "institution": "University of Cambridge",
+      "location": "Cambridge, UK",
+      "startDate": "2016",
+      "endDate": "2017",
+      "distinction": "Distinction"
+    },
+    {
+      "degree": "BSc in Physics",
+      "institution": "Imperial College London",
+      "location": "London, UK",
+      "startDate": "2013",
+      "endDate": "2016",
+      "distinction": "First Class Honours"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Postdoctoral Research Associate",
+      "organization": "CERN",
+      "location": "Geneva, Switzerland",
+      "startDate": "2023-09",
+      "endDate": "present",
+      "highlights": [
+        "Developing quantum algorithms for lattice gauge theory simulations",
+        "Leading analysis of top quark pair production in the ATLAS experiment",
+        "Mentoring graduate students in machine learning techniques for particle physics"
+      ]
+    },
+    {
+      "title": "Research Assistant",
+      "organization": "MIT Laboratory for Nuclear Science",
+      "location": "Cambridge, MA",
+      "startDate": "2018-09",
+      "endDate": "2023-08",
+      "highlights": [
+        "Developed novel neural network architectures for jet classification",
+        "Implemented GPU-accelerated analysis pipelines processing petabytes of LHC data",
+        "Published 8 papers in top-tier physics journals"
+      ]
+    },
+    {
+      "title": "Summer Research Intern",
+      "organization": "Fermilab",
+      "location": "Batavia, IL",
+      "startDate": "2017-06",
+      "endDate": "2017-08",
+      "highlights": [
+        "Contributed to muon g-2 experiment data analysis",
+        "Developed calibration procedures for calorimeter systems"
+      ]
+    }
+  ],
+  "publications": [
+    {
+      "title": "Machine Learning Approaches to Top Quark Spin Correlation Measurements",
+      "authors": ["A. Wildridge", "J. Smith", "R. Johnson"],
+      "venue": "Journal of High Energy Physics",
+      "year": 2023,
+      "doi": "10.1007/JHEP01(2023)001",
+      "citations": 42
+    },
+    {
+      "title": "Quantum Algorithms for Lattice Gauge Theory",
+      "authors": ["A. Wildridge", "M. Chen"],
+      "venue": "Physical Review Letters",
+      "year": 2024,
+      "doi": "10.1103/PhysRevLett.132.001",
+      "citations": 15
+    }
+  ],
+  "skills": {
+    "programming": ["Python", "C++", "Julia", "JavaScript/TypeScript", "CUDA"],
+    "frameworks": ["PyTorch", "TensorFlow", "ROOT", "Qiskit", "FastAPI"],
+    "tools": ["Git", "Docker", "Kubernetes", "HTCondor", "Slurm"],
+    "domains": [
+      "High Energy Physics",
+      "Quantum Computing",
+      "Machine Learning",
+      "Statistical Analysis",
+      "Scientific Computing"
+    ]
+  },
+  "awards": [
+    {
+      "title": "Outstanding Doctoral Thesis Award",
+      "organization": "MIT Department of Physics",
+      "year": 2023
+    },
+    {
+      "title": "NSF Graduate Research Fellowship",
+      "organization": "National Science Foundation",
+      "year": 2019
+    },
+    {
+      "title": "CERN Summer Student Programme",
+      "organization": "CERN",
+      "year": 2016
+    }
+  ],
+  "teaching": [
+    {
+      "course": "8.02 - Electricity and Magnetism",
+      "role": "Teaching Assistant",
+      "institution": "MIT",
+      "year": "2019-2020"
+    },
+    {
+      "course": "8.13 - Experimental Physics",
+      "role": "Lab Instructor",
+      "institution": "MIT",
+      "year": "2021-2022"
+    }
+  ],
+  "service": [
+    {
+      "role": "Reviewer",
+      "organization": "Journal of High Energy Physics",
+      "startDate": "2022",
+      "endDate": "present"
+    },
+    {
+      "role": "Organizer",
+      "organization": "MIT Physics Graduate Student Seminar",
+      "startDate": "2020",
+      "endDate": "2022"
+    }
+  ]
+}
