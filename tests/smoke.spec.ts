@@ -9,7 +9,7 @@ test('home page has an h1', async ({ page }) => {
 
 test('projects filtering changes results', async ({ page }) => {
   await page.goto('/projects/');
-  const grid = page.locator('main div.grid');
+  const grid = page.locator('main').locator('div.grid');
   await expect(grid).toBeVisible();
 
   const initialCount = await grid.locator('a').count();
