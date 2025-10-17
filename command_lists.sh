@@ -1,5 +1,9 @@
 # commands that should pass
+cd /home/aj/Documents/quarks-and-qubits && pnpm format 2>&1 | grep -E "(cv\.astro|BaseLayout)"
+---
 cd /home/aj/Documents/quarks-and-qubits && git add .github/workflows/ci.yml && git commit -m "Fix CI: Add pnpm/action-setup before setup-node" && git push origin main
+---
+cd /home/aj/Documents/quarks-and-qubits && find dist/_astro -name "*.js" -exec du -h {} \; | sort -hr
 ---
 cd /home/aj/Documents/quarks-and-qubits && pnpm add -D puppeteer
 ---

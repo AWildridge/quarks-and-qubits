@@ -31,9 +31,24 @@ const talks = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     event: z.string(),
+    venue: z.string().optional(),
     location: z.string().optional(),
     slides: z.string().url().optional(),
     video: z.string().url().optional(),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
+const teaching = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    term: z.string(), // e.g., "Fall 2023"
+    institution: z.string(),
+    level: z.enum(['undergraduate', 'graduate', 'workshop']).optional(),
+    role: z.string().optional(), // e.g., "Instructor", "TA"
+    materials: z.string().url().optional(),
+    syllabus: z.string().url().optional(),
   }),
 });
 
@@ -62,6 +77,7 @@ export const collections = {
   projects,
   publications,
   talks,
+  teaching,
   posts,
   people,
 };

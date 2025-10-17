@@ -1,4 +1,6 @@
 ---
+import { ThemeToggle } from '../components/ThemeToggle';
+
 export interface Props {
   title?: string;
   description?: string;
@@ -76,8 +78,27 @@ const structuredData = schema ? [personSchema, schema] : [personSchema, websiteS
     <meta name="description" content={description} />
     <title>{fullTitle}</title>
 
+    <!-- Prevent FOUC by applying theme before rendering -->
+    <script is:inline>
+      const theme = localStorage.getItem('theme') || 'system';
+      if (
+        theme === 'dark' ||
+        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
+
+    <!-- RSS Feed -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Quarks & Qubits RSS Feed"
+      href="/rss.xml"
+    />
 
     <!-- OpenGraph / Facebook -->
     <meta property="og:type" content={type} />
@@ -125,18 +146,34 @@ const structuredData = schema ? [personSchema, schema] : [personSchema, websiteS
       >Skip to content</a
     >
     <header class="border-b border-gray-200 dark:border-gray-800">
-      <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
+      <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between flex-wrap gap-4">
         <a class="font-semibold text-lg" href="/">Quarks &amp; Qubits</a>
-        <nav aria-label="Primary">
-          <ul class="flex gap-4">
+        <nav aria-label="Primary" class="flex-1">
+          <ul class="flex gap-4 flex-wrap">
             <li><a class="nav-link" href="/">Home</a></li>
             <li><a class="nav-link" href="/research/">Research</a></li>
             <li><a class="nav-link" href="/projects/">Projects</a></li>
             <li><a class="nav-link" href="/publications/">Publications</a></li>
+            <li><a class="nav-link" href="/talks/">Talks</a></li>
             <li><a class="nav-link" href="/cv/">CV</a></li>
             <li><a class="nav-link" href="/contact/">Contact</a></li>
           </ul>
         </nav>
+        <div class="flex items-center gap-4">
+          <a
+            href="/rss.xml"
+            class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded p-1"
+            aria-label="RSS Feed"
+            title="Subscribe to RSS feed"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6.503 20.752c0 1.794-1.456 3.248-3.251 3.248-1.796 0-3.252-1.454-3.252-3.248 0-1.794 1.456-3.248 3.252-3.248 1.795.001 3.251 1.454 3.251 3.248zm-6.503-12.572v4.811c6.05.062 10.96 4.966 11.022 11.009h4.817c-.062-8.71-7.118-15.758-15.839-15.82zm0-3.368c10.58.046 19.152 8.594 19.183 19.188h4.817c-.03-13.231-10.755-23.954-24-24v4.812z"
+              ></path>
+            </svg>
+          </a>
+          <ThemeToggle client:load />
+        </div>
       </div>
     </header>
     <main id="main" tabindex="-1" class="mx-auto max-w-6xl px-4 py-8">

@@ -1,0 +1,259 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allTalks = await getCollection('talks');
+
+// Sort by date descending
+const talks = allTalks.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Extract filter options
+const years = Array.from(new Set(talks.map((t) => t.data.date.getFullYear()))).sort(
+  (a, b) => b - a,
+);
+
+const venues = Array.from(new Set(talks.map((t) => t.data.venue).filter(Boolean))).sort();
+
+const allTags = Array.from(new Set(talks.flatMap((t) => t.data.tags || []))).sort();
+
+// Apply filters from URL params
+const selectedYear = Astro.url.searchParams.get('year') || '';
+const selectedVenue = Astro.url.searchParams.get('venue') || '';
+const selectedTag = Astro.url.searchParams.get('tag') || '';
+
+const filteredTalks = talks.filter((talk) => {
+  if (selectedYear && talk.data.date.getFullYear() !== Number(selectedYear)) return false;
+  if (selectedVenue && talk.data.venue !== selectedVenue) return false;
+  if (selectedTag && !(talk.data.tags || []).includes(selectedTag)) return false;
+  return true;
+});
+
+const pageTitle = 'Talks';
+const pageDescription =
+  'Conference presentations, invited seminars, and workshop talks on quantum computing, machine learning, and particle physics.';
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <h1>Talks & Presentations</h1>
+  <p class="mt-2 text-gray-700 dark:text-gray-300">
+    {pageDescription}
+  </p>
+
+  <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" aria-live="polite">
+    Showing {filteredTalks.length} of {talks.length} talks
+  </p>
+
+  <!-- Filters -->
+  <form method="get" class="mt-6 grid gap-3 sm:grid-cols-3" role="search" aria-label="Filter talks">
+    <label class="block">
+      <span class="block text-sm mb-1">Year</span>
+      <select
+        name="year"
+        class="w-full border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+      >
+        <option value="">All years</option>
+        {
+          years.map((y) => (
+            <option value={y} selected={selectedYear === String(y)}>
+              {y}
+            </option>
+          ))
+        }
+      </select>
+    </label>
+
+    <label class="block">
+      <span class="block text-sm mb-1">Venue</span>
+      <select
+        name="venue"
+        class="w-full border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+      >
+        <option value="">All venues</option>
+        {
+          venues.map((v) => (
+            <option value={v} selected={selectedVenue === v}>
+              {v}
+            </option>
+          ))
+        }
+      </select>
+    </label>
+
+    <label class="block">
+      <span class="block text-sm mb-1">Topic</span>
+      <select
+        name="tag"
+        class="w-full border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+      >
+        <option value="">All topics</option>
+        {
+          allTags.map((t) => (
+            <option value={t} selected={selectedTag === t}>
+              {t}
+            </option>
+          ))
+        }
+      </select>
+    </label>
+
+    <div class="sm:col-span-3 flex gap-2">
+      <button
+        type="submit"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      >
+        Apply Filters
+      </button>
+      <a
+        href="/talks/"
+        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      >
+        Reset
+      </a>
+    </div>
+  </form>
+
+  <!-- Talks List -->
+  <ul class="mt-8 space-y-6" role="list">
+    {
+      filteredTalks.map(async (talk) => {
+        const { Content } = await talk.render();
+        return (
+          <li class="border-l-4 border-blue-500 pl-4">
+            <h2 class="text-xl font-semibold">{talk.data.title}</h2>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              {talk.data.event}
+              {talk.data.venue && <> · {talk.data.venue}</>}
+              {talk.data.location && <> · {talk.data.location}</>}
+            </p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              <time datetime={talk.data.date.toISOString()}>
+                {talk.data.date.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </time>
+            </p>
+
+            {talk.data.tags && talk.data.tags.length > 0 && (
+              <div class="mt-2 flex gap-2 flex-wrap" role="list" aria-label="Topics">
+                {talk.data.tags.map((tag) => (
+                  <span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div class="mt-3 prose dark:prose-invert max-w-none">
+              <Content />
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-3">
+              {talk.data.slides && (
+                <a
+                  href={talk.data.slides}
+                  class="inline-flex items-center px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  Slides
+                </a>
+              )}
+              {talk.data.video && (
+                <a
+                  href={talk.data.video}
+                  class="inline-flex items-center px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  Video
+                </a>
+              )}
+            </div>
+
+            {/* Embed video if YouTube */}
+            {talk.data.video &&
+              talk.data.video.includes('youtube.com') &&
+              (() => {
+                const match = talk.data.video.match(
+                  /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/,
+                );
+                const videoId = match ? match[1] : null;
+                return (
+                  videoId && (
+                    <div class="mt-4 aspect-video">
+                      <iframe
+                        class="w-full h-full rounded"
+                        src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                        title={`Video: ${talk.data.title}`}
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                        loading="lazy"
+                      />
+                    </div>
+                  )
+                );
+              })()}
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  {
+    filteredTalks.length === 0 && (
+      <p class="mt-8 text-center text-gray-600 dark:text-gray-400">
+        No talks match the selected filters.
+      </p>
+    )
+  }
+
+  <script>
+    // Auto-submit form on filter change for better UX
+    const form = document.querySelector('form[role="search"]');
+    if (form) {
+      const selects = form.querySelectorAll('select');
+      selects.forEach((select) => {
+        select.addEventListener('change', () => {
+          form.requestSubmit();
+        });
+      });
+    }
+  </script>
+</BaseLayout>

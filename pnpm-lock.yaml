@@ -13,6 +13,9 @@ importers:
       '@astrojs/react':
         specifier: ^3.6.0
         version: 3.6.3(@types/node@20.19.21)(@types/react-dom@18.3.7(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@astrojs/rss':
+        specifier: ^4.0.12
+        version: 4.0.12
       '@astrojs/tailwind':
         specifier: ^5.1.0
         version: 5.1.5(astro@4.16.19(@types/node@20.19.21)(rollup@4.52.4)(typescript@5.9.3))(tailwindcss@3.4.18(yaml@2.8.1))
@@ -164,6 +167,12 @@ packages:
       '@types/react-dom': ^17.0.17 || ^18.0.6
       react: ^17.0.2 || ^18.0.0 || ^19.0.0-beta
       react-dom: ^17.0.2 || ^18.0.0 || ^19.0.0-beta
+
+  '@astrojs/rss@4.0.12':
+    resolution:
+      {
+        integrity: sha512-O5yyxHuDVb6DQ6VLOrbUVFSm+NpObulPxjs6XT9q3tC+RoKbN4HXMZLpv0LvXd1qdAjzVgJ1NFD+zKHJNDXikw==,
+      }
 
   '@astrojs/tailwind@5.1.5':
     resolution:
@@ -3992,6 +4001,13 @@ packages:
         integrity: sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==,
       }
 
+  fast-xml-parser@5.3.0:
+    resolution:
+      {
+        integrity: sha512-gkWGshjYcQCF+6qtlrqBqELqNqnt4CxruY6UVAWWnqb3DQ6qaNFEIKqzYep1XzHLM/QtrHVCxyPOtTk4LTQ7Aw==,
+      }
+    hasBin: true
+
   fastq@1.19.1:
     resolution:
       {
@@ -7197,6 +7213,12 @@ packages:
       }
     engines: { node: '>=8' }
 
+  strnum@2.1.1:
+    resolution:
+      {
+        integrity: sha512-7ZvoFTiCnGxBtDqJ//Cu6fWtZtc7Y3x+QOirG15wztbdngGSkht27o2pyGWrVy0b4WAy3jbKmnoK6g5VlVNUUw==,
+      }
+
   stubborn-fs@1.2.5:
     resolution:
       {
@@ -8072,6 +8094,11 @@ snapshots:
       - sugarss
       - supports-color
       - terser
+
+  '@astrojs/rss@4.0.12':
+    dependencies:
+      fast-xml-parser: 5.3.0
+      kleur: 4.1.5
 
   '@astrojs/tailwind@5.1.5(astro@4.16.19(@types/node@20.19.21)(rollup@4.52.4)(typescript@5.9.3))(tailwindcss@3.4.18(yaml@2.8.1))':
     dependencies:
@@ -10646,6 +10673,10 @@ snapshots:
 
   fast-uri@3.1.0: {}
 
+  fast-xml-parser@5.3.0:
+    dependencies:
+      strnum: 2.1.1
+
   fastq@1.19.1:
     dependencies:
       reusify: 1.1.0
@@ -12961,6 +12992,8 @@ snapshots:
   strip-final-newline@3.0.0: {}
 
   strip-json-comments@3.1.1: {}
+
+  strnum@2.1.1: {}
 
   stubborn-fs@1.2.5: {}
 
