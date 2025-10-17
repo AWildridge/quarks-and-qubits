@@ -74,9 +74,16 @@ test.describe('Spin Correlation Explorer', () => {
     const initialLabel = await page.locator('label[for="theta"]').textContent();
     expect(initialLabel).toContain('°');
 
-    // Move slider
+    // Move slider (use evaluate for range inputs)
     const slider = page.locator('#theta');
-    await slider.fill(String(Math.PI / 2)); // 90 degrees
+    await slider.evaluate((el: HTMLInputElement, value) => {
+      el.value = String(value);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }, Math.PI / 2); // 90 degrees
+
+    // Wait a bit for React to update
+    await page.waitForTimeout(100);
 
     // Check updated label
     const updatedLabel = await page.locator('label[for="theta"]').textContent();
@@ -87,7 +94,14 @@ test.describe('Spin Correlation Explorer', () => {
     await page.waitForSelector('#phi', { timeout: 10000 });
 
     const slider = page.locator('#phi');
-    await slider.fill(String(Math.PI)); // 180 degrees
+    await slider.evaluate((el: HTMLInputElement, value) => {
+      el.value = String(value);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }, Math.PI); // 180 degrees
+
+    // Wait for React to update
+    await page.waitForTimeout(100);
 
     const label = await page.locator('label[for="phi"]').textContent();
     expect(label).toContain('180');
@@ -124,8 +138,8 @@ test.describe('Spin Correlation Explorer', () => {
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('ArrowRight');
 
-    // Check for screen reader announcement
-    const srText = await page.locator('.sr-only[aria-live="polite"]').textContent();
+    // Check for screen reader announcement - use first() to avoid strict mode violation
+    const srText = await page.locator('.sr-only[aria-live="polite"]').first().textContent();
     expect(srText).toBeTruthy();
     expect(srText).toContain('C_');
   });

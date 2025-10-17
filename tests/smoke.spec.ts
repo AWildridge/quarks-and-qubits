@@ -9,7 +9,7 @@ test('home page has an h1', async ({ page }) => {
 
 test('projects filtering changes results', async ({ page }) => {
   await page.goto('/projects/');
-  const grid = page.locator('main >> .grid');
+  const grid = page.locator('main div.grid');
   await expect(grid).toBeVisible();
 
   const initialCount = await grid.locator('a').count();
@@ -29,7 +29,7 @@ test('projects filtering changes results', async ({ page }) => {
 test('publications filtering changes results', async ({ page }) => {
   await page.goto('/publications/');
 
-  const list = page.locator('main >> ul[aria-label="Publications list"]');
+  const list = page.locator('main ul#pub-list');
   await expect(list).toBeVisible();
 
   const initialCount = await list.locator('li').count();
@@ -53,7 +53,7 @@ test('publications export bibtex', async ({ page }) => {
 
   // Click export button and wait for download
   const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: /Export BibTeX/i }).click();
+  await page.locator('#export-bibtex').click();
   const download = await downloadPromise;
 
   expect(download.suggestedFilename()).toBe('publications.bib');
