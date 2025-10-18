@@ -4,13 +4,14 @@ import { getCollection } from 'astro:content';
 import { exportBibTeX, type PublicationRecord } from '../../lib/bibtex';
 
 const all = await getCollection('publications');
+const entries = all.filter((p) => !p.data.draft);
 
 // For static build, we'll render all and filter client-side
-const years = Array.from(new Set(all.map((p) => p.data.year))).sort((a, b) => b - a);
-const venues = Array.from(new Set(all.map((p) => p.data.venue || '').filter(Boolean))).sort();
-const tags = Array.from(new Set(all.flatMap((p) => p.data.tags || []))).sort();
+const years = Array.from(new Set(entries.map((p) => p.data.year))).sort((a, b) => b - a);
+const venues = Array.from(new Set(entries.map((p) => p.data.venue || '').filter(Boolean))).sort();
+const tags = Array.from(new Set(entries.flatMap((p) => p.data.tags || []))).sort();
 
-const records: PublicationRecord[] = all.map((p) => ({
+const records: PublicationRecord[] = entries.map((p) => ({
   slug: p.slug,
   title: p.data.title,
   authors: p.data.authors,

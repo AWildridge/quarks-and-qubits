@@ -27,10 +27,11 @@
     "test:ui": "playwright test --ui",
     "lighthouse": "lhci autorun",
     "prepare": "husky",
-    "prebuild": "node scripts/extract-cv-from-docx.js && node scripts/validate-bibtex.js",
+    "prebuild": "node scripts/extract-cv-from-docx.js && node scripts/fetch-bibtex.js",
     "cv:extract": "node scripts/extract-cv-from-docx.js",
     "cv:generate": "node scripts/generate-content-from-cv.js",
-    "cv:sync": "pnpm cv:extract && pnpm cv:generate"
+    "cv:sync": "pnpm cv:extract && pnpm cv:generate && node scripts/fetch-bibtex.js",
+    "bib:fetch": "node scripts/fetch-bibtex.js"
   },
   "dependencies": {
     "@astrojs/mdx": "^3.1.0",
