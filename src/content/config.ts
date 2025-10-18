@@ -39,6 +39,19 @@ const talks = defineCollection({
   }),
 });
 
+const posters = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    event: z.string(),
+    venue: z.string().optional(),
+    location: z.string().optional(),
+    link: z.string().url().optional(),
+    tags: z.array(z.string()).default(['poster']),
+  }),
+});
+
 const teaching = defineCollection({
   type: 'content',
   schema: z.object({
@@ -73,11 +86,24 @@ const people = defineCollection({
   }),
 });
 
+const professionalDevelopment = defineCollection({
+  type: 'content',
+  schema: z.object({
+    role: z.string(), // e.g., "Organizer", "Session Chair", "Program Committee"
+    event: z.string(),
+    year: z.number().int().min(1900).max(3000),
+    url: z.string().url().optional(),
+    description: z.string().optional(),
+  }),
+});
+
 export const collections = {
   projects,
   publications,
   talks,
+  posters,
   teaching,
   posts,
   people,
+  professionalDevelopment,
 };

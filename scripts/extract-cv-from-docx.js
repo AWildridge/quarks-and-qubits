@@ -40,6 +40,8 @@ async function parseCV(text) {
     experience: [],
     publications: [],
     talks: [],
+    posters: [],
+    professionalDevelopment: [],
     skills: existingCV.skills || {},
     awards: existingCV.awards || [],
     teaching: existingCV.teaching || [],
@@ -69,13 +71,122 @@ async function parseCV(text) {
   const talksStart = lines.findIndex((l) => l.match(/^talks$/i));
   const postersStart = lines.findIndex((l) => l.match(/^posters$/i));
 
+  // Helpers for de-duplication
+  const seenTalks = new Set();
+  const addTalk = (t) => {
+    const norm = (s) =>
+      (s || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+    // Use title + year only to avoid duplicates across venues/listings
+    const key = `${norm(t.title || t.event)}|${t.year || ''}`;
+    if (!seenTalks.has(key)) {
+      seenTalks.add(key);
+      cv.talks.push(t);
+    }
+  };
+
   // Parse publications
   if (pubStart >= 0) {
     const pubEnd = talksStart >= 0 ? talksStart : postersStart >= 0 ? postersStart : lines.length;
     for (let i = pubStart + 1; i < pubEnd; i++) {
       const line = lines[i];
       if (line.length < 30) continue;
-      if (line.match(/^(organizer|panelist|session chair)/i)) continue;
+
+      // Skip header lines
+      if (line.match(/for professional conferences\/events/i)) continue;
+
+      // Check if this is an organizer/panelist entry
+      const isOrganizer = line.match(/^organizer[,:\s]/i);
+      const isPanelist = line.match(/^panelist[,:\s]/i);
+      const isSessionChair = line.match(/^session chair[,:\s]/i);
+
+      if (isOrganizer || isSessionChair) {
+        // Extract as professional development
+        const profDev = {
+          role: isOrganizer ? 'Organizer' : 'Session Chair',
+          event: '',
+          year: 0,
+          description: '',
+          url: '',
+        };
+
+        // Extract year
+        const yearMatch = line.match(/\b(20\d{2})\b/);
+        if (yearMatch) profDev.year = parseInt(yearMatch[1]);
+
+        // Extract URL
+        const urlMatch = line.match(/https?:\/\/[^\s,]+/);
+        if (urlMatch) profDev.url = urlMatch[0];
+
+        // Extract event name (text after first comma/colon, before year)
+        const afterRole = line.substring(line.indexOf(',') + 1).trim();
+        const parts = afterRole.split(',').map((p) => p.trim());
+        if (parts.length > 0) {
+          profDev.event = parts[0];
+        }
+        profDev.description = line;
+
+        cv.professionalDevelopment.push(profDev);
+        continue;
+      }
+
+      if (isPanelist) {
+        // Extract as talk
+        const talk = {
+          title: '',
+          event: '',
+          venue: '',
+          location: '',
+          date: '',
+          year: 0,
+          month: 0,
+          slides: '',
+          video: '',
+          abstract: '',
+          tags: ['panel'],
+        };
+
+        // Extract year
+        const yearMatch = line.match(/\b(20\d{2})\b/);
+        if (yearMatch) talk.year = parseInt(yearMatch[1]);
+
+        // Extract URL
+        const urlMatch = line.match(/https?:\/\/[^\s,]+/);
+        if (urlMatch) talk.slides = urlMatch[0];
+
+        // Extract title in quotes (supports straight and smart quotes)
+        const titleMatch = line.match(/["”“]([^"”“]+)["”“]/) || line.match(/"([^"]+)"/);
+        if (titleMatch) {
+          talk.title = titleMatch[1].trim();
+        } else {
+          talk.title = 'Panel Discussion';
+        }
+
+        // Extract event/conference (text after first comma)
+        const afterPanelist = line.substring(line.indexOf(',') + 1).trim();
+        const parts = afterPanelist
+          .split(',')
+          .map((p) => p.trim())
+          .filter((p) => p && !p.match(/^\d{4}$/));
+        if (parts.length > 0) {
+          talk.event = parts[0].replace(/[""].*[""]/, '').trim();
+          if (parts.length > 1) {
+            talk.venue = parts[1];
+          }
+        }
+
+        if (talk.year > 0) {
+          if (process.env.DEBUG_TALKS === '1') {
+            console.log(`[debug] panelist->talk: ${talk.year} | ${talk.title} | ${talk.event}`);
+          }
+          addTalk(talk);
+        }
+        continue;
+      }
+
+      // Regular publication
 
       const pub = {
         title: '',
@@ -180,8 +291,8 @@ async function parseCV(text) {
       const yearMatch = line.match(/\b(20\d{2})\b/);
       if (yearMatch) talk.year = parseInt(yearMatch[1]);
 
-      // Extract title in quotes
-      const titleMatch = line.match(/[""]([^"""]+)[""]/) || line.match(/"([^"]+)"/);
+      // Extract title in quotes (supports straight and smart quotes)
+      const titleMatch = line.match(/["”“]([^"”“]+)["”“]/) || line.match(/"([^"]+)"/);
       if (titleMatch) {
         talk.title = titleMatch[1].trim();
       } else {
@@ -200,10 +311,85 @@ async function parseCV(text) {
         }
       }
 
-      if (talk.title.length > 5) {
-        cv.talks.push(talk);
+      if (talk.title.length > 5 && talk.year > 0) {
+        if (process.env.DEBUG_TALKS === '1') {
+          console.log(`[debug] talk: ${talk.year} | ${talk.title} | ${talk.event}`);
+        }
+        addTalk(talk);
+      } else if (process.env.DEBUG_TALKS === '1') {
+        console.log(`[debug] skipped talk line: ${line}`);
       }
     }
+  }
+
+  // Parse posters
+  if (postersStart >= 0) {
+    const postersEnd = lines.length;
+    for (let i = postersStart + 1; i < postersEnd; i++) {
+      const line = lines[i];
+      if (line.length < 15) continue;
+
+      const poster = {
+        title: '',
+        event: '',
+        venue: '',
+        location: '',
+        date: '',
+        year: 0,
+        month: 0,
+        link: '',
+        tags: ['poster'],
+      };
+
+      // Extract URL/link if present
+      const urlMatch = line.match(/https?:\/\/[^\s,]+/);
+      if (urlMatch) poster.link = urlMatch[0];
+
+      // Extract year
+      const yearMatch = line.match(/\b(20\d{2})\b/);
+      if (yearMatch) poster.year = parseInt(yearMatch[1]);
+
+      // Extract title in quotes or before first comma
+      const titleMatch = line.match(/["”]([^"”]+)["”]/) || line.match(/"([^"]+)"/);
+      if (titleMatch) {
+        poster.title = titleMatch[1].trim();
+      } else {
+        poster.title = line.split(',')[0].trim();
+      }
+
+      // Extract event (text after title, before year)
+      if (poster.title) {
+        const afterTitleIdx = line.indexOf(poster.title) + poster.title.length;
+        const afterTitle = line.substring(afterTitleIdx);
+        const parts = afterTitle
+          .split(',')
+          .map((p) => p.trim())
+          .filter((p) => p && !p.match(/^\d{4}$/));
+        if (parts.length > 0) {
+          poster.event = parts[0].replace(/["",.\s]+$/, '').trim();
+          if (parts.length > 1) poster.venue = parts[1];
+        }
+      }
+
+      if (poster.title && poster.title.length > 3) {
+        cv.posters.push(poster);
+      }
+    }
+  }
+
+  // Remove talks that duplicate posters (same title+year)
+  if (cv.posters.length > 0 && cv.talks.length > 0) {
+    const norm = (s) =>
+      (s || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+    const posterKeys = new Set(
+      cv.posters.map((p) => `${norm(p.title || p.event)}|${p.year || ''}`),
+    );
+    cv.talks = cv.talks.filter(
+      (t) => !posterKeys.has(`${norm(t.title || t.event)}|${t.year || ''}`),
+    );
   }
 
   return cv;
@@ -228,6 +414,8 @@ async function main() {
   console.log(`   - Email: ${cvData.email}`);
   console.log(`   - Publications: ${cvData.publications.length}`);
   console.log(`   - Talks: ${cvData.talks.length}`);
+  console.log(`   - Posters: ${cvData.posters.length}`);
+  console.log(`   - Professional Development: ${cvData.professionalDevelopment.length}`);
 
   await fs.writeFile(JSON_PATH, JSON.stringify(cvData, null, 2));
   console.log(`✓ Wrote to ${JSON_PATH}`);

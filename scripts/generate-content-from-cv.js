@@ -20,6 +20,8 @@ const __dirname = path.dirname(__filename);
 const CV_JSON_PATH = path.join(__dirname, '../src/data/cv.json');
 const PUBLICATIONS_DIR = path.join(__dirname, '../src/content/publications');
 const TALKS_DIR = path.join(__dirname, '../src/content/talks');
+const PROF_DEV_DIR = path.join(__dirname, '../src/content/professional-development');
+const POSTERS_DIR = path.join(__dirname, '../src/content/posters');
 
 /**
  * Convert a title to a slug (filename-safe)
@@ -139,6 +141,47 @@ function generatePublicationMDX(pub, index) {
 }
 
 /**
+ * Generate a poster MDX file
+ */
+function generatePosterMDX(poster, index) {
+  const base = poster.title || `poster-${index}`;
+  const slug = titleToSlug(base) + `-${poster.year || index}`;
+
+  // Parse/construct date
+  let date = poster.date;
+  if (!date && poster.year) {
+    const month = poster.month || '01';
+    const day = poster.day || '01';
+    date = `${poster.year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  }
+
+  const frontmatter = {
+    title: poster.title || 'Poster',
+    date: date || new Date().toISOString().split('T')[0],
+    event: poster.event || 'Conference Poster',
+    venue: poster.venue || undefined,
+    location: poster.location || undefined,
+    link: poster.link || undefined,
+    tags: poster.tags || ['poster'],
+  };
+
+  let yaml = '---\n';
+  yaml += `title: "${(frontmatter.title || '').replace(/"/g, '\\"')}"\n`;
+  yaml += `date: ${frontmatter.date}\n`;
+  yaml += `event: "${(frontmatter.event || '').replace(/"/g, '\\"')}"\n`;
+  if (frontmatter.venue) yaml += `venue: "${frontmatter.venue}"\n`;
+  if (frontmatter.location) yaml += `location: "${frontmatter.location}"\n`;
+  if (frontmatter.link) yaml += `link: "${frontmatter.link}"\n`;
+  if (frontmatter.tags?.length)
+    yaml += `tags: [${frontmatter.tags.map((t) => `"${t}"`).join(', ')}]\n`;
+  yaml += '---\n\n';
+
+  const content = `Poster presented at ${frontmatter.event}.`;
+
+  return { slug, filename: `${slug}.mdx`, content: yaml + content + '\n' };
+}
+
+/**
  * Generate a talk MDX file
  */
 function generateTalkMDX(talk, index) {
@@ -193,6 +236,42 @@ function generateTalkMDX(talk, index) {
 }
 
 /**
+ * Generate professional development MDX file
+ */
+function generateProfessionalDevelopmentMDX(profDev, index) {
+  const slug = titleToSlug(profDev.event || `entry-${index}`) + `-${profDev.year || index}`;
+
+  // Generate frontmatter
+  const frontmatter = {
+    role: profDev.role || 'Organizer',
+    event: profDev.event || '',
+    year: profDev.year || new Date().getFullYear(),
+    url: profDev.url || '',
+    description: profDev.description || '',
+  };
+
+  let yaml = '---\n';
+  yaml += `role: "${frontmatter.role}"\n`;
+  yaml += `event: "${frontmatter.event.replace(/"/g, '\\"')}"\n`;
+  yaml += `year: ${frontmatter.year}\n`;
+  if (frontmatter.url) yaml += `url: "${frontmatter.url}"\n`;
+  yaml += '---\n\n';
+
+  // Generate content
+  let content = frontmatter.description || '';
+
+  if (!content) {
+    content = `${frontmatter.role} for ${frontmatter.event}.`;
+  }
+
+  return {
+    slug,
+    filename: `${slug}.mdx`,
+    content: yaml + content + '\n',
+  };
+}
+
+/**
  * Read CV JSON and generate MDX files
  */
 async function main() {
@@ -205,6 +284,8 @@ async function main() {
     // Ensure output directories exist
     await fs.mkdir(PUBLICATIONS_DIR, { recursive: true });
     await fs.mkdir(TALKS_DIR, { recursive: true });
+    await fs.mkdir(PROF_DEV_DIR, { recursive: true });
+    await fs.mkdir(POSTERS_DIR, { recursive: true });
 
     // Generate publication MDX files
     const publications = cvData.publications || [];
@@ -258,6 +339,59 @@ async function main() {
 
     console.log(
       `\n✅ Created ${talkCount} new talk(s) (${talks.length - talkCount} already existed)\n`,
+    );
+
+    // Generate professional development MDX files
+    const profDevs = cvData.professionalDevelopment || [];
+    console.log(`👔 Processing ${profDevs.length} professional development entries...`);
+
+    let profDevCount = 0;
+    for (let i = 0; i < profDevs.length; i++) {
+      const profDev = profDevs[i];
+      const mdx = generateProfessionalDevelopmentMDX(profDev, i);
+
+      const filePath = path.join(PROF_DEV_DIR, mdx.filename);
+
+      // Check if file already exists
+      try {
+        await fs.access(filePath);
+        console.log(`   ⏭️  Skipping existing: ${mdx.filename}`);
+      } catch {
+        // File doesn't exist, create it
+        await fs.writeFile(filePath, mdx.content, 'utf-8');
+        console.log(`   ✓ Created: ${mdx.filename}`);
+        profDevCount++;
+      }
+    }
+
+    console.log(
+      `\n✅ Created ${profDevCount} new professional development entry(ies) (${profDevs.length - profDevCount} already existed)\n`,
+    );
+
+    console.log('🎉 Content generation complete!');
+
+    // Posters at the end to keep logs grouped
+    const posters = cvData.posters || [];
+    console.log(`🖼️  Processing ${posters.length} posters...`);
+
+    let posterCount = 0;
+    for (let i = 0; i < posters.length; i++) {
+      const poster = posters[i];
+      const mdx = generatePosterMDX(poster, i);
+
+      const filePath = path.join(POSTERS_DIR, mdx.filename);
+      try {
+        await fs.access(filePath);
+        console.log(`   ⏭️  Skipping existing: ${mdx.filename}`);
+      } catch {
+        await fs.writeFile(filePath, mdx.content, 'utf-8');
+        console.log(`   ✓ Created: ${mdx.filename}`);
+        posterCount++;
+      }
+    }
+
+    console.log(
+      `\n✅ Created ${posterCount} new poster(s) (${posters.length - posterCount} already existed)\n`,
     );
 
     console.log('🎉 Content generation complete!');

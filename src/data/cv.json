@@ -81,8 +81,34 @@
   ],
   "talks": [
     {
-      "title": "“Observation of entangled top quarks with the CMS Detector”",
-      "event": "LPC Physics Forum",
+      "title": "Challenges in high-energy experiments measuring quantum observables",
+      "event": "“Challenges in high-energy experiments measuring quantum observables”",
+      "venue": "Quantum Observables for Collider Physics",
+      "location": "",
+      "date": "",
+      "year": 2023,
+      "month": 0,
+      "slides": "https://agenda.infn.it/event/34555/overview",
+      "video": "",
+      "abstract": "",
+      "tags": ["panel"]
+    },
+    {
+      "title": "PANEL SESSION: Making it happen: steps needed for real experimental measurements",
+      "event": "“PANEL SESSION: Making it happen: steps needed for real experimental measurements”",
+      "venue": "Foundational Tests of Quantum Mechanics at the LHC",
+      "location": "",
+      "date": "",
+      "year": 2023,
+      "month": 0,
+      "slides": "https://indico.cern.ch/event/1246316/timetable/",
+      "video": "",
+      "abstract": "",
+      "tags": ["panel"]
+    },
+    {
+      "title": "Observation of entangled top quarks with the CMS Detector",
+      "event": "”",
       "venue": "",
       "location": "",
       "date": "",
@@ -93,8 +119,8 @@
       "abstract": ""
     },
     {
-      "title": "“Bumblebee: Foundation Model for Particle Physics Discovery”",
-      "event": "US LUA annual meeting",
+      "title": "Entanglement of top quarks in the production threshold region at CMS",
+      "event": "”",
       "venue": "",
       "location": "",
       "date": "",
@@ -105,8 +131,8 @@
       "abstract": ""
     },
     {
-      "title": "“Entanglement of top quarks in the production threshold region at CMS”",
-      "event": "Quantum tests in collider physics",
+      "title": "Recent measurements of top-quark properties at CMS",
+      "event": "”",
       "venue": "",
       "location": "",
       "date": "",
@@ -117,8 +143,8 @@
       "abstract": ""
     },
     {
-      "title": "“Recent measurements of top-quark properties at CMS”",
-      "event": "ICHEP 2024",
+      "title": "Entangled Top Quarks at the LHC measured with the CMS Detector at sqrt(s) = 13 TeV",
+      "event": "”",
       "venue": "",
       "location": "",
       "date": "",
@@ -129,20 +155,8 @@
       "abstract": ""
     },
     {
-      "title": "“Entangled Top Quarks at the LHC measured with the CMS Detector at sqrt(s) = 13 TeV”",
-      "event": "APS April Meeting",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2024,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
-    },
-    {
-      "title": "“Recent highlights of top-quark property measurements from CMS”",
-      "event": "Lake Louise Winter Institute 2024",
+      "title": "Recent highlights of top-quark property measurements from CMS",
+      "event": "”",
       "venue": "",
       "location": "",
       "date": "",
@@ -230,23 +244,88 @@
       "venue": "",
       "location": "",
       "date": "",
-      "year": 2021,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
-    },
-    {
-      "title": "Reconstructing proton-proton collision positions at the Large Hadron Collider with a D-Wave quantum computer",
-      "event": "",
-      "venue": "",
-      "location": "",
-      "date": "",
       "year": 2019,
       "month": 0,
       "slides": "",
       "video": "",
       "abstract": ""
+    }
+  ],
+  "posters": [
+    {
+      "title": "“Bumblebee: Foundation Model for Particle Physics Discovery”",
+      "event": "Machine Learning and the Physical Sciences Workshop at the 38th conference on Neural Information Processing Systems",
+      "venue": "2024.",
+      "location": "",
+      "date": "",
+      "year": 2024,
+      "month": 0,
+      "link": "",
+      "tags": ["poster"]
+    },
+    {
+      "title": "“Observation of Entangled Top Quarks at the LHC measured with the CMS Detector as sqrt(s) = 13 TeV”",
+      "event": "ICHEP 2024",
+      "venue": "2024.",
+      "location": "",
+      "date": "",
+      "year": 2024,
+      "month": 0,
+      "link": "",
+      "tags": ["poster"]
+    },
+    {
+      "title": "Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders",
+      "event": "",
+      "venue": "TOP23",
+      "location": "",
+      "date": "",
+      "year": 2023,
+      "month": 0,
+      "link": "",
+      "tags": ["poster"]
+    },
+    {
+      "title": "Quantum Annealing to Reconstruct Highest Human-made Energetic Particle Collisions",
+      "event": "",
+      "venue": "Center for Quantum Technologies Inaugural Industry Advisory Board Meeting",
+      "location": "",
+      "date": "",
+      "year": 2023,
+      "month": 0,
+      "link": "",
+      "tags": ["poster"]
+    },
+    {
+      "title": "Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders",
+      "event": "",
+      "venue": "Elmore ECE Emerging Frontiers Center: Crossroads of Quantum and AI",
+      "location": "",
+      "date": "",
+      "year": 2022,
+      "month": 0,
+      "link": "",
+      "tags": ["poster"]
+    },
+    {
+      "title": "Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders",
+      "event": "",
+      "venue": "Quantum Computing Users Forum",
+      "location": "",
+      "date": "",
+      "year": 2019,
+      "month": 0,
+      "link": "",
+      "tags": ["poster"]
+    }
+  ],
+  "professionalDevelopment": [
+    {
+      "role": "Organizer",
+      "event": "3rd Top Quark Physics at the Precision Frontier",
+      "year": 2023,
+      "description": "Organizer, 3rd Top Quark Physics at the Precision Frontier, Oct. 2023.",
+      "url": ""
     }
   ],
   "skills": {},

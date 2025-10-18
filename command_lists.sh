@@ -97,6 +97,20 @@ cd /home/aj/Documents/quarks-and-qubits && pnpm preview --port 4321
 ---
 cd /home/aj/Documents/quarks-and-qubits && (pnpm preview --port 4321 &) && sleep 5 && node scripts/run-axe-scan.js
 ---
+cd /home/aj/Documents/quarks-and-qubits && pnpm cv:extract && pnpm cv:generate && echo "Counts after generation:" && echo "Publications: $(ls -1 src/content/publications/*.mdx 2>/dev/null | wc -l)" && echo "Talks: $(ls -1 src/content/talks/*.mdx 2>/dev/null | wc -l)" && echo "Professional Development: $(ls -1 src/content/professional-development/*.mdx 2>/dev/null | wc -l)" && echo "Posters: $(ls -1 src/content/posters/*.mdx 2>/dev/null | wc -l)"
+---
+cd /home/aj/Documents/quarks-and-qubits && pnpm cv:extract && pnpm cv:generate && echo "Counts after generation:" && echo "Publications: $(ls -1 src/content/publications/*.mdx 2>/dev/null | wc -l)" && echo "Talks: $(ls -1 src/content/talks/*.mdx 2>/dev/null | wc -l)" && echo "Professional Development: $(ls -1 src/content/professional-development/*.mdx 2>/dev/null | wc -l)" && echo "Posters: $(ls -1 src/content/posters/*.mdx 2>/dev/null | wc -l)" && grep -R "tags:\s*\[.*panel.*\]" -n src/content/talks | wc -l
+---
+cd /home/aj/Documents/quarks-and-qubits && pnpm cv:extract && pnpm cv:generate && echo "Counts after generation:" && echo "Publications: $(ls -1 src/content/publications/*.mdx 2>/dev/null | wc -l)" && echo "Talks: $(ls -1 src/content/talks/*.mdx 2>/dev/null | wc -l)" && echo "Professional Development: $(ls -1 src/content/professional-development/*.mdx 2>/dev/null | wc -l)" && echo "Posters: $(ls -1 src/content/posters/*.mdx 2>/dev/null | wc -l)" && echo "Panel-tagged talks: $(grep -R "tags:\s*\[.*panel.*\]" -l src/content/talks 2>/dev/null | wc -l)"
+---
+cd /home/aj/Documents/quarks-and-qubits && echo "Publications: $(ls -1 src/content/publications/*.mdx 2>/dev/null | wc -l)" && echo "Talks: $(ls -1 src/content/talks/*.mdx 2>/dev/null | wc -l)" && echo "Professional Development: $(ls -1 src/content/professional-development/*.mdx 2>/dev/null | wc -l)"
+---
+cd /home/aj/Documents/quarks-and-qubits && pnpm build 2>&1 | grep -E "(page|Complete|error|warning)" | tail -20
+---
+cd /home/aj/Documents/quarks-and-qubits && DEBUG_TALKS=1 node scripts/extract-cv-from-docx.js | sed -n '1,240p'
+---
+cd /home/aj/Documents/quarks-and-qubits && echo "Publications: $(ls -1 src/content/publications/*.mdx 2>/dev/null | wc -l)" && echo "Talks: $(ls -1 src/content/talks/*.mdx 2>/dev/null | wc -l)" && echo "Professional Development: $(ls -1 src/content/professional-development/*.mdx 2>/dev/null | wc -l)" && echo "Posters dir exists? $(test -d src/content/posters && echo yes || echo no)" && echo "Posters: $(ls -1 src/content/posters/*.mdx 2>/dev/null | wc -l)" && echo "Talks with poster type: $(grep -R "type:\s*poster" -l src/content/talks 2>/dev/null | wc -l)"
+---
 cd /home/aj/Documents/quarks-and-qubits && sleep 3 && node scripts/run-axe-scan.js
 ---
 cd /home/aj/Documents/quarks-and-qubits && curl -s http://127.0.0.1:4321/demos/spin-explorer | head -n 20
