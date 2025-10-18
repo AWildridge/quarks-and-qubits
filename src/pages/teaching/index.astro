@@ -38,64 +38,62 @@ const pageDescription =
   </p>
 
   <!-- Filters -->
-  <form
-    method="get"
-    class="mt-6 grid gap-3 sm:grid-cols-2"
-    role="search"
-    aria-label="Filter courses"
-  >
-    <label class="block">
-      <span class="block text-sm mb-1">Institution</span>
-      <select
-        name="institution"
-        class="w-full border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
-      >
-        <option value="">All institutions</option>
-        {
-          institutions.map((i) => (
-            <option value={i} selected={selectedInstitution === i}>
-              {i}
-            </option>
-          ))
-        }
-      </select>
-    </label>
+  <form method="get" role="search" class="mt-6">
+    <fieldset class="grid gap-3 sm:grid-cols-2">
+      <legend class="sr-only">Filter courses</legend>
+      <label class="block">
+        <span class="block text-sm mb-1">Institution</span>
+        <select
+          name="institution"
+          class="w-full border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+        >
+          <option value="">All institutions</option>
+          {
+            institutions.map((i) => (
+              <option value={i} selected={selectedInstitution === i}>
+                {i}
+              </option>
+            ))
+          }
+        </select>
+      </label>
 
-    <label class="block">
-      <span class="block text-sm mb-1">Level</span>
-      <select
-        name="level"
-        class="w-full border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
-      >
-        <option value="">All levels</option>
-        {
-          levels.map((l) => (
-            <option value={l} selected={selectedLevel === l}>
-              {l}
-            </option>
-          ))
-        }
-      </select>
-    </label>
+      <label class="block">
+        <span class="block text-sm mb-1">Level</span>
+        <select
+          name="level"
+          class="w-full border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+        >
+          <option value="">All levels</option>
+          {
+            levels.map((l) => (
+              <option value={l} selected={selectedLevel === l}>
+                {l}
+              </option>
+            ))
+          }
+        </select>
+      </label>
 
-    <div class="sm:col-span-2 flex gap-2">
-      <button
-        type="submit"
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-      >
-        Apply Filters
-      </button>
-      <a
-        href="/teaching/"
-        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-      >
-        Reset
-      </a>
-    </div>
+      <div class="sm:col-span-2 flex gap-2">
+        <button
+          type="submit"
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        >
+          Apply Filters
+        </button>
+        <a
+          href="/teaching/"
+          class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        >
+          Reset
+        </a>
+      </div>
+    </fieldset>
   </form>
 
   <!-- Teaching List -->
-  <ul class="mt-8 space-y-6" role="list">
+  <ul class="mt-8 space-y-6">
     {
       filteredTeaching.map(async (course) => {
         const { Content } = await course.render();

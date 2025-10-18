@@ -87,20 +87,31 @@ const skills = (cvData.skills ?? {}) as Skills;
       <p class="text-xl text-gray-600 dark:text-gray-300 mb-4 print:text-lg">{cvData.title}</p>
 
       <div class="contact-info text-sm space-y-1 print:text-xs">
-        <p>{cvData.location}</p>
-        <p>
-          <a
-            href={`mailto:${cvData.email}`}
-            class="text-blue-600 dark:text-blue-400 hover:underline"
-          >
-            {cvData.email}
-          </a>
-        </p>
-        <p>
-          <a href={cvData.website} class="text-blue-600 dark:text-blue-400 hover:underline">
-            {cvData.website}
-          </a>
-        </p>
+        {cvData.location && cvData.location.trim() && <p>{cvData.location.trim()}</p>}
+        {
+          cvData.email && cvData.email.trim() && (
+            <p>
+              <a
+                href={`mailto:${cvData.email.trim()}`}
+                class="text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                {cvData.email.trim()}
+              </a>
+            </p>
+          )
+        }
+        {
+          cvData.website && cvData.website.trim() && (
+            <p>
+              <a
+                href={cvData.website.trim()}
+                class="text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                {cvData.website.trim()}
+              </a>
+            </p>
+          )
+        }
       </div>
 
       <!-- Download PDF button (hidden in print) -->
