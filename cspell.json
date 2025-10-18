@@ -5,6 +5,7 @@
   "useGitignore": true,
   "ignorePaths": [
     "dist",
+    ".astro",
     "node_modules",
     ".git",
     "playwright-report",
@@ -78,6 +79,29 @@
     "Precomputes",
     "htmlvalidate",
     "Pyodide",
-    "ipynb"
+    "ipynb",
+    "prebuild",
+    "collab",
+    "Collab",
+    "qubit",
+    "ttbar",
+    "vertexing",
+    "neurips",
+    "ICHEP",
+    "Elmore",
+    "Campolongo",
+    "Afik",
+    "Andreas",
+    "dileptonic",
+    "dilepton",
+    "videoconference",
+    "eigensolvers",
+    "FOUC",
+    "youtu",
+    "Neur",
+    "infty",
+    "mathrm",
+    "Souvik",
+    "Higgs"
   ]
 }
