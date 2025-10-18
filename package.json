@@ -24,6 +24,7 @@
     "cspell": "cspell --no-progress --no-must-find-files --config cspell.json \"{src,public,scripts,tests}/**/*.{ts,tsx,js,jsx,astro,md,mdx,css,json,yml,yaml}\"",
     "html:validate": "html-validate --config .htmlvalidate.json \"dist/**/*.html\"",
     "test": "playwright test",
+    "pretest": "playwright install --with-deps chromium",
     "test:ui": "playwright test --ui",
     "lighthouse": "lhci autorun",
     "prepare": "husky",
