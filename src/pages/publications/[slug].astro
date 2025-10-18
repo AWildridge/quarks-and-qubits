@@ -4,7 +4,7 @@ import { getEntry, getCollection } from 'astro:content';
 import { toBibTeX, type PublicationRecord } from '../../lib/bibtex';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('publications');
+  const entries = await getCollection('publications', ({ data }) => !data.draft);
   return entries.map((p) => ({ params: { slug: p.slug } }));
 }
 

@@ -29,10 +29,10 @@ function parseFrontmatter(raw) {
     const key = m[1];
     let val = m[2].trim();
     if (val.startsWith('[') && val.endsWith(']')) {
-      // Array, parse as JSON after ensuring double quotes
+      // Array, parse as JSON after ensuring double quotes (JSON-like)
       try {
-        const jsonish = val.replace(/'/g, '"');
-        data[key] = JSON.parse(jsonish);
+        const jsonLike = val.replace(/'/g, '"');
+        data[key] = JSON.parse(jsonLike);
       } catch {
         data[key] = [];
       }
@@ -183,11 +183,11 @@ async function main() {
   await fs.writeFile(OUT_FILE, combined, 'utf8');
 
   console.log(
-    `\n📝 Wrote ${entries.length} BibTeX entr${entries.length === 1 ? 'y' : 'ies'} to ${path.relative(ROOT, OUT_FILE)}`,
+    `\n📝 Wrote ${entries.length} BibTeX ${entries.length === 1 ? 'entry' : 'entries'} to ${path.relative(ROOT, OUT_FILE)}`,
   );
   if (entries.length < pubs.length) {
     console.log(
-      `ℹ️  Missing ${pubs.length - entries.length} entr${pubs.length - entries.length === 1 ? 'y' : 'ies'} (see warnings above).`,
+      `ℹ️  Missing ${pubs.length - entries.length} ${pubs.length - entries.length === 1 ? 'entry' : 'entries'} (see warnings above).`,
     );
   }
 }
