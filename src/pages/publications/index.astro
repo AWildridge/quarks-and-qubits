@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { exportBibTeX, type PublicationRecord } from '../../lib/bibtex';
+import type { PublicationRecord } from '../../lib/bibtex';
 
 const all = await getCollection('publications');
 const entries = all.filter((p) => !p.data.draft);
@@ -174,7 +174,6 @@ const records: PublicationRecord[] = entries.map((p) => ({
       const tagValue = tagSelect.value;
 
       let visibleCount = 0;
-      const visiblePubs: PublicationRecord[] = [];
 
       allItems.forEach((item) => {
         const year = item.dataset.year || '';

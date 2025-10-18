@@ -1,6 +1,8 @@
 import type { MiddlewareHandler } from 'astro';
 
 export const onRequest: MiddlewareHandler = async (context, next) => {
+  // Mark context as intentionally unused to satisfy noUnusedParameters
+  void context;
   const response = await next();
 
   // Content Security Policy
