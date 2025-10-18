@@ -141,7 +141,7 @@ const structuredData = schema ? [personSchema, schema] : [personSchema, websiteS
     <!-- Structured Data (JSON-LD) -->
     {
       structuredData.map((schema) => (
-        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
       ))
     }
 

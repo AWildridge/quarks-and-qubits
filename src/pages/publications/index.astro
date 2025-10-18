@@ -114,7 +114,7 @@ const records: PublicationRecord[] = all.map((p) => ({
                 {' · '}
               </span>
             )}
-            <time itemprop="datePublished" content={String(p.year)}>
+            <time itemprop="datePublished" datetime={`${p.year}-01-01`}>
               {p.year}
             </time>
           </p>
@@ -232,7 +232,7 @@ const records: PublicationRecord[] = all.map((p) => ({
               slug: '',
               title: titleEl.textContent?.trim() || '',
               authors: authorsEl.textContent?.split(',').map((a) => a.trim()) || [],
-              year: parseInt(yearEl.getAttribute('content') || '0'),
+              year: parseInt((yearEl.getAttribute('datetime') || '0').slice(0, 4)),
               venue: venueEl?.textContent?.trim(),
               doi: doiEl?.textContent?.trim(),
               url: (urlEl as HTMLAnchorElement)?.href,

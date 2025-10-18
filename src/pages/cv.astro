@@ -1,9 +1,82 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import cvData from '../data/cv.json';
+import rawCvData from '../data/cv.json';
+type CV = {
+  name: string;
+  title: string;
+  location?: string;
+  email?: string;
+  website?: string;
+  summary?: string;
+  education?: Array<{
+    degree?: string;
+    institution?: string;
+    location?: string;
+    startDate?: string;
+    endDate?: string;
+    thesis?: string;
+    advisor?: string;
+    distinction?: string;
+  }>;
+  experience?: Array<{
+    title?: string;
+    organization?: string;
+    location?: string;
+    startDate?: string;
+    endDate?: string;
+    highlights?: string[];
+  }>;
+  publications?: Array<{
+    title: string;
+    authors: string[];
+    venue?: string;
+    year: number;
+    doi?: string;
+    citations?: number;
+  }>;
+  teaching?: Array<{
+    course?: string;
+    role?: string;
+    institution?: string;
+    year?: string | number;
+  }>;
+  awards?: Array<{
+    title?: string;
+    organization?: string;
+    year?: number;
+  }>;
+  service?: Array<{
+    role?: string;
+    organization?: string;
+    startDate?: string;
+    endDate?: string;
+  }>;
+  skills?: {
+    programming?: string[];
+    frameworks?: string[];
+    tools?: string[];
+    domains?: string[];
+  };
+};
+const cvData = rawCvData as CV;
 
 const pageTitle = `CV - ${cvData.name}`;
 const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
+
+// Narrow types for collections to avoid 'never' inference in templates
+type Education = NonNullable<CV['education']>[number];
+type Experience = NonNullable<CV['experience']>[number];
+type Teaching = NonNullable<CV['teaching']>[number];
+type Award = NonNullable<CV['awards']>[number];
+type Service = NonNullable<CV['service']>[number];
+type Skills = NonNullable<CV['skills']>;
+
+const education = (cvData.education ?? []) as Education[];
+const experience = (cvData.experience ?? []) as Experience[];
+const teaching = (cvData.teaching ?? []) as Teaching[];
+const awards = (cvData.awards ?? []) as Award[];
+const service = (cvData.service ?? []) as Service[];
+const skills = (cvData.skills ?? {}) as Skills;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -72,13 +145,13 @@ const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
 
     <!-- Education -->
     {
-      cvData.education && cvData.education.length > 0 && (
+      education.length > 0 && (
         <section class="cv-section mb-8 print:mb-6">
           <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
             Education
           </h2>
           <div class="space-y-4">
-            {cvData.education.map((edu) => (
+            {education.map((edu: Education) => (
               <div class="education-entry">
                 <div class="flex justify-between items-start mb-1">
                   <h3 class="text-lg font-semibold print:text-base">{edu.degree}</h3>
@@ -113,13 +186,13 @@ const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
 
     <!-- Experience -->
     {
-      cvData.experience && cvData.experience.length > 0 && (
+      experience.length > 0 && (
         <section class="cv-section mb-8 print:mb-6 print:break-inside-avoid">
           <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
             Experience
           </h2>
           <div class="space-y-4">
-            {cvData.experience.map((exp) => (
+            {experience.map((exp: Experience) => (
               <div class="experience-entry print:break-inside-avoid">
                 <div class="flex justify-between items-start mb-1">
                   <h3 class="text-lg font-semibold print:text-base">{exp.title}</h3>
@@ -132,7 +205,7 @@ const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
                 </p>
                 {exp.highlights && exp.highlights.length > 0 && (
                   <ul class="list-disc list-inside space-y-1 text-sm text-gray-700 dark:text-gray-300 print:text-xs">
-                    {exp.highlights.map((highlight) => (
+                    {exp.highlights?.map((highlight: string) => (
                       <li>{highlight}</li>
                     ))}
                   </ul>
@@ -187,41 +260,41 @@ const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
 
     <!-- Skills -->
     {
-      cvData.skills && (
+      skills && (
         <section class="cv-section mb-8 print:mb-6">
           <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
             Skills
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2 print:gap-2">
-            {cvData.skills.programming && (
+            {skills.programming && (
               <div>
                 <h3 class="font-semibold mb-2 print:text-sm">Programming Languages</h3>
                 <p class="text-sm text-gray-700 dark:text-gray-300 print:text-xs">
-                  {cvData.skills.programming.join(', ')}
+                  {skills.programming.join(', ')}
                 </p>
               </div>
             )}
-            {cvData.skills.frameworks && (
+            {skills.frameworks && (
               <div>
                 <h3 class="font-semibold mb-2 print:text-sm">Frameworks &amp; Libraries</h3>
                 <p class="text-sm text-gray-700 dark:text-gray-300 print:text-xs">
-                  {cvData.skills.frameworks.join(', ')}
+                  {skills.frameworks.join(', ')}
                 </p>
               </div>
             )}
-            {cvData.skills.tools && (
+            {skills.tools && (
               <div>
                 <h3 class="font-semibold mb-2 print:text-sm">Tools &amp; Technologies</h3>
                 <p class="text-sm text-gray-700 dark:text-gray-300 print:text-xs">
-                  {cvData.skills.tools.join(', ')}
+                  {skills.tools.join(', ')}
                 </p>
               </div>
             )}
-            {cvData.skills.domains && (
+            {skills.domains && (
               <div>
                 <h3 class="font-semibold mb-2 print:text-sm">Research Domains</h3>
                 <p class="text-sm text-gray-700 dark:text-gray-300 print:text-xs">
-                  {cvData.skills.domains.join(', ')}
+                  {skills.domains.join(', ')}
                 </p>
               </div>
             )}
@@ -232,13 +305,13 @@ const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
 
     <!-- Awards & Honors -->
     {
-      cvData.awards && cvData.awards.length > 0 && (
+      awards.length > 0 && (
         <section class="cv-section mb-8 print:mb-6 print:break-inside-avoid">
           <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
             Awards &amp; Honors
           </h2>
           <div class="space-y-2">
-            {cvData.awards.map((award) => (
+            {awards.map((award: Award) => (
               <div class="award-entry">
                 <div class="flex justify-between items-start">
                   <p class="text-gray-700 dark:text-gray-300 print:text-sm">
@@ -257,13 +330,13 @@ const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
 
     <!-- Teaching -->
     {
-      cvData.teaching && cvData.teaching.length > 0 && (
+      teaching.length > 0 && (
         <section class="cv-section mb-8 print:mb-6 print:break-inside-avoid">
           <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
             Teaching Experience
           </h2>
           <div class="space-y-2">
-            {cvData.teaching.map((teach) => (
+            {teaching.map((teach: Teaching) => (
               <div class="teaching-entry">
                 <div class="flex justify-between items-start">
                   <p class="text-gray-700 dark:text-gray-300 print:text-sm">
@@ -283,13 +356,13 @@ const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
 
     <!-- Service -->
     {
-      cvData.service && cvData.service.length > 0 && (
+      service.length > 0 && (
         <section class="cv-section mb-8 print:mb-6 print:break-inside-avoid">
           <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
             Professional Service
           </h2>
           <div class="space-y-2">
-            {cvData.service.map((serv) => (
+            {service.map((serv: Service) => (
               <div class="service-entry">
                 <div class="flex justify-between items-start">
                   <p class="text-gray-700 dark:text-gray-300 print:text-sm">

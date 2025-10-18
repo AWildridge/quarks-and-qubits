@@ -28,8 +28,8 @@ jobs:
         run: pnpm format:check
       - name: Spellcheck
         run: pnpm cspell
-      - name: Build
-        run: pnpm build
+      - name: Build (typecheck + build)
+        run: pnpm build:check
       - name: HTML validate
         run: pnpm html:validate
 

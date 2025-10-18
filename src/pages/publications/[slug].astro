@@ -71,7 +71,7 @@ const publicationSchema = {
             </span>
           )
         }
-        <time itemprop="datePublished" content={String(year)}>{year}</time>
+        <time itemprop="datePublished" datetime={`${year}-01-01`}>{year}</time>
       </p>
 
       {

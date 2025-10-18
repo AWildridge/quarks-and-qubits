@@ -165,25 +165,25 @@ import cvData from '../data/cv.json';
 <script>
   // Email obfuscation - decode on click to prevent scraping
   document.addEventListener('DOMContentLoaded', () => {
-    const emailLink = document.getElementById('email-link');
+    const emailLink = document.getElementById('email-link') as HTMLAnchorElement | null;
     if (emailLink) {
       // Obfuscated email (split to avoid scrapers)
       const user = 'aj';
       const domain = 'example.com';
       const email = `${user}@${domain}`;
 
-      emailLink.addEventListener('click', (e) => {
-        e.preventDefault();
+      const reveal = (e?: Event) => {
+        if (e) e.preventDefault();
         emailLink.href = `mailto:${email}`;
         emailLink.textContent = email;
-        emailLink.removeEventListener('click', arguments.callee);
-      });
+      };
+
+      emailLink.addEventListener('click', reveal, { once: true });
 
       // Also reveal on focus (keyboard accessibility)
       emailLink.addEventListener('focus', () => {
         if (emailLink.textContent === 'Click to reveal email') {
-          emailLink.href = `mailto:${email}`;
-          emailLink.textContent = email;
+          reveal();
         }
       });
     }

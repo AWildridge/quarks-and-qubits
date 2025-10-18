@@ -246,12 +246,16 @@ const pageDescription =
 
   <script>
     // Auto-submit form on filter change for better UX
-    const form = document.querySelector('form[role="search"]');
+    const form = document.querySelector('form[role="search"]') as HTMLFormElement | null;
     if (form) {
       const selects = form.querySelectorAll('select');
       selects.forEach((select) => {
         select.addEventListener('change', () => {
-          form.requestSubmit();
+          if (typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+          } else {
+            form.submit();
+          }
         });
       });
     }

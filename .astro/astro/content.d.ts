@@ -160,6 +160,50 @@ declare module 'astro:content' {
         data: InferEntrySchema<'people'>;
       } & { render(): Render['.mdx'] };
     };
+    posters: {
+      'bumblebee-foundation-model-for-particle-physics-di-2024.mdx': {
+        id: 'bumblebee-foundation-model-for-particle-physics-di-2024.mdx';
+        slug: 'bumblebee-foundation-model-for-particle-physics-di-2024';
+        body: string;
+        collection: 'posters';
+        data: InferEntrySchema<'posters'>;
+      } & { render(): Render['.mdx'] };
+      'observation-of-entangled-top-quarks-at-the-lhc-mea-2024.mdx': {
+        id: 'observation-of-entangled-top-quarks-at-the-lhc-mea-2024.mdx';
+        slug: 'observation-of-entangled-top-quarks-at-the-lhc-mea-2024';
+        body: string;
+        collection: 'posters';
+        data: InferEntrySchema<'posters'>;
+      } & { render(): Render['.mdx'] };
+      'quantum-annealing-to-reconstruct-highest-human-mad-2023.mdx': {
+        id: 'quantum-annealing-to-reconstruct-highest-human-mad-2023.mdx';
+        slug: 'quantum-annealing-to-reconstruct-highest-human-mad-2023';
+        body: string;
+        collection: 'posters';
+        data: InferEntrySchema<'posters'>;
+      } & { render(): Render['.mdx'] };
+      'track-clustering-with-a-quantum-annealer-for-prima-2019.mdx': {
+        id: 'track-clustering-with-a-quantum-annealer-for-prima-2019.mdx';
+        slug: 'track-clustering-with-a-quantum-annealer-for-prima-2019';
+        body: string;
+        collection: 'posters';
+        data: InferEntrySchema<'posters'>;
+      } & { render(): Render['.mdx'] };
+      'track-clustering-with-a-quantum-annealer-for-prima-2022.mdx': {
+        id: 'track-clustering-with-a-quantum-annealer-for-prima-2022.mdx';
+        slug: 'track-clustering-with-a-quantum-annealer-for-prima-2022';
+        body: string;
+        collection: 'posters';
+        data: InferEntrySchema<'posters'>;
+      } & { render(): Render['.mdx'] };
+      'track-clustering-with-a-quantum-annealer-for-prima-2023.mdx': {
+        id: 'track-clustering-with-a-quantum-annealer-for-prima-2023.mdx';
+        slug: 'track-clustering-with-a-quantum-annealer-for-prima-2023';
+        body: string;
+        collection: 'posters';
+        data: InferEntrySchema<'posters'>;
+      } & { render(): Render['.mdx'] };
+    };
     posts: {
       'hello-world.mdx': {
         id: 'hello-world.mdx';
@@ -169,6 +213,26 @@ declare module 'astro:content' {
         data: InferEntrySchema<'posts'>;
       } & { render(): Render['.mdx'] };
     };
+    'professional-development': {
+      '3rd-top-quark-physics-at-the-precision-frontier-2023.mdx': {
+        id: '3rd-top-quark-physics-at-the-precision-frontier-2023.mdx';
+        slug: '3rd-top-quark-physics-at-the-precision-frontier-2023';
+        body: string;
+        collection: 'professional-development';
+        data: any;
+      } & { render(): Render['.mdx'] };
+    };
+    professionalDevelopment: Record<
+      string,
+      {
+        id: string;
+        slug: string;
+        body: string;
+        collection: 'professionalDevelopment';
+        data: InferEntrySchema<'professionalDevelopment'>;
+        render(): Render['.md'];
+      }
+    >;
     projects: {
       'example.mdx': {
         id: 'example.mdx';
@@ -214,34 +278,6 @@ declare module 'astro:content' {
         collection: 'publications';
         data: InferEntrySchema<'publications'>;
       } & { render(): Render['.mdx'] };
-      'organizer-3rd-top-quark-physics-at-the-precision-f-2023.mdx': {
-        id: 'organizer-3rd-top-quark-physics-at-the-precision-f-2023.mdx';
-        slug: 'organizer-3rd-top-quark-physics-at-the-precision-f-2023';
-        body: string;
-        collection: 'publications';
-        data: InferEntrySchema<'publications'>;
-      } & { render(): Render['.mdx'] };
-      'organizer-session-chair-or-panelist-for-profession-7.mdx': {
-        id: 'organizer-session-chair-or-panelist-for-profession-7.mdx';
-        slug: 'organizer-session-chair-or-panelist-for-profession-7';
-        body: string;
-        collection: 'publications';
-        data: InferEntrySchema<'publications'>;
-      } & { render(): Render['.mdx'] };
-      'panelist-challenges-in-high-energy-experiments-mea-2023.mdx': {
-        id: 'panelist-challenges-in-high-energy-experiments-mea-2023.mdx';
-        slug: 'panelist-challenges-in-high-energy-experiments-mea-2023';
-        body: string;
-        collection: 'publications';
-        data: InferEntrySchema<'publications'>;
-      } & { render(): Render['.mdx'] };
-      'panelist-panel-session-making-it-happen-steps-need-2023.mdx': {
-        id: 'panelist-panel-session-making-it-happen-steps-need-2023.mdx';
-        slug: 'panelist-panel-session-making-it-happen-steps-need-2023';
-        body: string;
-        collection: 'publications';
-        data: InferEntrySchema<'publications'>;
-      } & { render(): Render['.mdx'] };
       'qa_pv.mdx': {
         id: 'qa_pv.mdx';
         slug: 'qa_pv';
@@ -252,6 +288,13 @@ declare module 'astro:content' {
       'quantum-information-meets-high-energy-physics-inpu-2025.mdx': {
         id: 'quantum-information-meets-high-energy-physics-inpu-2025.mdx';
         slug: 'quantum-information-meets-high-energy-physics-inpu-2025';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'test-latex.mdx': {
+        id: 'test-latex.mdx';
+        slug: 'test-latex';
         body: string;
         collection: 'publications';
         data: InferEntrySchema<'publications'>;
@@ -296,6 +339,13 @@ declare module 'astro:content' {
       'bumblebee-foundation-model-for-particle-physics-di-2024.mdx': {
         id: 'bumblebee-foundation-model-for-particle-physics-di-2024.mdx';
         slug: 'bumblebee-foundation-model-for-particle-physics-di-2024';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'challenges-in-high-energy-experiments-measuring-qu-2023.mdx': {
+        id: 'challenges-in-high-energy-experiments-measuring-qu-2023.mdx';
+        slug: 'challenges-in-high-energy-experiments-measuring-qu-2023';
         body: string;
         collection: 'talks';
         data: InferEntrySchema<'talks'>;
@@ -359,6 +409,20 @@ declare module 'astro:content' {
       'observation-of-entangled-top-quarks-with-the-cms-d-2025.mdx': {
         id: 'observation-of-entangled-top-quarks-with-the-cms-d-2025.mdx';
         slug: 'observation-of-entangled-top-quarks-with-the-cms-d-2025';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'panel-discussion-2023.mdx': {
+        id: 'panel-discussion-2023.mdx';
+        slug: 'panel-discussion-2023';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'panel-session-making-it-happen-steps-needed-for-re-2023.mdx': {
+        id: 'panel-session-making-it-happen-steps-needed-for-re-2023.mdx';
+        slug: 'panel-session-making-it-happen-steps-needed-for-re-2023';
         body: string;
         collection: 'talks';
         data: InferEntrySchema<'talks'>;
