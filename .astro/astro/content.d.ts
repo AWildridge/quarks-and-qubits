@@ -179,9 +179,23 @@ declare module 'astro:content' {
       } & { render(): Render['.mdx'] };
     };
     publications: {
-      'example.mdx': {
-        id: 'example.mdx';
-        slug: 'example';
+      'building-machine-learning-challenges-for-anomaly-d-2025.mdx': {
+        id: 'building-machine-learning-challenges-for-anomaly-d-2025.mdx';
+        slug: 'building-machine-learning-challenges-for-anomaly-d-2025';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'bumblebee-foundation-model-for-particle-physics-di-2024.mdx': {
+        id: 'bumblebee-foundation-model-for-particle-physics-di-2024.mdx';
+        slug: 'bumblebee-foundation-model-for-particle-physics-di-2024';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'enhanced-reconstruction-of-dileptonic-top-quark-an-2025.mdx': {
+        id: 'enhanced-reconstruction-of-dileptonic-top-quark-an-2025.mdx';
+        slug: 'enhanced-reconstruction-of-dileptonic-top-quark-an-2025';
         body: string;
         collection: 'publications';
         data: InferEntrySchema<'publications'>;
@@ -193,21 +207,247 @@ declare module 'astro:content' {
         collection: 'publications';
         data: InferEntrySchema<'publications'>;
       } & { render(): Render['.mdx'] };
-      'quantum-lattice.mdx': {
-        id: 'quantum-lattice.mdx';
-        slug: 'quantum-lattice';
+      'observation-of-quantum-entanglement-in-top-quark-p-2024.mdx': {
+        id: 'observation-of-quantum-entanglement-in-top-quark-p-2024.mdx';
+        slug: 'observation-of-quantum-entanglement-in-top-quark-p-2024';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'organizer-3rd-top-quark-physics-at-the-precision-f-2023.mdx': {
+        id: 'organizer-3rd-top-quark-physics-at-the-precision-f-2023.mdx';
+        slug: 'organizer-3rd-top-quark-physics-at-the-precision-f-2023';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'organizer-session-chair-or-panelist-for-profession-7.mdx': {
+        id: 'organizer-session-chair-or-panelist-for-profession-7.mdx';
+        slug: 'organizer-session-chair-or-panelist-for-profession-7';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'panelist-challenges-in-high-energy-experiments-mea-2023.mdx': {
+        id: 'panelist-challenges-in-high-energy-experiments-mea-2023.mdx';
+        slug: 'panelist-challenges-in-high-energy-experiments-mea-2023';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'panelist-panel-session-making-it-happen-steps-need-2023.mdx': {
+        id: 'panelist-panel-session-making-it-happen-steps-need-2023.mdx';
+        slug: 'panelist-panel-session-making-it-happen-steps-need-2023';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'qa_pv.mdx': {
+        id: 'qa_pv.mdx';
+        slug: 'qa_pv';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'quantum-information-meets-high-energy-physics-inpu-2025.mdx': {
+        id: 'quantum-information-meets-high-energy-physics-inpu-2025.mdx';
+        slug: 'quantum-information-meets-high-energy-physics-inpu-2025';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'top-quarks-as-a-probe-to-quantum-information-2022.mdx': {
+        id: 'top-quarks-as-a-probe-to-quantum-information-2022.mdx';
+        slug: 'top-quarks-as-a-probe-to-quantum-information-2022';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'track-clustering-with-a-quantum-annealer-for-prima-1903.mdx': {
+        id: 'track-clustering-with-a-quantum-annealer-for-prima-1903.mdx';
+        slug: 'track-clustering-with-a-quantum-annealer-for-prima-1903';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'track-clustering-with-a-quantum-annealer-for-prima-2019.mdx': {
+        id: 'track-clustering-with-a-quantum-annealer-for-prima-2019.mdx';
+        slug: 'track-clustering-with-a-quantum-annealer-for-prima-2019';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'transformer_mmd.mdx': {
+        id: 'transformer_mmd.mdx';
+        slug: 'transformer_mmd';
+        body: string;
+        collection: 'publications';
+        data: InferEntrySchema<'publications'>;
+      } & { render(): Render['.mdx'] };
+      'ttbar_entanglement_obs.mdx': {
+        id: 'ttbar_entanglement_obs.mdx';
+        slug: 'ttbar_entanglement_obs';
         body: string;
         collection: 'publications';
         data: InferEntrySchema<'publications'>;
       } & { render(): Render['.mdx'] };
     };
     talks: {
+      'bumblebee-foundation-model-for-particle-physics-di-2024.mdx': {
+        id: 'bumblebee-foundation-model-for-particle-physics-di-2024.mdx';
+        slug: 'bumblebee-foundation-model-for-particle-physics-di-2024';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'challenges-of-entanglement-measurement-in-ttbar-fi-2023.mdx': {
+        id: 'challenges-of-entanglement-measurement-in-ttbar-fi-2023.mdx';
+        slug: 'challenges-of-entanglement-measurement-in-ttbar-fi-2023';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'entangled-top-quarks-at-the-lhc-measured-with-the--2024.mdx': {
+        id: 'entangled-top-quarks-at-the-lhc-measured-with-the--2024.mdx';
+        slug: 'entangled-top-quarks-at-the-lhc-measured-with-the--2024';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'entanglement-more-at-the-cms-2022.mdx': {
+        id: 'entanglement-more-at-the-cms-2022.mdx';
+        slug: 'entanglement-more-at-the-cms-2022';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'entanglement-of-top-quarks-in-the-production-thres-2024.mdx': {
+        id: 'entanglement-of-top-quarks-in-the-production-thres-2024.mdx';
+        slug: 'entanglement-of-top-quarks-in-the-production-thres-2024';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
       'example.mdx': {
         id: 'example.mdx';
         slug: 'example';
         body: string;
         collection: 'talks';
         data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'investigation-of-entangled-and-bound-ttbar-pairs-a-2022.mdx': {
+        id: 'investigation-of-entangled-and-bound-ttbar-pairs-a-2022.mdx';
+        slug: 'investigation-of-entangled-and-bound-ttbar-pairs-a-2022';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'ml-physics-2024.mdx': {
+        id: 'ml-physics-2024.mdx';
+        slug: 'ml-physics-2024';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'observation-of-entangled-top-quarks-at-the-lhc-mea-2024.mdx': {
+        id: 'observation-of-entangled-top-quarks-at-the-lhc-mea-2024.mdx';
+        slug: 'observation-of-entangled-top-quarks-at-the-lhc-mea-2024';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'observation-of-entangled-top-quarks-with-the-cms-d-2025.mdx': {
+        id: 'observation-of-entangled-top-quarks-with-the-cms-d-2025.mdx';
+        slug: 'observation-of-entangled-top-quarks-with-the-cms-d-2025';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'quantum-annealing-applications-in-collider-hep-ex-2023.mdx': {
+        id: 'quantum-annealing-applications-in-collider-hep-ex-2023.mdx';
+        slug: 'quantum-annealing-applications-in-collider-hep-ex-2023';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'quantum-annealing-to-reconstruct-highest-human-mad-2023.mdx': {
+        id: 'quantum-annealing-to-reconstruct-highest-human-mad-2023.mdx';
+        slug: 'quantum-annealing-to-reconstruct-highest-human-mad-2023';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'recent-highlights-of-top-quark-property-measuremen-2024.mdx': {
+        id: 'recent-highlights-of-top-quark-property-measuremen-2024.mdx';
+        slug: 'recent-highlights-of-top-quark-property-measuremen-2024';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'recent-measurements-of-top-quark-properties-at-cms-2024.mdx': {
+        id: 'recent-measurements-of-top-quark-properties-at-cms-2024.mdx';
+        slug: 'recent-measurements-of-top-quark-properties-at-cms-2024';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'reconstructing-proton-proton-collision-positions-a-2019.mdx': {
+        id: 'reconstructing-proton-proton-collision-positions-a-2019.mdx';
+        slug: 'reconstructing-proton-proton-collision-positions-a-2019';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'reconstructing-proton-proton-collision-positions-a-2021.mdx': {
+        id: 'reconstructing-proton-proton-collision-positions-a-2021.mdx';
+        slug: 'reconstructing-proton-proton-collision-positions-a-2021';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'towards-quantum-measurements-at-cms-2023.mdx': {
+        id: 'towards-quantum-measurements-at-cms-2023.mdx';
+        slug: 'towards-quantum-measurements-at-cms-2023';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'track-clustering-with-a-quantum-annealer-for-prima-2019.mdx': {
+        id: 'track-clustering-with-a-quantum-annealer-for-prima-2019.mdx';
+        slug: 'track-clustering-with-a-quantum-annealer-for-prima-2019';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'track-clustering-with-a-quantum-annealer-for-prima-2022.mdx': {
+        id: 'track-clustering-with-a-quantum-annealer-for-prima-2022.mdx';
+        slug: 'track-clustering-with-a-quantum-annealer-for-prima-2022';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+      'track-clustering-with-a-quantum-annealer-for-prima-2023.mdx': {
+        id: 'track-clustering-with-a-quantum-annealer-for-prima-2023.mdx';
+        slug: 'track-clustering-with-a-quantum-annealer-for-prima-2023';
+        body: string;
+        collection: 'talks';
+        data: InferEntrySchema<'talks'>;
+      } & { render(): Render['.mdx'] };
+    };
+    teaching: {
+      'comp-methods-spring23.mdx': {
+        id: 'comp-methods-spring23.mdx';
+        slug: 'comp-methods-spring23';
+        body: string;
+        collection: 'teaching';
+        data: InferEntrySchema<'teaching'>;
+      } & { render(): Render['.mdx'] };
+      'quantum-computing-fall24.mdx': {
+        id: 'quantum-computing-fall24.mdx';
+        slug: 'quantum-computing-fall24';
+        body: string;
+        collection: 'teaching';
+        data: InferEntrySchema<'teaching'>;
       } & { render(): Render['.mdx'] };
     };
   };

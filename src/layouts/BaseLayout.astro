@@ -125,6 +125,14 @@ const structuredData = schema ? [personSchema, schema] : [personSchema, websiteS
     <meta name="robots" content="index, follow" />
     <link rel="sitemap" href="/sitemap.xml" />
 
+    <!-- KaTeX CSS for math rendering -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+"
+      crossorigin="anonymous"
+    />
+
     <!-- Security headers (also set via middleware) -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="X-Frame-Options" content="DENY" />

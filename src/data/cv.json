@@ -1,147 +1,257 @@
 {
-  "name": "AJ Wildridge",
-  "title": "Physicist & Machine Learning Researcher",
-  "email": "aj@example.com",
-  "website": "https://quarks-and-qubits.example.com",
-  "location": "Cambridge, MA",
-  "summary": "Physicist specializing in high-energy physics, quantum computing, and machine learning applications. Experienced in developing novel computational methods for particle physics analysis and quantum optimization.",
-  "education": [
-    {
-      "degree": "PhD in Physics",
-      "institution": "Massachusetts Institute of Technology",
-      "location": "Cambridge, MA",
-      "startDate": "2018",
-      "endDate": "2023",
-      "thesis": "Machine Learning Methods for Top Quark Spin Correlation Analysis at the LHC",
-      "advisor": "Prof. Jane Smith"
-    },
-    {
-      "degree": "MSc in Physics",
-      "institution": "University of Cambridge",
-      "location": "Cambridge, UK",
-      "startDate": "2016",
-      "endDate": "2017",
-      "distinction": "Distinction"
-    },
-    {
-      "degree": "BSc in Physics",
-      "institution": "Imperial College London",
-      "location": "London, UK",
-      "startDate": "2013",
-      "endDate": "2016",
-      "distinction": "First Class Honours"
-    }
-  ],
-  "experience": [
-    {
-      "title": "Postdoctoral Research Associate",
-      "organization": "CERN",
-      "location": "Geneva, Switzerland",
-      "startDate": "2023-09",
-      "endDate": "present",
-      "highlights": [
-        "Developing quantum algorithms for lattice gauge theory simulations",
-        "Leading analysis of top quark pair production in the ATLAS experiment",
-        "Mentoring graduate students in machine learning techniques for particle physics"
-      ]
-    },
-    {
-      "title": "Research Assistant",
-      "organization": "MIT Laboratory for Nuclear Science",
-      "location": "Cambridge, MA",
-      "startDate": "2018-09",
-      "endDate": "2023-08",
-      "highlights": [
-        "Developed novel neural network architectures for jet classification",
-        "Implemented GPU-accelerated analysis pipelines processing petabytes of LHC data",
-        "Published 8 papers in top-tier physics journals"
-      ]
-    },
-    {
-      "title": "Summer Research Intern",
-      "organization": "Fermilab",
-      "location": "Batavia, IL",
-      "startDate": "2017-06",
-      "endDate": "2017-08",
-      "highlights": [
-        "Contributed to muon g-2 experiment data analysis",
-        "Developed calibration procedures for calorimeter systems"
-      ]
-    }
-  ],
+  "name": "Andrew Wildridge",
+  "title": "PhD Candidate - Experimental High Energy Particle Physics",
+  "email": "awildrid@purdue.edu",
+  "website": "",
+  "location": "",
+  "summary": "",
+  "education": [],
+  "experience": [],
   "publications": [
     {
-      "title": "Machine Learning Approaches to Top Quark Spin Correlation Measurements",
-      "authors": ["A. Wildridge", "J. Smith", "R. Johnson"],
-      "venue": "Journal of High Energy Physics",
-      "year": 2023,
-      "doi": "10.1007/JHEP01(2023)001",
-      "citations": 42
+      "title": "Enhanced reconstruction of dileptonic top quark-antiquark events using supervised machine learning methods",
+      "authors": ["The CMS Collaboration"],
+      "venue": "CMS-NOTE-",
+      "year": 2025,
+      "doi": "",
+      "url": "https://cds.cern.ch/record/2944724",
+      "abstract": "",
+      "citations": 0
     },
     {
-      "title": "Quantum Algorithms for Lattice Gauge Theory",
-      "authors": ["A. Wildridge", "M. Chen"],
-      "venue": "Physical Review Letters",
+      "title": "Quantum information meets high-energy physics: input to the update of the European strategy for particle physics",
+      "authors": ["Afik", "Y", "et. al"],
+      "venue": "Eur. Phys. J. Plus 140 (",
+      "year": 2025,
+      "doi": "",
+      "url": "",
+      "abstract": "",
+      "citations": 0
+    },
+    {
+      "title": "“Building Machine Learning Challenges for Anomaly Detection in Science.” arXiv:2503.02112 (2025)",
+      "authors": ["Campolongo", "E. G"],
+      "venue": "",
+      "year": 2025,
+      "doi": "arXiv:2503.02112",
+      "url": "https://arxiv.org/abs/2503.02112",
+      "abstract": "",
+      "citations": 0
+    },
+    {
+      "title": "Bumblebee: Foundation Model for Particle Physics Discovery",
+      "authors": ["Andrew J. Wildridge", "et. al"],
+      "venue": "Contribution to NeurIPS",
       "year": 2024,
-      "doi": "10.1103/PhysRevLett.132.001",
-      "citations": 15
+      "doi": "arXiv:2412.07867",
+      "url": "https://arxiv.org/abs/2412.07867",
+      "abstract": "",
+      "citations": 0
+    },
+    {
+      "title": "Observation of quantum entanglement in top quark pair production in proton-proton collisions at  = 13 TeV",
+      "authors": ["The CMS Collaboration"],
+      "venue": "Rep. Prog. Phys. 87 117801",
+      "year": 2024,
+      "doi": "",
+      "url": "",
+      "abstract": "",
+      "citations": 0
+    },
+    {
+      "title": "Top quarks as a probe to quantum information",
+      "authors": ["Andrew Wildridge. \""],
+      "venue": "\", Proceedings for the 14th International Workshop on Top Quark Physics (videoconference), arXiv:2202.11347",
+      "year": 2022,
+      "doi": "arXiv:2202.11347",
+      "url": "https://arxiv.org/abs/2202.11347",
+      "abstract": "",
+      "citations": 0
+    },
+    {
+      "title": "Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders",
+      "authors": ["Souvik Das", "Andrew J. Wildridge", "Andreas Jung"],
+      "venue": "arXiv:1903.08879",
+      "year": 2019,
+      "doi": "arXiv:1903.08879",
+      "url": "https://arxiv.org/abs/1903.08879",
+      "abstract": "",
+      "citations": 0
     }
   ],
-  "skills": {
-    "programming": ["Python", "C++", "Julia", "JavaScript/TypeScript", "CUDA"],
-    "frameworks": ["PyTorch", "TensorFlow", "ROOT", "Qiskit", "FastAPI"],
-    "tools": ["Git", "Docker", "Kubernetes", "HTCondor", "Slurm"],
-    "domains": [
-      "High Energy Physics",
-      "Quantum Computing",
-      "Machine Learning",
-      "Statistical Analysis",
-      "Scientific Computing"
-    ]
-  },
-  "awards": [
+  "talks": [
     {
-      "title": "Outstanding Doctoral Thesis Award",
-      "organization": "MIT Department of Physics",
-      "year": 2023
+      "title": "“Observation of entangled top quarks with the CMS Detector”",
+      "event": "LPC Physics Forum",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2025,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
     },
     {
-      "title": "NSF Graduate Research Fellowship",
-      "organization": "National Science Foundation",
-      "year": 2019
+      "title": "“Bumblebee: Foundation Model for Particle Physics Discovery”",
+      "event": "US LUA annual meeting",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2024,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
     },
     {
-      "title": "CERN Summer Student Programme",
-      "organization": "CERN",
-      "year": 2016
+      "title": "“Entanglement of top quarks in the production threshold region at CMS”",
+      "event": "Quantum tests in collider physics",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2024,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "“Recent measurements of top-quark properties at CMS”",
+      "event": "ICHEP 2024",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2024,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "“Entangled Top Quarks at the LHC measured with the CMS Detector at sqrt(s) = 13 TeV”",
+      "event": "APS April Meeting",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2024,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "“Recent highlights of top-quark property measurements from CMS”",
+      "event": "Lake Louise Winter Institute 2024",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2024,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "Quantum Annealing applications in Collider HEP-ex",
+      "event": "",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2023,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "Challenges of entanglement measurement in ttbar final states",
+      "event": "",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2023,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "Towards quantum measurements at CMS",
+      "event": "",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2023,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "Entanglement & More at the CMS",
+      "event": "",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2022,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "Investigation of Entangled and Bound ttbar Pairs at the LHC with the CMS Detector",
+      "event": "",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2022,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "Reconstructing proton-proton collision positions at the Large Hadron Collider with a D-Wave quantum computer",
+      "event": "",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2021,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "Reconstructing proton-proton collision positions at the Large Hadron Collider with a D-Wave quantum computer",
+      "event": "",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2021,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
+    },
+    {
+      "title": "Reconstructing proton-proton collision positions at the Large Hadron Collider with a D-Wave quantum computer",
+      "event": "",
+      "venue": "",
+      "location": "",
+      "date": "",
+      "year": 2019,
+      "month": 0,
+      "slides": "",
+      "video": "",
+      "abstract": ""
     }
   ],
-  "teaching": [
-    {
-      "course": "8.02 - Electricity and Magnetism",
-      "role": "Teaching Assistant",
-      "institution": "MIT",
-      "year": "2019-2020"
-    },
-    {
-      "course": "8.13 - Experimental Physics",
-      "role": "Lab Instructor",
-      "institution": "MIT",
-      "year": "2021-2022"
-    }
-  ],
-  "service": [
-    {
-      "role": "Reviewer",
-      "organization": "Journal of High Energy Physics",
-      "startDate": "2022",
-      "endDate": "present"
-    },
-    {
-      "role": "Organizer",
-      "organization": "MIT Physics Graduate Student Seminar",
-      "startDate": "2020",
-      "endDate": "2022"
-    }
-  ]
+  "skills": {},
+  "awards": [],
+  "teaching": [],
+  "service": [],
+  "languages": []
 }

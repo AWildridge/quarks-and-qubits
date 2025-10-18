@@ -42,16 +42,37 @@ jobs:
       - name: Serve site for checks
         run: pnpm ci:serve &
       - name: Wait for server
-        run: npx wait-on http://127.0.0.1:4321
+        run: npx wait-on http://127.0.0.1:4321 --timeout 60000
 
       - name: Link check
         run: npx linkinator http://127.0.0.1:4321 --recurse --timeout 30000
 
       - name: Axe accessibility scan
-        run: |
-          npx @axe-core/cli http://127.0.0.1:4321 --dir ./axe-report
-          FILE=$(ls -1 ./axe-report/*.json | head -n1)
-          node -e "const data=require('$FILE'); const crit=(data.violations||[]).filter(v=>v.impact==='critical'); if(crit.length){console.error('Critical axe violations:', crit.map(v=>v.id)); process.exit(1);}"
+        run: node scripts/run-axe-scan.js
 
-      - name: Lighthouse
-        run: npx lighthouse http://127.0.0.1:4321 --preset=desktop --output=json --output-path=./lhr.json && node -e "const r=require('./lhr.json'); const perf=(r.categories.performance.score||0); const acc=(r.categories.accessibility.score||0); if(perf<0.95){console.error('Perf score < 0.95'); process.exit(1);} if(acc<1){console.error('Accessibility score < 1.00'); process.exit(1);}"
+      - name: Lighthouse CI
+        run: npx lhci autorun --config=lighthouserc.json
+        env:
+          LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+
+      - name: Validate sitemap
+        run: |
+          curl -s http://127.0.0.1:4321/sitemap.xml > sitemap.xml
+          npx xmllint --noout sitemap.xml
+
+      - name: Check security headers
+        run: |
+          curl -sI http://127.0.0.1:4321/ | grep -i 'content-security-policy' || (echo "Missing CSP header" && exit 1)
+          curl -sI http://127.0.0.1:4321/ | grep -i 'x-frame-options' || (echo "Missing X-Frame-Options" && exit 1)
+          curl -sI http://127.0.0.1:4321/ | grep -i 'x-content-type-options' || (echo "Missing X-Content-Type-Options" && exit 1)
+
+      - name: Check for mixed content
+        run: |
+          grep -r "http://" dist/ --include="*.html" --exclude-dir=node_modules | grep -v "http://127.0.0.1" | grep -v "http://localhost" | grep -v "http://www.w3.org" | grep -v "http://schema.org" | grep -v "http://www.sitemaps.org" && echo "Found mixed content!" && exit 1 || echo "No mixed content found"

@@ -10,20 +10,22 @@
   "packageManager": "pnpm@9.12.0",
   "scripts": {
     "dev": "astro dev",
+    "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview --host --port 4321",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint . --ext .js,.cjs,.mjs,.ts,.tsx,.astro",
+    "build:check": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "cspell": "cspell --no-progress --no-must-find-files .",
-    "html:validate": "html-validate \"dist/**/*.html\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "playwright test",
-    "pretest": "pnpm exec playwright install chromium",
+    "test:ui": "playwright test --ui",
+    "lighthouse": "lhci autorun",
     "prepare": "husky",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm cspell",
-    "ci:serve": "astro preview --host --port 4321",
-    "cv:pdf": "pnpm build && node scripts/generate-cv-pdf.js"
+    "prebuild": "node scripts/extract-cv-from-docx.js && node scripts/validate-bibtex.js",
+    "cv:extract": "node scripts/extract-cv-from-docx.js",
+    "cv:generate": "node scripts/generate-content-from-cv.js",
+    "cv:sync": "pnpm cv:extract && pnpm cv:generate"
   },
   "dependencies": {
     "@astrojs/mdx": "^3.1.0",
@@ -36,6 +38,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.4",
     "@axe-core/cli": "^4.10.0",
     "@axe-core/puppeteer": "^4.10.2",
     "@lhci/cli": "^0.15.1",
@@ -57,12 +60,15 @@
     "lighthouse": "^12.1.0",
     "linkinator": "^6.1.2",
     "lint-staged": "^15.2.10",
+    "mammoth": "^1.11.0",
     "postcss": "^8.4.45",
     "prettier": "^3.3.3",
     "prettier-plugin-astro": "^0.14.1",
     "puppeteer": "^24.25.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.4"
+    "typescript": "^5.9.3"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,astro,css,md,mdx,json,yml,yaml}": [

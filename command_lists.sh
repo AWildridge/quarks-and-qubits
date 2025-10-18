@@ -109,6 +109,8 @@ cd /home/aj/Documents/quarks-and-qubits && grep -o "bg-green-[0-9]*" dist/demos/
 ---
 cd /home/aj/Documents/quarks-and-qubits && grep -o "bg-green-[0-9]*" dist/_astro/Explorer.*.js 2>/dev/null | head
 ---
+cd /home/aj/Documents/quarks-and-qubits && pnpm build 2>&1 | grep -E "(CV extraction|pages built|Complete)" | head -10
+---
 cd /home/aj/Documents/quarks-and-qubits && git add -A && git commit -m "Add CV and Contact pages with accessibility features
 ---- Created src/data/cv.json as single source of truth for CV data
 - Built responsive CV page (src/pages/cv.astro) with print styles
