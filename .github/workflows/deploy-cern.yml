@@ -1,0 +1,49 @@
+name: Deploy to CERN EOS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Build and Deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Build Site
+        run: pnpm build:check
+
+      - name: Deploy to CERN EOS
+        env:
+          CERN_USER: ${{ secrets.CERN_USER }}
+          CERN_PASSWORD: ${{ secrets.CERN_PASSWORD }}
+          EOS_PATH: ${{ secrets.EOS_PATH }}
+        run: |
+          # Install lftp
+          sudo apt-get update
+          sudo apt-get install -y lftp
+
+          # Sync dist/ folder to EOS via WebDAV
+          # mirror -R uploads local to remote
+          # --delete removes files on remote that are not in local
+          # --parallel=10 uses 10 parallel connections for speed
+          lftp -c "open -u \"$CERN_USER\",\"$CERN_PASSWORD\" https://eosproject-http.cern.ch; \
+          mirror -R --delete --parallel=10 --verbose dist/ \"$EOS_PATH\"; \
+          quit"
