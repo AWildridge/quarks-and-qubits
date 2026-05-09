@@ -1,5 +1,5 @@
 {
-  "name": "Andrew Wildridge",
+  "name": "Andrew J. Wildridge",
   "title": "PhD Candidate - Experimental High Energy Particle Physics",
   "email": "awildrid@purdue.edu",
   "website": "",
@@ -10,7 +10,9 @@
   "publications": [
     {
       "title": "Enhanced reconstruction of dileptonic top quark-antiquark events using supervised machine learning methods",
-      "authors": ["The CMS Collaboration"],
+      "authors": [
+        "The CMS Collaboration"
+      ],
       "venue": "CMS-NOTE-",
       "year": 2025,
       "doi": "",
@@ -20,7 +22,11 @@
     },
     {
       "title": "Quantum information meets high-energy physics: input to the update of the European strategy for particle physics",
-      "authors": ["Afik", "Y", "et. al"],
+      "authors": [
+        "Afik",
+        "Y",
+        "et. al"
+      ],
       "venue": "Eur. Phys. J. Plus 140 (",
       "year": 2025,
       "doi": "",
@@ -30,7 +36,10 @@
     },
     {
       "title": "“Building Machine Learning Challenges for Anomaly Detection in Science.” arXiv:2503.02112 (2025)",
-      "authors": ["Campolongo", "E. G"],
+      "authors": [
+        "Campolongo",
+        "E. G"
+      ],
       "venue": "",
       "year": 2025,
       "doi": "arXiv:2503.02112",
@@ -40,7 +49,10 @@
     },
     {
       "title": "Bumblebee: Foundation Model for Particle Physics Discovery",
-      "authors": ["Andrew J. Wildridge", "et. al"],
+      "authors": [
+        "Andrew J. Wildridge",
+        "et. al"
+      ],
       "venue": "Contribution to NeurIPS",
       "year": 2024,
       "doi": "arXiv:2412.07867",
@@ -50,7 +62,9 @@
     },
     {
       "title": "Observation of quantum entanglement in top quark pair production in proton-proton collisions at  = 13 TeV",
-      "authors": ["The CMS Collaboration"],
+      "authors": [
+        "The CMS Collaboration"
+      ],
       "venue": "Rep. Prog. Phys. 87 117801",
       "year": 2024,
       "doi": "",
@@ -60,7 +74,9 @@
     },
     {
       "title": "Top quarks as a probe to quantum information",
-      "authors": ["Andrew Wildridge. \""],
+      "authors": [
+        "Andrew Wildridge. \""
+      ],
       "venue": "\", Proceedings for the 14th International Workshop on Top Quark Physics (videoconference), arXiv:2202.11347",
       "year": 2022,
       "doi": "arXiv:2202.11347",
@@ -70,7 +86,11 @@
     },
     {
       "title": "Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders",
-      "authors": ["Souvik Das", "Andrew J. Wildridge", "Andreas Jung"],
+      "authors": [
+        "Souvik Das",
+        "Andrew J. Wildridge",
+        "Andreas Jung"
+      ],
       "venue": "arXiv:1903.08879",
       "year": 2019,
       "doi": "arXiv:1903.08879",
@@ -91,7 +111,9 @@
       "slides": "https://agenda.infn.it/event/34555/overview",
       "video": "",
       "abstract": "",
-      "tags": ["panel"]
+      "tags": [
+        "panel"
+      ]
     },
     {
       "title": "PANEL SESSION: Making it happen: steps needed for real experimental measurements",
@@ -104,7 +126,9 @@
       "slides": "https://indico.cern.ch/event/1246316/timetable/",
       "video": "",
       "abstract": "",
-      "tags": ["panel"]
+      "tags": [
+        "panel"
+      ]
     },
     {
       "title": "Observation of entangled top quarks with the CMS Detector",
@@ -261,7 +285,9 @@
       "year": 2024,
       "month": 0,
       "link": "",
-      "tags": ["poster"]
+      "tags": [
+        "poster"
+      ]
     },
     {
       "title": "“Observation of Entangled Top Quarks at the LHC measured with the CMS Detector as sqrt(s) = 13 TeV”",
@@ -272,7 +298,9 @@
       "year": 2024,
       "month": 0,
       "link": "",
-      "tags": ["poster"]
+      "tags": [
+        "poster"
+      ]
     },
     {
       "title": "Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders",
@@ -283,7 +311,9 @@
       "year": 2023,
       "month": 0,
       "link": "",
-      "tags": ["poster"]
+      "tags": [
+        "poster"
+      ]
     },
     {
       "title": "Quantum Annealing to Reconstruct Highest Human-made Energetic Particle Collisions",
@@ -294,7 +324,9 @@
       "year": 2023,
       "month": 0,
       "link": "",
-      "tags": ["poster"]
+      "tags": [
+        "poster"
+      ]
     },
     {
       "title": "Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders",
@@ -305,7 +337,9 @@
       "year": 2022,
       "month": 0,
       "link": "",
-      "tags": ["poster"]
+      "tags": [
+        "poster"
+      ]
     },
     {
       "title": "Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders",
@@ -316,7 +350,9 @@
       "year": 2019,
       "month": 0,
       "link": "",
-      "tags": ["poster"]
+      "tags": [
+        "poster"
+      ]
     }
   ],
   "professionalDevelopment": [

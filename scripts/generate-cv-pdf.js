@@ -32,7 +32,13 @@ async function generatePDF() {
     console.log('📖 Opening browser...');
     browser = await puppeteer.launch({
       headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-crash-reporter',
+        '--disable-crashpad',
+        '--disable-dev-shm-usage',
+      ],
     });
 
     const page = await browser.newPage();

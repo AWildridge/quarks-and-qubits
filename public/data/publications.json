@@ -1,0 +1,5 @@
+{
+  "source": "/bibliography.bib",
+  "collections": ["publications", "talks", "posters"],
+  "note": "Static cache scaffold for publication consumers; canonical records live in src/content/publications."
+}

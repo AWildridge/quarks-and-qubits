@@ -9,6 +9,18 @@ const projects = defineCollection({
     language: z.string().optional(),
     summary: z.string().optional(),
     repo: z.string().url().optional(),
+    demo: z.string().optional(),
+    data: z.string().optional(),
+    citation: z.string().optional(),
+    architecture: z
+      .object({
+        image: z.string(),
+        alt: z.string(),
+        caption: z.string(),
+      })
+      .optional(),
+    metrics: z.array(z.string()).default([]),
+    reproduce: z.array(z.string()).default([]),
   }),
 });
 
@@ -71,6 +83,7 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
+    kind: z.enum(['post', 'note']).default('post'),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     summary: z.string().optional(),

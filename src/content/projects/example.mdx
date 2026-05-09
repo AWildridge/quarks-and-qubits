@@ -1,10 +1,27 @@
 ---
 title: Spin Correlation Explorer
 date: 2025-01-10
-tags: [Astro, HepTop]
+tags: [top-quark, visualization, physics]
 language: TypeScript
-summary: Exploring spin correlations and quantum-inspired methods.
-repo: https://github.com/AWildridge/spin-explorer
+summary: Explore top-quark spin-correlation matrices across production modes, bases, energies, and scattering angles.
+repo: https://github.com/AWildridge/quarks-and-qubits
+demo: /demos/spin-explorer/
+data: /data/spin-grids/gg_helicity_13TeV.json
+citation: AJ Wildridge, Quarks & Qubits Spin Correlation Explorer, 2025.
+metrics:
+  - 24 bundled precomputed spin grids
+  - Keyboard-accessible heatmap controls
+  - PNG, SVG, and JSON export paths
+reproduce:
+  - Run pnpm install
+  - Run pnpm dev and open /demos/spin-explorer/
+  - Inspect public/data/spin-grids for the bundled grid schema
+architecture:
+  image: /images/research-top-spin.svg
+  alt: Architecture diagram showing Astro pages, React island controls, spin grid JSON, and export utilities.
+  caption: Static Astro content loads a React island that interpolates bundled spin-grid JSON and exports images or current parameters.
 ---
 
-This is an example project using Astro islands and TypeScript.
+The explorer is an Astro page with an islanded React interface. It keeps the static site payload small while allowing the heatmap, vector view, sliders, and export controls to update in the browser.
+
+The current implementation uses precomputed JSON grids for production mode, basis, and energy combinations. The React island interpolates the active grid for the selected angles and renders both a matrix view and a spin-axis sketch.

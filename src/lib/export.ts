@@ -3,6 +3,7 @@
  */
 
 import type { ExportData, SpinParameters, CorrelationMatrix } from './spin-types';
+import { getHeatmapColor, getMatrixLabel } from './spin-utils';
 
 /**
  * Export canvas as PNG image
@@ -22,21 +23,81 @@ export function exportCanvasToPNG(canvas: HTMLCanvasElement, filename: string): 
   }, 'image/png');
 }
 
-/**
- * Export canvas as SVG
- * Note: This creates a simple SVG wrapper around a rasterized image.
- * For true vector export, we'd need to redraw using SVG elements.
- */
-export function exportCanvasToSVG(canvas: HTMLCanvasElement, filename: string): void {
-  const dataUrl = canvas.toDataURL('image/png');
-  const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="${canvas.width}" height="${canvas.height}" viewBox="0 0 ${canvas.width} ${canvas.height}">
-  <title>Spin Correlation Matrix</title>
-  <image width="${canvas.width}" height="${canvas.height}" xlink:href="${dataUrl}"/>
-</svg>`;
+function escapeXml(value: string): string {
+  return value.replace(/[<>&"']/g, (char) => {
+    switch (char) {
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '&':
+        return '&amp;';
+      case '"':
+        return '&quot;';
+      default:
+        return '&apos;';
+    }
+  });
+}
 
-  const blob = new Blob([svg], { type: 'image/svg+xml' });
+/**
+ * Export the heatmap as true SVG geometry and text.
+ */
+export function exportHeatmapToSVG(matrix: CorrelationMatrix, filename: string): void {
+  const width = 800;
+  const height = 800;
+  const margin = 120;
+  const cellSize = (Math.min(width, height) - 2 * margin) / matrix.size;
+  const matrixStartX = margin;
+  const matrixStartY = margin;
+  const labels = ['x', 'y', 'z'];
+  const elements: string[] = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">`,
+    '<title id="title">Spin Correlation Matrix C_ij</title>',
+    '<desc id="desc">Vector SVG heatmap of the current spin correlation matrix.</desc>',
+    '<rect width="100%" height="100%" fill="white"/>',
+    `<text x="${width / 2}" y="42" text-anchor="middle" font-family="sans-serif" font-size="28" font-weight="700">Spin Correlation Matrix C_ij</text>`,
+  ];
+
+  for (let i = 0; i < matrix.size; i++) {
+    elements.push(
+      `<text x="${matrixStartX + (i + 0.5) * cellSize}" y="${matrixStartY - 32}" text-anchor="middle" font-family="sans-serif" font-size="24">${labels[i]}</text>`,
+      `<text x="${matrixStartX - 32}" y="${matrixStartY + (i + 0.58) * cellSize}" text-anchor="end" font-family="sans-serif" font-size="24">${labels[i]}</text>`,
+    );
+  }
+
+  for (let row = 0; row < matrix.size; row++) {
+    for (let col = 0; col < matrix.size; col++) {
+      const value = matrix.data[row * matrix.size + col];
+      const x = matrixStartX + col * cellSize;
+      const y = matrixStartY + row * cellSize;
+      const textColor = Math.abs(value) > 0.3 ? '#fff' : '#000';
+      elements.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${getHeatmapColor(value)}" stroke="#333" stroke-width="2"/>`,
+        `<text x="${x + cellSize / 2}" y="${y + cellSize / 2 + 8}" text-anchor="middle" font-family="monospace" font-size="24" fill="${textColor}">${escapeXml(value.toFixed(3))}</text>`,
+        `<title>${escapeXml(`${getMatrixLabel(row, col)} = ${value.toFixed(4)}`)}</title>`,
+      );
+    }
+  }
+
+  const legendX = (width - 360) / 2;
+  const legendY = height - 92;
+  for (let i = 0; i < 180; i++) {
+    const value = -1 + (2 * i) / 179;
+    elements.push(
+      `<rect x="${legendX + i * 2}" y="${legendY}" width="2" height="28" fill="${getHeatmapColor(value)}"/>`,
+    );
+  }
+  elements.push(
+    `<rect x="${legendX}" y="${legendY}" width="360" height="28" fill="none" stroke="#333"/>`,
+    `<text x="${legendX - 12}" y="${legendY + 20}" text-anchor="end" font-family="sans-serif" font-size="18">-1</text>`,
+    `<text x="${legendX + 180}" y="${legendY + 54}" text-anchor="middle" font-family="sans-serif" font-size="18">0</text>`,
+    `<text x="${legendX + 372}" y="${legendY + 20}" text-anchor="start" font-family="sans-serif" font-size="18">+1</text>`,
+    '</svg>',
+  );
+
+  const blob = new Blob([elements.join('\n')], { type: 'image/svg+xml' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;

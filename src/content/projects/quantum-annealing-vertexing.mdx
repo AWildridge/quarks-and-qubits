@@ -1,0 +1,26 @@
+---
+title: Quantum Annealing Vertex Reconstruction
+date: 2019-03-22
+tags: [quantum, collider, reconstruction]
+language: Python
+summary: Quantum-annealing formulation for clustering charged-particle tracks into primary vertices.
+url: https://arxiv.org/abs/1903.08879
+data: https://arxiv.org/abs/1903.08879
+citation: S. Das, A. J. Wildridge, and A. Jung, arXiv:1903.08879, 2019.
+metrics:
+  - Tested clustering on artificial hadron-collider event samples
+  - Compared quantum annealing against constrained simulated annealing
+  - Demonstrated scaling limits and embedding costs for primary-vertex reconstruction
+reproduce:
+  - Read the linked arXiv preprint for the optimization construction
+  - Recreate artificial vertex and track samples from the described event model
+  - Compare annealer and simulated-annealing solutions under matched timing assumptions
+architecture:
+  image: /images/quantum-workflow.svg
+  alt: Diagram showing collision tracks converted to an optimization graph and solved with annealing.
+  caption: Track features are mapped into an optimization problem whose solution assigns tracks to candidate vertices.
+---
+
+Primary-vertex reconstruction can be formulated as a clustering problem over charged-particle
+tracks. This project explores how quantum annealing can solve small versions of that problem and
+where embedding overhead limits practical scaling.

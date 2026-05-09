@@ -1,99 +1,74 @@
 #!/usr/bin/env node
 /**
- * Validate BibTeX exports from publications
+ * Validate the generated bibliography used by the site.
  */
 
-// Simple inline BibTeX validation and export functions
-function sanitizeBibTeX(str) {
-  return str.replace(/[%$#_]/g, (match) => `\\${match}`);
-}
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
-function toBibTeX(pub) {
-  const firstAuthor = pub.authors[0]?.split(' ').pop() || 'Unknown';
-  const citeKey = `${firstAuthor}${pub.year}`;
-  const lines = [`@article{${citeKey},`];
-
-  lines.push(`  title = {${sanitizeBibTeX(pub.title)}},`);
-  lines.push(`  author = {${pub.authors.map(sanitizeBibTeX).join(' and ')}},`);
-  lines.push(`  year = {${pub.year}},`);
-
-  if (pub.venue) {
-    lines.push(`  journal = {${sanitizeBibTeX(pub.venue)}},`);
-  }
-  if (pub.doi) {
-    lines.push(`  doi = {${pub.doi}},`);
-  }
-
-  lines.push('}');
-  return lines.join('\n');
-}
-
-function exportBibTeX(publications) {
-  return publications.map(toBibTeX).join('\n\n') + '\n';
-}
+const ROOT = process.cwd();
+const BIB_FILE = path.join(ROOT, 'public', 'bibliography.bib');
+const PUB_DIR = path.join(ROOT, 'src', 'content', 'publications');
 
 function validateBibTeX(bibtex) {
   const errors = [];
-  const entryPattern = /@\w+\{[^,]+,[\s\S]*?\n\}/g;
-  const entries = bibtex.match(entryPattern) || [];
+  const starts = [...bibtex.matchAll(/^@\w+\{[^,]+,/gm)].map((match) => match.index || 0);
+  const entries = starts.map((start, index) => {
+    const end = index + 1 < starts.length ? starts[index + 1] : bibtex.length;
+    return bibtex.slice(start, end).trim();
+  });
 
   if (entries.length === 0) {
     errors.push('No valid BibTeX entries found');
   }
+  if (bibtex.trimStart() && !bibtex.trimStart().startsWith('@')) {
+    errors.push('Bibliography contains non-BibTeX content before the first entry');
+  }
 
   entries.forEach((entry, idx) => {
-    if (!/title\s*=/.test(entry)) {
-      errors.push(`Entry ${idx + 1}: Missing title field`);
-    }
-    if (!/author\s*=/.test(entry)) {
-      errors.push(`Entry ${idx + 1}: Missing author field`);
-    }
-    if (!/year\s*=/.test(entry)) {
-      errors.push(`Entry ${idx + 1}: Missing year field`);
-    }
+    if (!/title\s*=/.test(entry)) errors.push(`Entry ${idx + 1}: missing title field`);
+    if (!/author\s*=/.test(entry)) errors.push(`Entry ${idx + 1}: missing author field`);
+    if (!/year\s*=/.test(entry)) errors.push(`Entry ${idx + 1}: missing year field`);
 
-    const openBraces = (entry.match(/\{/g) || []).length;
-    const closeBraces = (entry.match(/\}/g) || []).length;
-    if (openBraces !== closeBraces) {
-      errors.push(`Entry ${idx + 1}: Unbalanced braces (${openBraces} open, ${closeBraces} close)`);
-    }
+    if (!entry.endsWith('}')) errors.push(`Entry ${idx + 1}: does not end with a closing brace`);
   });
 
-  return { valid: errors.length === 0, errors };
+  return { entries, errors };
 }
 
-// Test with sample data
-const testPubs = [
-  {
-    slug: 'test1',
-    title: 'Measurement of Top Quark Spin Correlations',
-    authors: ['A. Wildridge', 'B. Physicist'],
-    year: 2024,
-    venue: 'JHEP',
-    doi: '10.1234/jhep.2024.123',
-  },
-  {
-    slug: 'test2',
-    title: 'Quantum Algorithms for Lattice Problems',
-    authors: ['A. Wildridge', 'C. Researcher'],
-    year: 2023,
-    venue: 'Physical Review Letters',
-    doi: '10.1103/PhysRevLett.123.456789',
-  },
-];
+async function publicationCount() {
+  const files = await fs.readdir(PUB_DIR);
+  let count = 0;
+  for (const file of files.filter((name) => name.endsWith('.mdx'))) {
+    const raw = await fs.readFile(path.join(PUB_DIR, file), 'utf8');
+    if (!/^draft:\s*true\s*$/m.test(raw)) count++;
+  }
+  return count;
+}
 
-const bibtex = exportBibTeX(testPubs);
-const result = validateBibTeX(bibtex);
+async function main() {
+  const [bibtex, expectedCount] = await Promise.all([
+    fs.readFile(BIB_FILE, 'utf8'),
+    publicationCount(),
+  ]);
+  const { entries, errors } = validateBibTeX(bibtex);
 
-if (!result.valid) {
-  console.error('❌ BibTeX validation failed:');
-  result.errors.forEach((err) => console.error(`  - ${err}`));
+  if (entries.length !== expectedCount) {
+    errors.push(
+      `Expected ${expectedCount} bibliography entries from publication content, found ${entries.length}`,
+    );
+  }
+
+  if (errors.length > 0) {
+    console.error('BibTeX validation failed:');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    process.exit(1);
+  }
+
+  console.log(`BibTeX validation passed: ${entries.length} entries`);
+}
+
+main().catch((error) => {
+  console.error('BibTeX validation failed:', error.message);
   process.exit(1);
-}
-
-console.log('✅ BibTeX validation passed');
-console.log('\nGenerated BibTeX:');
-console.log('─'.repeat(60));
-console.log(bibtex);
-console.log('─'.repeat(60));
-console.log(`\n✓ ${testPubs.length} entries validated successfully`);
+});

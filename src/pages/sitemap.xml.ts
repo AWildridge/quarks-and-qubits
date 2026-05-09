@@ -7,8 +7,6 @@ export const GET: APIRoute = async () => {
   // Get all content collections
   const projects = await getCollection('projects');
   const publications = await getCollection('publications');
-  const talks = await getCollection('talks');
-  const posts = await getCollection('posts');
 
   // Define static pages
   const staticPages = [
@@ -17,10 +15,15 @@ export const GET: APIRoute = async () => {
     { url: 'projects', priority: 0.9, changefreq: 'weekly' },
     { url: 'publications', priority: 0.9, changefreq: 'monthly' },
     { url: 'talks', priority: 0.8, changefreq: 'monthly' },
+    { url: 'teaching', priority: 0.7, changefreq: 'monthly' },
     { url: 'posts', priority: 0.7, changefreq: 'weekly' },
     { url: 'cv', priority: 0.8, changefreq: 'monthly' },
     { url: 'contact', priority: 0.7, changefreq: 'yearly' },
+    { url: 'accessibility', priority: 0.3, changefreq: 'yearly' },
+    { url: 'privacy', priority: 0.3, changefreq: 'yearly' },
     { url: 'demos/spin-explorer', priority: 0.8, changefreq: 'monthly' },
+    { url: 'demos/model-card', priority: 0.7, changefreq: 'monthly' },
+    { url: 'demos/pegasus-embedder', priority: 0.7, changefreq: 'monthly' },
   ];
 
   // Build sitemap URLs
@@ -42,18 +45,6 @@ export const GET: APIRoute = async () => {
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: 'yearly',
       priority: 0.8,
-    })),
-    ...talks.map((talk) => ({
-      url: `${SITE_URL}/talks/${talk.slug}`,
-      lastmod: new Date().toISOString().split('T')[0],
-      changefreq: 'yearly',
-      priority: 0.6,
-    })),
-    ...posts.map((post) => ({
-      url: `${SITE_URL}/posts/${post.slug}`,
-      lastmod: new Date().toISOString().split('T')[0],
-      changefreq: 'monthly',
-      priority: 0.6,
     })),
   ];
 

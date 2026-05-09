@@ -1,0 +1,29 @@
+---
+title: Particle Physics Model Card Demo
+date: 2025-02-18
+tags: [machine-learning, model-card, visualization]
+language: JavaScript
+summary: Interactive model-card and confusion-matrix viewer for particle-physics classifier evaluation.
+demo: /demos/model-card/
+data: /data/model-card-demo.json
+citation: AJ Wildridge, Quarks & Qubits Model Card Demo, 2025.
+metrics:
+  - Three classifier profiles with threshold-dependent confusion matrices
+  - Precision, recall, specificity, and F1 score update live
+  - Keyboard-accessible controls and screen-reader live region
+reproduce:
+  - Run pnpm install
+  - Run pnpm dev and open /demos/model-card/
+  - Compare threshold changes across the three bundled model profiles
+architecture:
+  image: /images/ml-model-card.svg
+  alt: Diagram showing model profiles feeding a threshold control, confusion matrix, metrics, and model card fields.
+  caption: Static Astro content loads a small external script that recalculates model-card metrics in the browser.
+---
+
+This demo turns model-card review into a small interactive workflow. It uses synthetic classifier
+profiles to show how decision thresholds alter signal efficiency, background rejection, and summary
+metrics.
+
+The goal is to make model behavior easy to review before a classifier is used in an analysis note
+or public result.

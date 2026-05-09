@@ -72,7 +72,6 @@ const records: PublicationRecord[] = entries.map((p) => ({
       type="button"
       id="export-bibtex"
       class="px-3 py-1 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-      aria-label="Export filtered publications to BibTeX"
     >
       Export BibTeX
       <span class="ml-1" id="export-count">({records.length})</span>
@@ -90,7 +89,7 @@ const records: PublicationRecord[] = entries.map((p) => ({
           data-venue={p.venue || ''}
           data-tags={JSON.stringify(p.tags)}
         >
-          <h3 class="font-semibold text-lg" itemprop="name">
+          <h2 class="font-semibold text-lg" itemprop="name">
             {p.url ? (
               <a
                 href={p.url}
@@ -104,7 +103,7 @@ const records: PublicationRecord[] = entries.map((p) => ({
             ) : (
               p.title
             )}
-          </h3>
+          </h2>
           <p class="mt-1 text-sm text-gray-700 dark:text-gray-300" itemprop="author">
             {p.authors.join(', ')}
           </p>
@@ -119,7 +118,7 @@ const records: PublicationRecord[] = entries.map((p) => ({
               {p.year}
             </time>
           </p>
-          {p.doi && (
+          {p.doi && !p.doi.match(/^arXiv:/i) && (
             <p class="mt-1 text-sm">
               <span class="text-gray-600 dark:text-gray-400">DOI: </span>
               <a
@@ -220,7 +219,7 @@ const records: PublicationRecord[] = entries.map((p) => ({
       allItems.forEach((item) => {
         if (!item.classList.contains('hidden')) {
           const tags = JSON.parse(item.dataset.tags || '[]');
-          const titleEl = item.querySelector('h3');
+          const titleEl = item.querySelector('[itemprop="name"]');
           const authorsEl = item.querySelector('[itemprop="author"]');
           const yearEl = item.querySelector('[itemprop="datePublished"]');
           const doiEl = item.querySelector('[itemprop="identifier"]');

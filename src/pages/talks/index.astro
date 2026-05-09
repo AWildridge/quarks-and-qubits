@@ -31,9 +31,30 @@ const filteredTalks = talks.filter((talk) => {
 const pageTitle = 'Talks';
 const pageDescription =
   'Conference presentations, invited seminars, and workshop talks on quantum computing, machine learning, and particle physics.';
+const talksSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: pageTitle,
+  description: pageDescription,
+  itemListElement: talks.slice(0, 20).map((talk, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': 'Event',
+      name: talk.data.title,
+      startDate: talk.data.date.toISOString(),
+      location: talk.data.location || talk.data.venue || talk.data.event,
+      description: talk.data.event,
+      performer: {
+        '@type': 'Person',
+        name: 'Andrew James Wildridge',
+      },
+    },
+  })),
+};
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription}>
+<BaseLayout title={pageTitle} description={pageDescription} schema={talksSchema}>
   <h1>Talks &amp; Presentations</h1>
   <p class="mt-2 text-gray-700 dark:text-gray-300">
     {pageDescription}

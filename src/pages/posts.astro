@@ -1,16 +1,62 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-const posts = await getCollection('posts');
+const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const kinds = Array.from(new Set(posts.map((post) => post.data.kind))).sort();
+const selectedKind = Astro.url.searchParams.get('kind') || '';
+const filteredPosts = posts.filter((post) => !selectedKind || post.data.kind === selectedKind);
+const postsSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Posts',
+  blogPost: posts.map((post) => ({
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    datePublished: post.data.date.toISOString(),
+  })),
+};
 ---
 
-<BaseLayout title="Posts">
+<BaseLayout title="Posts" schema={postsSchema}>
   <h1>Posts</h1>
-  <ul class="mt-4 list-disc pl-6">
+  {
+    kinds.length > 0 && (
+      <nav class="mt-4 flex flex-wrap gap-2" aria-label="Post categories">
+        {kinds.map((kind) => (
+          <a
+            href={`/posts/?kind=${kind}`}
+            class:list={[
+              'inline-flex items-center rounded-full px-2 py-0.5 text-xs hover:underline',
+              selectedKind === kind
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300',
+            ]}
+          >
+            {kind === 'note' ? 'Notes' : 'Posts'}
+          </a>
+        ))}
+      </nav>
+    )
+  }
+  <ul class="mt-4 space-y-4">
     {
-      posts.map((p) => (
-        <li>
-          {p.data.title} — {new Date(p.data.date).toLocaleDateString()}
+      filteredPosts.map((p) => (
+        <li class="border-l-4 border-blue-500 pl-4">
+          <h2 class="font-semibold">
+            <a class="text-blue-700 dark:text-blue-400 hover:underline" href={`/posts/${p.slug}/`}>
+              {p.data.title}
+            </a>
+          </h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            <span class="capitalize">{p.data.kind}</span>
+            {' · '}
+            <time datetime={p.data.date.toISOString()}>
+              {new Date(p.data.date).toLocaleDateString()}
+            </time>
+          </p>
+          {p.data.summary && <p class="mt-1 text-gray-700 dark:text-gray-300">{p.data.summary}</p>}
         </li>
       ))
     }

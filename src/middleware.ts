@@ -5,15 +5,15 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
   void context;
   const response = await next();
 
-  // Content Security Policy
-  // Allow self, inline styles (Astro uses them), and Plausible analytics
+  // Content Security Policy. Static hosting also reads public/_headers.
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://plausible.io",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "script-src 'self' https://plausible.io",
+    "style-src 'self' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https:",
     "connect-src 'self' https://plausible.io",
+    'frame-src https://www.youtube-nocookie.com',
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

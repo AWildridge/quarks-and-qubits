@@ -9,7 +9,7 @@ type Props = {
 export default function Card({ title, children, href }: Props) {
   const content = (
     <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-4 hover:shadow-sm transition-shadow">
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
+      <h2 className="text-lg font-semibold mb-2">{title}</h2>
       <div className="text-sm text-gray-700 dark:text-gray-300">{children}</div>
     </div>
   );

@@ -108,7 +108,7 @@ async function fetchCdsBibTeX(cdsUrl) {
       const res = await fetch(u, { headers: { Accept: 'text/plain' } });
       if (res.ok) {
         const text = (await res.text()).trim();
-        if (text) return text;
+        if (/^@\w+\{/.test(text)) return text;
       }
     }
   } catch {
@@ -129,12 +129,78 @@ function normalizeBibtexEntry(entry, slug) {
   return e + '\n';
 }
 
+function sanitizeBibTeX(str = '') {
+  return String(str).replace(/[{}%$#_&]/g, (match) => `\\${match}`);
+}
+
+function normalizeIdentifier(value = '') {
+  const raw = String(value).trim();
+  if (!raw) return {};
+  const arxiv = raw.match(/(?:arXiv:|10\.48550\/arXiv\.)(\d{4}\.\d{4,5}(?:v\d+)?)/i);
+  if (arxiv) {
+    return {
+      eprint: arxiv[1],
+      archivePrefix: 'arXiv',
+      url: `https://arxiv.org/abs/${arxiv[1]}`,
+    };
+  }
+  const doi = raw.replace(/^doi:\s*/i, '');
+  return { doi };
+}
+
+function citeKeyFor(pub) {
+  const firstAuthor = Array.isArray(pub.authors)
+    ? pub.authors[0]
+    : typeof pub.authors === 'string'
+      ? pub.authors
+      : 'Wildridge';
+  const authorKey =
+    String(firstAuthor)
+      .split(/\s+/)
+      .filter(Boolean)
+      .pop()
+      ?.replace(/[^A-Za-z0-9]/g, '') || 'Wildridge';
+  const titleKey = String(pub.title || pub.slug || 'publication')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .split(/\s+/)
+    .filter((word) => word.length > 3)
+    .slice(0, 2)
+    .join('');
+  return `${authorKey}${pub.year || '0000'}${titleKey}`;
+}
+
+function localBibTeX(pub) {
+  const authors = Array.isArray(pub.authors)
+    ? pub.authors
+    : typeof pub.authors === 'string'
+      ? [pub.authors]
+      : ['Andrew J. Wildridge'];
+  const identifier = normalizeIdentifier(pub.doi);
+  const url = pub.url || identifier.url;
+  const lines = [`@article{${citeKeyFor(pub)},`];
+  lines.push(`  title = {${sanitizeBibTeX(pub.title || pub.slug)}},`);
+  lines.push(`  author = {${authors.map(sanitizeBibTeX).join(' and ')}},`);
+  lines.push(`  year = {${pub.year || 'n.d.'}},`);
+  if (pub.venue) lines.push(`  journal = {${sanitizeBibTeX(pub.venue)}},`);
+  if (identifier.doi) lines.push(`  doi = {${sanitizeBibTeX(identifier.doi)}},`);
+  if (identifier.eprint) {
+    lines.push(`  eprint = {${sanitizeBibTeX(identifier.eprint)}},`);
+    lines.push(`  archivePrefix = {${identifier.archivePrefix}},`);
+  }
+  if (url) lines.push(`  url = {${sanitizeBibTeX(url)}},`);
+  lines.push('}');
+  return `${lines.join('\n')}\n`;
+}
+
 async function main() {
   console.log('🔎 Reading publications...');
   const pubs = await readPublications();
   console.log(`• Found ${pubs.length} publication files`);
 
   const entries = [];
+  let fetchedCount = 0;
+  let fallbackCount = 0;
   for (const pub of pubs) {
     const { slug, title, doi, url } = pub;
     let bib = null;
@@ -169,12 +235,22 @@ async function main() {
       if (bib) {
         const normalized = normalizeBibtexEntry(bib, slug);
         entries.push(normalized);
+        fetchedCount++;
         console.log(`✓ ${slug}: fetched via ${tried[tried.length - 1]}`);
       } else {
-        console.warn(`⚠️  ${slug}: no BibTeX found (tried ${tried.join(', ')})`);
+        entries.push(localBibTeX(pub));
+        fallbackCount++;
+        console.warn(
+          `⚠️  ${slug}: no BibTeX found (tried ${tried.join(', ')}); used local frontmatter fallback`,
+        );
       }
     } catch (err) {
-      console.warn(`⚠️  ${slug}: error during fetch (${tried.join(', ')}):`, err.message);
+      entries.push(localBibTeX(pub));
+      fallbackCount++;
+      console.warn(
+        `⚠️  ${slug}: error during fetch (${tried.join(', ')}); used local frontmatter fallback:`,
+        err.message,
+      );
     }
   }
 
@@ -185,11 +261,7 @@ async function main() {
   console.log(
     `\n📝 Wrote ${entries.length} BibTeX ${entries.length === 1 ? 'entry' : 'entries'} to ${path.relative(ROOT, OUT_FILE)}`,
   );
-  if (entries.length < pubs.length) {
-    console.log(
-      `ℹ️  Missing ${pubs.length - entries.length} ${pubs.length - entries.length === 1 ? 'entry' : 'entries'} (see warnings above).`,
-    );
-  }
+  console.log(`✓ ${fetchedCount} fetched, ${fallbackCount} generated from local frontmatter`);
 }
 
 main().catch((err) => {

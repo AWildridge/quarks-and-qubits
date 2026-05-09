@@ -86,7 +86,7 @@ const displayed = filtered.slice(0, n);
           class="block border rounded p-3 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           href={`/projects/${p.slug}/`}
         >
-          <h3 class="font-semibold">{p.title}</h3>
+          <h2 class="font-semibold">{p.title}</h2>
           {p.summary && <p class="text-sm mt-1 text-gray-700 dark:text-gray-300">{p.summary}</p>}
           <div class="mt-2 flex gap-2 flex-wrap">
             {p.tags.slice(0, 3).map((t) => (

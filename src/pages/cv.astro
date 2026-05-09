@@ -77,6 +77,14 @@ const teaching = (cvData.teaching ?? []) as Teaching[];
 const awards = (cvData.awards ?? []) as Award[];
 const service = (cvData.service ?? []) as Service[];
 const skills = (cvData.skills ?? {}) as Skills;
+
+function publicationLink(pub: { doi?: string }) {
+  const doi = pub.doi?.trim();
+  if (!doi) return null;
+  const arxivId = doi.match(/^arXiv:(.+)$/i)?.[1] || doi.match(/^10\.48550\/arXiv\.(.+)$/)?.[1];
+  if (arxivId) return { href: `https://arxiv.org/abs/${arxivId}`, label: doi };
+  return { href: `https://doi.org/${doi}`, label: doi };
+}
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -242,17 +250,17 @@ const skills = (cvData.skills ?? {}) as Skills;
                   <span class="font-medium">{pub.authors.join(', ')}</span>. &quot;{pub.title}
                   &quot;.
                   <span class="italic">{pub.venue}</span>, {pub.year}.
-                  {pub.doi && (
+                  {publicationLink(pub) && (
                     <>
                       {' '}
-                      DOI:{' '}
+                      Link:{' '}
                       <a
-                        href={`https://doi.org/${pub.doi}`}
+                        href={publicationLink(pub)?.href}
                         class="text-blue-600 dark:text-blue-400 underline hover:no-underline print:text-black"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {pub.doi}
+                        {publicationLink(pub)?.label}
                       </a>
                     </>
                   )}

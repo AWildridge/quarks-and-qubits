@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 720 360">
+  <title id="title">Model-card evaluation workflow</title>
+  <desc id="desc">Event features feed a classifier, confusion matrix, metric summary, and model-card documentation.</desc>
+  <rect width="720" height="360" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#0f766e" stroke-width="3">
+    <rect x="50" y="70" width="140" height="90" rx="8"/>
+    <rect x="285" y="70" width="150" height="90" rx="8"/>
+    <rect x="530" y="70" width="140" height="90" rx="8"/>
+    <rect x="285" y="215" width="150" height="90" rx="8"/>
+  </g>
+  <g font-family="sans-serif" fill="#0f172a" text-anchor="middle">
+    <text x="120" y="122" font-size="20">Events</text>
+    <text x="360" y="108" font-size="20">Classifier</text>
+    <text x="360" y="136" font-size="16">threshold</text>
+    <text x="600" y="108" font-size="20">Confusion</text>
+    <text x="600" y="136" font-size="20">Matrix</text>
+    <text x="360" y="252" font-size="20">Model Card</text>
+    <text x="360" y="278" font-size="16">limits + use</text>
+  </g>
+  <g stroke="#334155" stroke-width="4" marker-end="url(#arrow)">
+    <path d="M190 115h85"/>
+    <path d="M435 115h85"/>
+    <path d="M360 160v45"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2 2l8 4-8 4z" fill="#334155"/>
+    </marker>
+  </defs>
+</svg>

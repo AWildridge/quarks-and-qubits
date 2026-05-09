@@ -14,7 +14,7 @@ import type {
 import { loadGrid, getCorrelationMatrix, computeSpinAxes } from '../../lib/spin-utils';
 import {
   exportCanvasToPNG,
-  exportCanvasToSVG,
+  exportHeatmapToSVG,
   exportParametersToJSON,
   getTimestampString,
 } from '../../lib/export';
@@ -81,10 +81,9 @@ export function Explorer() {
   };
 
   const handleExportSVG = () => {
-    const canvas = heatmapRef.current?.querySelector('canvas');
-    if (canvas) {
+    if (matrix) {
       const filename = `spin-correlation-${getTimestampString()}.svg`;
-      exportCanvasToSVG(canvas, filename);
+      exportHeatmapToSVG(matrix, filename);
     }
   };
 

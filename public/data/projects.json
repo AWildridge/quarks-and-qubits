@@ -1,0 +1,22 @@
+[
+  {
+    "slug": "spin-correlation-explorer",
+    "title": "Spin Correlation Explorer",
+    "tags": ["top-quark", "visualization", "physics"]
+  },
+  {
+    "slug": "model-card-demo",
+    "title": "Particle Physics Model Card Demo",
+    "tags": ["machine-learning", "model-card", "visualization"]
+  },
+  {
+    "slug": "quantum-annealing-vertexing",
+    "title": "Quantum Annealing Vertex Reconstruction",
+    "tags": ["quantum", "collider", "reconstruction"]
+  },
+  {
+    "slug": "bumblebee-foundation-model",
+    "title": "Bumblebee Foundation Model Studies",
+    "tags": ["particle-physics", "foundation-model", "anomaly-detection"]
+  }
+]

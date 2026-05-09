@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 720 360">
+  <title id="title">Quantum-inspired reconstruction workflow</title>
+  <desc id="desc">Track data is mapped to an optimization graph, embedded, and solved with an annealing workflow.</desc>
+  <rect width="720" height="360" fill="#f8fafc"/>
+  <g font-family="sans-serif" font-size="20" fill="#0f172a" text-anchor="middle">
+    <rect x="45" y="110" width="145" height="100" rx="8" fill="#dcfce7" stroke="#15803d"/>
+    <text x="117" y="166">Tracks</text>
+    <rect x="290" y="110" width="145" height="100" rx="8" fill="#fef3c7" stroke="#b45309"/>
+    <text x="362" y="154">QUBO</text>
+    <text x="362" y="182">Graph</text>
+    <rect x="530" y="110" width="145" height="100" rx="8" fill="#ede9fe" stroke="#6d28d9"/>
+    <text x="602" y="154">Annealing</text>
+    <text x="602" y="182">Solution</text>
+  </g>
+  <g stroke="#334155" stroke-width="4" marker-end="url(#arrow)">
+    <path d="M190 160h90"/>
+    <path d="M435 160h85"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2 2l8 4-8 4z" fill="#334155"/>
+    </marker>
+  </defs>
+</svg>

@@ -1,0 +1,5 @@
+{
+  "models": ["baseline", "calibrated", "conservative"],
+  "metrics": ["precision", "recall", "specificity", "f1"],
+  "note": "Synthetic demo data for the interactive model-card viewer."
+}

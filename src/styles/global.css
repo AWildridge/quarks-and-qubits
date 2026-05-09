@@ -16,3 +16,42 @@ body {
     color: #f3f4f6;
   }
 }
+
+@layer components {
+  .nav-link {
+    @apply rounded px-1 py-0.5 text-blue-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-blue-400;
+  }
+  .theme-button {
+    @apply h-9 w-9 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700;
+  }
+  .theme-button[aria-pressed='true'] {
+    @apply border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-500;
+  }
+  .button-primary {
+    @apply inline-flex items-center rounded-md bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600;
+  }
+  .button-secondary {
+    @apply inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-800;
+  }
+  .matrix-cell {
+    @apply min-h-20 rounded-md border border-gray-300 p-4 text-center text-2xl font-bold dark:border-gray-700;
+  }
+  .metric-box {
+    @apply rounded-md border border-gray-300 p-4 dark:border-gray-700;
+  }
+  .metric-box dt {
+    @apply text-sm text-gray-600 dark:text-gray-400;
+  }
+  .metric-box dd {
+    @apply mt-1 text-3xl font-bold;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

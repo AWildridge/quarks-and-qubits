@@ -7,8 +7,26 @@
 import puppeteer from 'puppeteer';
 import { AxePuppeteer } from '@axe-core/puppeteer';
 
-const BASE_URL = 'http://127.0.0.1:4321';
-const PAGES = ['/cv', '/contact', '/demos/spin-explorer'];
+const BASE_URL = process.env.AXE_BASE_URL || 'http://127.0.0.1:4321';
+const PAGES = [
+  '/',
+  '/research',
+  '/projects',
+  '/projects/example',
+  '/projects/model-card-demo',
+  '/projects/quantum-annealing-vertexing',
+  '/projects/bumblebee-foundation-model',
+  '/publications',
+  '/cv',
+  '/contact',
+  '/talks',
+  '/teaching',
+  '/posts',
+  '/posts/hello-world',
+  '/demos/spin-explorer',
+  '/demos/model-card',
+  '/demos/pegasus-embedder',
+];
 
 async function scanPage(browser, url) {
   console.log(`\n🔍 Scanning: ${url}`);
@@ -19,13 +37,16 @@ async function scanPage(browser, url) {
   try {
     await page.goto(url, { waitUntil: 'networkidle0', timeout: 15000 });
 
-    // For demo pages, wait for React to hydrate
-    if (url.includes('/demos/')) {
+    if (url.includes('/demos/spin-explorer')) {
       try {
         await page.waitForSelector('canvas', { timeout: 10000 });
       } catch {
         console.log('⚠️  No canvas found, continuing scan...');
       }
+    }
+
+    if (url.includes('/demos/model-card')) {
+      await page.waitForSelector('#precision-value:not(:empty)', { timeout: 10000 });
     }
 
     const results = await new AxePuppeteer(page).analyze();
@@ -103,12 +124,9 @@ async function main() {
     console.log(`Total violations: ${totalViolations}`);
     console.log(`Critical violations: ${criticalViolations}`);
 
-    if (criticalViolations > 0) {
-      console.log('\n❌ FAIL: Critical accessibility violations found!');
+    if (totalViolations > 0) {
+      console.log('\n❌ FAIL: Accessibility violations found!');
       process.exit(1);
-    } else if (totalViolations > 0) {
-      console.log('\n⚠️  WARNING: Non-critical violations found. Please review.');
-      process.exit(0);
     } else {
       console.log('\n✅ SUCCESS: No accessibility violations found!');
       process.exit(0);

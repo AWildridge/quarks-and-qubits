@@ -3,26 +3,52 @@ import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
 
 export async function GET(context: APIContext) {
-  const posts = await getCollection('posts');
+  const [posts, publications, talks] = await Promise.all([
+    getCollection('posts'),
+    getCollection('publications'),
+    getCollection('talks'),
+  ]);
 
-  // Filter out drafts and sort by date descending
-  const publishedPosts = posts
+  const postItems = posts
     .filter((post) => !post.data.draft)
-    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-
-  return rss({
-    title: 'Quarks & Qubits',
-    description:
-      'Insights on quantum computing, machine learning, and particle physics from AJ Wildridge',
-    site: context.site || 'https://aj-wildridge.web.cern.ch',
-    items: publishedPosts.map((post) => ({
+    .map((post) => ({
       title: post.data.title,
       description: post.data.summary || '',
       pubDate: post.data.date,
       link: `/posts/${post.slug}/`,
-      categories: post.data.tags,
-    })),
-    customData: `<language>en-us</language>`,
-    stylesheet: '/rss-styles.xsl',
+      categories: [post.data.kind, ...post.data.tags],
+    }));
+
+  const publicationItems = publications
+    .filter((publication) => !publication.data.draft)
+    .map((publication) => ({
+      title: `Publication: ${publication.data.title}`,
+      description: [publication.data.venue, String(publication.data.year)]
+        .filter(Boolean)
+        .join(', '),
+      pubDate: new Date(publication.data.year, 0, 1),
+      link: `/publications/${publication.slug}/`,
+      categories: ['publication', ...publication.data.tags],
+    }));
+
+  const talkItems = talks.map((talk) => ({
+    title: `Talk: ${talk.data.title}`,
+    description: [talk.data.event, talk.data.venue, talk.data.location].filter(Boolean).join(', '),
+    pubDate: talk.data.date,
+    link: '/talks/',
+    categories: ['talk', ...talk.data.tags],
+  }));
+
+  const items = [...postItems, ...publicationItems, ...talkItems].sort(
+    (a, b) => b.pubDate.getTime() - a.pubDate.getTime(),
+  );
+
+  return rss({
+    title: 'Quarks & Qubits Latest',
+    description:
+      'Latest posts, publications, and talks from AJ Wildridge on quantum computing, machine learning, and particle physics.',
+    site: context.site || 'https://aj-wildridge.web.cern.ch',
+    items,
+    customData: '<language>en-us</language>',
   });
 }

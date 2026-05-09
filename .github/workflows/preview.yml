@@ -1,0 +1,61 @@
+name: PR Preview
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: preview-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment: preview
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Build and validate preview
+        run: |
+          pnpm build:check
+          pnpm html:validate
+          node scripts/validate-bibtex.js
+          node scripts/validate-security-headers.js
+          node scripts/validate-sitemap.js
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.CERN_WEB_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.CERN_WEB_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy PR preview
+        env:
+          HOST: ${{ secrets.CERN_WEB_HOST }}
+          USER: ${{ secrets.CERN_WEB_USER }}
+          WEB_PATH: ${{ secrets.CERN_WEB_PATH }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          PREVIEW_PATH="$WEB_PATH/previews/pr-$PR_NUMBER"
+          ssh -i ~/.ssh/deploy_key "$USER@$HOST" "mkdir -p '$PREVIEW_PATH'"
+          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" dist/ "$USER@$HOST:$PREVIEW_PATH/"
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-pr-${{ github.event.pull_request.number }}
+          path: dist/

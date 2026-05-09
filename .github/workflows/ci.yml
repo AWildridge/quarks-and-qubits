@@ -45,7 +45,7 @@ jobs:
         run: npx wait-on http://127.0.0.1:4321 --timeout 60000
 
       - name: Link check
-        run: npx linkinator http://127.0.0.1:4321 --recurse --timeout 30000
+        run: npx linkinator http://127.0.0.1:4321 --recurse --timeout 30000 --skip "https://aj-wildridge.web.cern.ch.*"
 
       - name: Axe accessibility scan
         run: node scripts/run-axe-scan.js
@@ -63,15 +63,10 @@ jobs:
           path: .lighthouseci/
 
       - name: Validate sitemap
-        run: |
-          curl -s http://127.0.0.1:4321/sitemap.xml > sitemap.xml
-          npx xmllint --noout sitemap.xml
+        run: node scripts/validate-sitemap.js
 
-      - name: Check security headers
-        run: |
-          curl -sI http://127.0.0.1:4321/ | grep -i 'content-security-policy' || (echo "Missing CSP header" && exit 1)
-          curl -sI http://127.0.0.1:4321/ | grep -i 'x-frame-options' || (echo "Missing X-Frame-Options" && exit 1)
-          curl -sI http://127.0.0.1:4321/ | grep -i 'x-content-type-options' || (echo "Missing X-Content-Type-Options" && exit 1)
+      - name: Check production security headers
+        run: node scripts/validate-security-headers.js
 
       - name: Check for mixed content
         run: |

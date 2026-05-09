@@ -1,0 +1,338 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const pegasusSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Quantum Minor-Embedding Visualizer',
+  applicationCategory: 'EducationalApplication',
+  operatingSystem: 'Web',
+  description:
+    'Interactive Pegasus P16-inspired minor-embedding visualizer for complete bipartite graphs.',
+  author: {
+    '@type': 'Person',
+    name: 'Andrew James Wildridge',
+  },
+};
+---
+
+<BaseLayout
+  title="Pegasus Embedder"
+  description="Interactive minor-embedding visualizer with deterministic mapping export for complete bipartite graphs."
+  schema={pegasusSchema}
+>
+  <h1>Quantum Minor-Embedding Visualizer</h1>
+  <p class="mt-3 max-w-3xl text-gray-700 dark:text-gray-300">
+    Build a deterministic Pegasus P16-inspired mapping for K_m x K_n graphs, inspect chain lengths,
+    and export the mapping as JSON.
+  </p>
+
+  <section class="mt-8 grid gap-6 lg:grid-cols-[18rem_1fr]" aria-labelledby="embedder-controls">
+    <div>
+      <h2 id="embedder-controls" class="text-lg font-semibold">Controls</h2>
+      <form id="pegasus-form" class="mt-4 space-y-4">
+        <label class="block">
+          <span class="block text-sm font-medium">Left partition m</span>
+          <input
+            id="left-size"
+            name="left"
+            type="number"
+            min="2"
+            max="12"
+            value="4"
+            class="mt-1 w-full rounded border px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
+          />
+        </label>
+        <label class="block">
+          <span class="block text-sm font-medium">Right partition n</span>
+          <input
+            id="right-size"
+            name="right"
+            type="number"
+            min="2"
+            max="12"
+            value="4"
+            class="mt-1 w-full rounded border px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
+          />
+        </label>
+        <label class="block">
+          <span class="block text-sm font-medium">Chain strength</span>
+          <input
+            id="chain-strength"
+            name="chainStrength"
+            type="range"
+            min="1"
+            max="5"
+            step="0.5"
+            value="2"
+            class="mt-2 w-full"
+          />
+          <span
+            id="chain-strength-value"
+            class="mt-1 block text-sm text-gray-600 dark:text-gray-400">2.0</span
+          >
+        </label>
+        <label class="block">
+          <span class="block text-sm font-medium">Seed</span>
+          <input
+            id="seed"
+            name="seed"
+            type="number"
+            min="0"
+            max="9999"
+            value="17"
+            class="mt-1 w-full rounded border px-3 py-2 dark:bg-gray-800 dark:border-gray-600"
+          />
+        </label>
+        <label class="flex items-center gap-2">
+          <input id="deterministic" name="deterministic" type="checkbox" checked="" />
+          <span class="text-sm font-medium">Deterministic layout</span>
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >Generate</button
+          >
+          <button
+            type="button"
+            id="export-mapping"
+            class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >Export JSON</button
+          >
+        </div>
+      </form>
+    </div>
+
+    <div aria-live="polite">
+      <h2 class="text-lg font-semibold">Embedding</h2>
+      <div class="mt-4 overflow-x-auto">
+        <svg
+          id="embedding-svg"
+          role="img"
+          aria-labelledby="embedding-title embedding-desc"
+          class="w-full min-w-[36rem] rounded border border-gray-300 dark:border-gray-700 bg-white"
+          viewBox="0 0 760 420"
+        >
+          <title id="embedding-title">Pegasus embedding diagram</title>
+          <desc id="embedding-desc">Generated minor embedding of a complete bipartite graph.</desc>
+        </svg>
+      </div>
+
+      <section class="mt-6" aria-labelledby="mapping-summary-heading">
+        <h3 id="mapping-summary-heading" class="font-semibold">Mapping Summary</h3>
+        <dl class="mt-3 grid gap-3 sm:grid-cols-3">
+          <div class="metric-box">
+            <dt>Logical nodes</dt>
+            <dd id="logical-count">0</dd>
+          </div>
+          <div class="metric-box">
+            <dt>Physical qubits</dt>
+            <dd id="physical-count">0</dd>
+          </div>
+          <div class="metric-box">
+            <dt>Mean chain length</dt>
+            <dd id="mean-chain">0</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="mt-6" aria-labelledby="histogram-heading">
+        <h3 id="histogram-heading" class="font-semibold">Chain-Length Histogram</h3>
+        <ul id="chain-histogram" class="mt-3 grid gap-2 sm:grid-cols-3"></ul>
+      </section>
+    </div>
+  </section>
+
+  <section class="mt-8" aria-labelledby="schema-heading">
+    <h2 id="schema-heading" class="text-lg font-semibold">Export Schema</h2>
+    <pre
+      class="mt-3 overflow-x-auto rounded bg-gray-100 dark:bg-gray-900 p-4 text-sm"><code>&#123;
+  "schema": "quarks-and-qubits/pegasus-mapping@1",
+  "graph": &#123; "type": "complete-bipartite", "m": 4, "n": 4 &#125;,
+  "hardware": "pegasus-p16-inspired",
+  "parameters": &#123; "chainStrength": 2, "seed": 17, "deterministic": true &#125;,
+  "mapping": [&#123; "logical": "L0", "chain": ["q0", "q1"] &#125;]
+&#125;</code></pre>
+  </section>
+
+  <script is:inline>
+    const form = document.getElementById('pegasus-form');
+    const svg = document.getElementById('embedding-svg');
+    const exportButton = document.getElementById('export-mapping');
+    const chainStrength = document.getElementById('chain-strength');
+    const chainStrengthValue = document.getElementById('chain-strength-value');
+    const histogram = document.getElementById('chain-histogram');
+    const logicalCount = document.getElementById('logical-count');
+    const physicalCount = document.getElementById('physical-count');
+    const meanChain = document.getElementById('mean-chain');
+    let currentMapping = null;
+
+    function seededOffset(seed, index) {
+      const value = Math.sin((seed + 1) * (index + 11)) * 10000;
+      return value - Math.floor(value);
+    }
+
+    function createMapping() {
+      const m = Number(document.getElementById('left-size').value);
+      const n = Number(document.getElementById('right-size').value);
+      const strength = Number(chainStrength.value);
+      const seed = Number(document.getElementById('seed').value);
+      const deterministic = document.getElementById('deterministic').checked;
+      const mapping = [];
+      let qubit = 0;
+
+      for (let i = 0; i < m; i++) {
+        const length = 2 + ((deterministic ? i : Math.floor(seededOffset(seed, i) * 4)) % 3);
+        mapping.push({
+          logical: `L${i}`,
+          partition: 'left',
+          chain: Array.from({ length }, () => `q${qubit++}`),
+        });
+      }
+
+      for (let i = 0; i < n; i++) {
+        const length =
+          2 + ((deterministic ? i + m : Math.floor(seededOffset(seed, i + m) * 4)) % 3);
+        mapping.push({
+          logical: `R${i}`,
+          partition: 'right',
+          chain: Array.from({ length }, () => `q${qubit++}`),
+        });
+      }
+
+      return {
+        schema: 'quarks-and-qubits/pegasus-mapping@1',
+        graph: { type: 'complete-bipartite', m, n },
+        hardware: 'pegasus-p16-inspired',
+        parameters: { chainStrength: strength, seed, deterministic },
+        mapping,
+        generatedAt: new Date().toISOString(),
+      };
+    }
+
+    function svgElement(name, attrs = {}) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', name);
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, String(value)));
+      return el;
+    }
+
+    function render() {
+      chainStrengthValue.textContent = Number(chainStrength.value).toFixed(1);
+      currentMapping = createMapping();
+      svg.textContent = '';
+      svg.append(
+        svgElement('title', { id: 'embedding-title' }),
+        svgElement('desc', { id: 'embedding-desc' }),
+      );
+      svg.querySelector('title').textContent = 'Pegasus embedding diagram';
+      svg.querySelector('desc').textContent =
+        `K_${currentMapping.graph.m},${currentMapping.graph.n} mapped to ${currentMapping.mapping.length} chains.`;
+
+      const left = currentMapping.mapping.filter((item) => item.partition === 'left');
+      const right = currentMapping.mapping.filter((item) => item.partition === 'right');
+      const nodePosition = new Map();
+      const top = 56;
+      const height = 300;
+
+      left.forEach((item, index) => {
+        nodePosition.set(item.logical, {
+          x: 150,
+          y: top + (height * (index + 1)) / (left.length + 1),
+        });
+      });
+      right.forEach((item, index) => {
+        nodePosition.set(item.logical, {
+          x: 610,
+          y: top + (height * (index + 1)) / (right.length + 1),
+        });
+      });
+
+      left.forEach((l) => {
+        right.forEach((r) => {
+          const a = nodePosition.get(l.logical);
+          const b = nodePosition.get(r.logical);
+          svg.append(
+            svgElement('line', {
+              x1: a.x,
+              y1: a.y,
+              x2: b.x,
+              y2: b.y,
+              stroke: '#d1d5db',
+              'stroke-width': 1,
+            }),
+          );
+        });
+      });
+
+      currentMapping.mapping.forEach((item) => {
+        const pos = nodePosition.get(item.logical);
+        const color = item.partition === 'left' ? '#2563eb' : '#16a34a';
+        item.chain.forEach((qubit, index) => {
+          svg.append(
+            svgElement('circle', {
+              cx: pos.x + (index - (item.chain.length - 1) / 2) * 18,
+              cy: pos.y + 28,
+              r: 6,
+              fill: color,
+              opacity: 0.55,
+            }),
+          );
+          const label = svgElement('title');
+          label.textContent = `${item.logical} physical qubit ${qubit}`;
+          svg.lastElementChild.append(label);
+        });
+        svg.append(svgElement('circle', { cx: pos.x, cy: pos.y, r: 18, fill: color }));
+        const text = svgElement('text', {
+          x: pos.x,
+          y: pos.y + 5,
+          'text-anchor': 'middle',
+          fill: 'white',
+          'font-size': 14,
+          'font-weight': 700,
+        });
+        text.textContent = item.logical;
+        svg.append(text);
+      });
+
+      const chainLengths = currentMapping.mapping.map((item) => item.chain.length);
+      logicalCount.textContent = String(currentMapping.mapping.length);
+      physicalCount.textContent = String(chainLengths.reduce((sum, length) => sum + length, 0));
+      meanChain.textContent = (
+        chainLengths.reduce((sum, length) => sum + length, 0) / chainLengths.length
+      ).toFixed(2);
+
+      const counts = chainLengths.reduce((acc, length) => {
+        acc[length] = (acc[length] || 0) + 1;
+        return acc;
+      }, {});
+      histogram.textContent = '';
+      Object.entries(counts).forEach(([length, count]) => {
+        const item = document.createElement('li');
+        item.className = 'rounded border border-gray-200 dark:border-gray-700 p-3';
+        item.textContent = `${count} chains of length ${length}`;
+        histogram.append(item);
+      });
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      render();
+    });
+    form.addEventListener('input', render);
+    exportButton.addEventListener('click', () => {
+      if (!currentMapping) render();
+      const blob = new Blob([JSON.stringify(currentMapping, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `pegasus-mapping-k${currentMapping.graph.m}-${currentMapping.graph.n}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    render();
+  </script>
+</BaseLayout>

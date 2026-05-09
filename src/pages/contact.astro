@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import cvData from '../data/cv.json';
+
+const email = cvData.email || 'awildrid@purdue.edu';
 ---
 
 <BaseLayout title="Contact" description="Get in touch with AJ Wildridge">
@@ -39,6 +42,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   href="#"
                   id="email-link"
                   class="text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+                  data-user={email.split('@')[0]}
+                  data-domain={email.split('@')[1]}
                 >
                   Click to reveal email
                 </a>
@@ -74,7 +79,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
           </div>
 
-          <!-- ORCID -->
+          <!-- INSPIRE-HEP -->
           <div class="flex items-start gap-3">
             <svg
               class="w-6 h-6 mt-1 flex-shrink-0 text-blue-600 dark:text-blue-400"
@@ -87,15 +92,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               ></path>
             </svg>
             <div>
-              <h3 class="font-semibold mb-1">ORCID</h3>
+              <h3 class="font-semibold mb-1">INSPIRE-HEP</h3>
               <p>
                 <a
-                  href="https://orcid.org/0000-0002-1234-5678"
+                  href="https://inspirehep.net/authors/1778335"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
                 >
-                  0000-0002-1234-5678
+                  INSPIRE-HEP profile
                 </a>
               </p>
             </div>
@@ -150,7 +155,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <section>
         <h2 class="text-2xl font-bold mb-4">Office</h2>
-        <address class="not-italic text-gray-700 dark:text-gray-300">
+        <address class="not-italic leading-8 text-gray-700 dark:text-gray-300">
           CERN<br />
           Building 40<br />
           CH-1211 Geneva 23<br />
@@ -159,38 +164,5 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </section>
     </div>
   </div>
+  <script is:inline src="/scripts/contact-email.js"></script>
 </BaseLayout>
-
-<script>
-  // Email obfuscation - decode on click to prevent scraping
-  document.addEventListener('DOMContentLoaded', () => {
-    const emailLink = document.getElementById('email-link') as HTMLAnchorElement | null;
-    if (emailLink) {
-      // Obfuscated email (split to avoid scrapers)
-      const user = 'aj';
-      const domain = 'example.com';
-      const email = `${user}@${domain}`;
-
-      const reveal = (e?: Event) => {
-        if (e) e.preventDefault();
-        emailLink.href = `mailto:${email}`;
-        emailLink.textContent = email;
-      };
-
-      emailLink.addEventListener('click', reveal, { once: true });
-
-      // Also reveal on focus (keyboard accessibility)
-      emailLink.addEventListener('focus', () => {
-        if (emailLink.textContent === 'Click to reveal email') {
-          reveal();
-        }
-      });
-    }
-  });
-</script>
-
-<style>
-  address {
-    line-height: 1.8;
-  }
-</style>

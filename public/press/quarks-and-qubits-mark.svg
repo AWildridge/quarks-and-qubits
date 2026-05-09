@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 1200 360">
+  <title id="title">Quarks and Qubits site mark</title>
+  <desc id="desc">Downloadable Quarks and Qubits text mark with particle and qubit motifs.</desc>
+  <rect width="1200" height="360" fill="#ffffff"/>
+  <g fill="none" stroke="#2563eb" stroke-width="10" stroke-linecap="round">
+    <circle cx="140" cy="180" r="70"/>
+    <path d="M90 180h100M140 130v100"/>
+    <circle cx="280" cy="180" r="70"/>
+    <path d="M230 180h100"/>
+  </g>
+  <text x="400" y="205" font-family="Arial, sans-serif" font-size="92" font-weight="700" fill="#0f172a">Quarks &amp; Qubits</text>
+</svg>

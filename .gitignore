@@ -4,4 +4,6 @@ dist
 .vercel
 .netlify
 .cache
+.lighthouseci/
 .DS_Store
+~$*.docx

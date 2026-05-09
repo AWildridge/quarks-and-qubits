@@ -60,17 +60,21 @@ Workflow file: `.github/workflows/ci.yml`
 ## Project structure
 
 - `src/layouts/BaseLayout.astro` — global frame with skip link, header/nav, footer
-- `src/pages/` — pages (Home + placeholders for nav routes)
+- `src/pages/` — home, research, projects, publications, talks, teaching, demos, CV, contact, RSS, and sitemap routes
 - `src/components/` — Button, Card, Tag, Tabs (accessible), FigureWithCaption
 - `src/styles/global.css` — Tailwind layers + base colors
 - `src/styles/theme.css` — tokens and base typography/focus styles
 - `astro.config.mjs` — Tailwind, MDX, React integrations
 - `eslint.config.mjs` — ESLint v9 flat config (Astro + TS)
 - `lighthouserc.json` — perf thresholds
+- `public/_headers` — production security headers for static hosting
+- `public/data/` — static JSON cache scaffold for project, publication, and demo consumers
 
 ## Content model
 
-Currently simple pages under `src/pages`. M2 will add Astro Content Collections with zod schemas.
+Astro Content Collections live in `src/content/` with zod schemas in `src/content/config.ts`.
+Current collections cover projects, publications, talks, posters, teaching, posts, people, and
+professional development. Build-time validation fails on invalid frontmatter.
 
 ## Troubleshooting
 
@@ -94,11 +98,10 @@ pnpm exec playwright install chromium
 pnpm test
 ```
 
-## Next milestone (M2 — Content Collections)
+## Current milestone surface
 
-- Add `src/content/config.ts` with zod schemas for Projects, Publications, Talks, Posts, Person
-- Create example MDX in `src/content/*`
-- Ensure `pnpm build` fails on invalid frontmatter (acceptance), then fix
-- Link-check passes (no broken internal links)
-
-See `Prompts.md` for full milestones and acceptance criteria.
+- Research landing page with topic figures and links into publications, talks, and demos
+- Three-plus project records with detail pages, metrics, reproduce steps, architecture diagrams, and schema
+- Publications index/detail pages with filters, BibTeX export, BibTeX validation, and ScholarlyArticle schema
+- Talks and teaching indexes, RSS, sitemap, contact, CV HTML/PDF generation, press kit, and two interactive demos
+- CI validates formatting, linting, spelling, build, HTML, BibTeX, Playwright, links, axe, Lighthouse, sitemap, headers, and mixed content

@@ -28,6 +28,9 @@ const record: PublicationRecord = {
 };
 
 const bibtex = toBibTeX(record);
+const arxivId =
+  doi?.match(/^10\.48550\/arXiv\.(.+)$/)?.[1] || doi?.match(/^arXiv:(.+)$/i)?.[1] || null;
+const doiUrl = doi && !doi.match(/^arXiv:/i) ? `https://doi.org/${doi}` : null;
 
 // Schema.org structured data for ScholarlyArticle
 const publicationSchema = {
@@ -107,10 +110,10 @@ const publicationSchema = {
           )
         }
         {
-          doi && (
+          doiUrl && (
             <li>
               <a
-                href={`https://doi.org/${doi}`}
+                href={doiUrl}
                 class="text-blue-700 dark:text-blue-400 hover:underline"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -122,10 +125,10 @@ const publicationSchema = {
           )
         }
         {
-          doi && (
+          arxivId && (
             <li>
               <a
-                href={`https://arxiv.org/abs/${doi.replace('10.48550/arXiv.', '')}`}
+                href={`https://arxiv.org/abs/${arxivId}`}
                 class="text-blue-700 dark:text-blue-400 hover:underline"
                 rel="noopener noreferrer"
                 target="_blank"

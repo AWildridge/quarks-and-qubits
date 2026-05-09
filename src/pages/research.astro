@@ -1,8 +1,76 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import FigureWithCaption from '../components/FigureWithCaption.astro';
 ---
 
-<BaseLayout title="Research">
+<BaseLayout
+  title="Research"
+  description="Research themes in top-quark spin correlations, quantum computing, and machine learning."
+>
   <h1>Research</h1>
-  <p>Coming soon.</p>
+  <p class="mt-3 max-w-3xl text-gray-700 dark:text-gray-300">
+    My work connects collider measurements, quantum information, and machine-learning methods for
+    reconstruction and anomaly detection. The common thread is extracting interpretable structure
+    from high-dimensional physics data.
+  </p>
+
+  <div class="mt-8 grid gap-8">
+    <section aria-labelledby="top-quark-heading">
+      <h2 id="top-quark-heading" class="text-2xl font-semibold">Top-Quark Spin Correlations</h2>
+      <p class="mt-2 max-w-3xl text-gray-700 dark:text-gray-300">
+        Top-quark pairs preserve spin information before hadronization, which makes them a useful
+        laboratory for quantum observables at collider scales. I focus on measurements and
+        visualization tools that make spin-correlation matrices easier to inspect and communicate.
+      </p>
+      <div class="mt-4">
+        <FigureWithCaption
+          src="/images/research-top-spin.svg"
+          alt="Diagram linking top-quark event data to spin-correlation matrix observables."
+          caption="Spin-correlation studies connect reconstructed collision events to matrix observables and quantum-information interpretations."
+        />
+      </div>
+      <p class="mt-3">
+        <a class="underline" href="/demos/spin-explorer/">Open the Spin Correlation Explorer</a>
+      </p>
+    </section>
+
+    <section aria-labelledby="quantum-heading">
+      <h2 id="quantum-heading" class="text-2xl font-semibold">Quantum Computing</h2>
+      <p class="mt-2 max-w-3xl text-gray-700 dark:text-gray-300">
+        Quantum and quantum-inspired algorithms are useful testbeds for optimization and simulation
+        workflows in high-energy physics. Current site content emphasizes annealing-inspired
+        reconstruction and quantum-information observables in collider analyses.
+      </p>
+      <div class="mt-4">
+        <FigureWithCaption
+          src="/images/quantum-workflow.svg"
+          alt="Diagram showing track data mapped into an optimization graph and solved with annealing."
+          caption="Quantum-inspired reconstruction maps detector objects into optimization problems that can be studied with annealing workflows."
+        />
+      </div>
+      <p class="mt-3">
+        <a class="underline" href="/publications/?tag=quantum">Browse quantum-tagged publications</a
+        >
+      </p>
+    </section>
+
+    <section aria-labelledby="ml-heading">
+      <h2 id="ml-heading" class="text-2xl font-semibold">Machine Learning</h2>
+      <p class="mt-2 max-w-3xl text-gray-700 dark:text-gray-300">
+        Machine-learning projects cover event reconstruction, anomaly-detection challenges, and
+        foundation-model workflows for particle-physics data. The goal is to keep model behavior
+        measurable, reproducible, and connected to analysis tasks.
+      </p>
+      <div class="mt-4">
+        <FigureWithCaption
+          src="/images/ml-model-card.svg"
+          alt="Diagram linking event data, classifier thresholds, confusion matrices, and model-card documentation."
+          caption="Model-card workflows connect classifier decisions to metrics, limitations, and intended-use documentation."
+        />
+      </div>
+      <p class="mt-3">
+        <a class="underline" href="/talks/?tag=machine%20learning">Browse machine-learning talks</a>
+      </p>
+    </section>
+  </div>
 </BaseLayout>

@@ -231,9 +231,30 @@ declare module 'astro:content' {
   render(): Render[".md"];
 }>;
 "projects": {
+"bumblebee-foundation-model.mdx": {
+	id: "bumblebee-foundation-model.mdx";
+  slug: "bumblebee-foundation-model";
+  body: string;
+  collection: "projects";
+  data: InferEntrySchema<"projects">
+} & { render(): Render[".mdx"] };
 "example.mdx": {
 	id: "example.mdx";
   slug: "example";
+  body: string;
+  collection: "projects";
+  data: InferEntrySchema<"projects">
+} & { render(): Render[".mdx"] };
+"model-card-demo.mdx": {
+	id: "model-card-demo.mdx";
+  slug: "model-card-demo";
+  body: string;
+  collection: "projects";
+  data: InferEntrySchema<"projects">
+} & { render(): Render[".mdx"] };
+"quantum-annealing-vertexing.mdx": {
+	id: "quantum-annealing-vertexing.mdx";
+  slug: "quantum-annealing-vertexing";
   body: string;
   collection: "projects";
   data: InferEntrySchema<"projects">
@@ -261,23 +282,9 @@ declare module 'astro:content' {
   collection: "publications";
   data: InferEntrySchema<"publications">
 } & { render(): Render[".mdx"] };
-"ml-hep.mdx": {
-	id: "ml-hep.mdx";
-  slug: "ml-hep";
-  body: string;
-  collection: "publications";
-  data: InferEntrySchema<"publications">
-} & { render(): Render[".mdx"] };
 "observation-of-quantum-entanglement-in-top-quark-p-2024.mdx": {
 	id: "observation-of-quantum-entanglement-in-top-quark-p-2024.mdx";
   slug: "observation-of-quantum-entanglement-in-top-quark-p-2024";
-  body: string;
-  collection: "publications";
-  data: InferEntrySchema<"publications">
-} & { render(): Render[".mdx"] };
-"qa_pv.mdx": {
-	id: "qa_pv.mdx";
-  slug: "qa_pv";
   body: string;
   collection: "publications";
   data: InferEntrySchema<"publications">
@@ -289,13 +296,6 @@ declare module 'astro:content' {
   collection: "publications";
   data: InferEntrySchema<"publications">
 } & { render(): Render[".mdx"] };
-"test-latex.mdx": {
-	id: "test-latex.mdx";
-  slug: "test-latex";
-  body: string;
-  collection: "publications";
-  data: InferEntrySchema<"publications">
-} & { render(): Render[".mdx"] };
 "top-quarks-as-a-probe-to-quantum-information-2022.mdx": {
 	id: "top-quarks-as-a-probe-to-quantum-information-2022.mdx";
   slug: "top-quarks-as-a-probe-to-quantum-information-2022";
@@ -303,30 +303,9 @@ declare module 'astro:content' {
   collection: "publications";
   data: InferEntrySchema<"publications">
 } & { render(): Render[".mdx"] };
-"track-clustering-with-a-quantum-annealer-for-prima-1903.mdx": {
-	id: "track-clustering-with-a-quantum-annealer-for-prima-1903.mdx";
-  slug: "track-clustering-with-a-quantum-annealer-for-prima-1903";
-  body: string;
-  collection: "publications";
-  data: InferEntrySchema<"publications">
-} & { render(): Render[".mdx"] };
 "track-clustering-with-a-quantum-annealer-for-prima-2019.mdx": {
 	id: "track-clustering-with-a-quantum-annealer-for-prima-2019.mdx";
   slug: "track-clustering-with-a-quantum-annealer-for-prima-2019";
-  body: string;
-  collection: "publications";
-  data: InferEntrySchema<"publications">
-} & { render(): Render[".mdx"] };
-"transformer_mmd.mdx": {
-	id: "transformer_mmd.mdx";
-  slug: "transformer_mmd";
-  body: string;
-  collection: "publications";
-  data: InferEntrySchema<"publications">
-} & { render(): Render[".mdx"] };
-"ttbar_entanglement_obs.mdx": {
-	id: "ttbar_entanglement_obs.mdx";
-  slug: "ttbar_entanglement_obs";
   body: string;
   collection: "publications";
   data: InferEntrySchema<"publications">

@@ -13,8 +13,22 @@ const { slug } = Astro.params;
 if (!slug) throw new Error('Missing slug');
 const entry = await getEntry('projects', slug);
 if (!entry) throw new Error(`Project not found: ${slug}`);
-const { title, tags = [], summary, repo, language, date } = entry.data as any;
+const {
+  title,
+  tags = [],
+  summary,
+  repo,
+  demo,
+  data,
+  citation,
+  language,
+  date,
+  architecture,
+  metrics = [],
+  reproduce = [],
+} = entry.data as any;
 const year = new Date(date).getFullYear();
+const { Content } = await entry.render();
 
 // Schema.org structured data for SoftwareSourceCode
 const projectSchema = {
@@ -23,6 +37,7 @@ const projectSchema = {
   name: title,
   description: summary,
   ...(repo && { codeRepository: repo }),
+  ...(demo && { softwareHelp: demo }),
   ...(language && { programmingLanguage: language }),
   dateCreated: date.toISOString(),
   author: {
@@ -91,17 +106,67 @@ const projectSchema = {
           </li>
         )
       }
-      <li>Data: add link(s) here</li>
-      <li>Instructions: add brief setup steps</li>
+      {
+        demo && (
+          <li>
+            Demo:{' '}
+            <a href={demo} class="underline">
+              {demo}
+            </a>
+          </li>
+        )
+      }
+      {
+        data && (
+          <li>
+            Data:{' '}
+            <a href={data} class="underline">
+              {data}
+            </a>
+          </li>
+        )
+      }
+      {reproduce.map((step: string) => <li>{step}</li>)}
     </ul>
   </section>
+
+  {
+    metrics.length > 0 && (
+      <section class="mt-8" aria-labelledby="metrics-heading">
+        <h2 id="metrics-heading" class="text-lg font-semibold">
+          Metrics
+        </h2>
+        <ul class="list-disc pl-6 mt-2">
+          {metrics.map((metric: string) => (
+            <li>{metric}</li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 
   <section class="mt-8" aria-labelledby="architecture-heading">
     <h2 id="architecture-heading" class="text-lg font-semibold">Architecture</h2>
     <FigureWithCaption
-      src="/images/placeholder-arch.svg"
-      alt="Architecture diagram placeholder"
-      caption="High-level architecture."
+      src={architecture?.image || '/images/research-top-spin.svg'}
+      alt={architecture?.alt || `Architecture diagram for ${title}`}
+      caption={architecture?.caption || 'High-level architecture.'}
     />
   </section>
+
+  <section class="mt-8 prose dark:prose-invert max-w-none" aria-labelledby="abstract-heading">
+    <h2 id="abstract-heading">Abstract</h2>
+    <Content />
+  </section>
+
+  {
+    citation && (
+      <section class="mt-8" aria-labelledby="citation-heading">
+        <h2 id="citation-heading" class="text-lg font-semibold">
+          Citation
+        </h2>
+        <p class="mt-2">{citation}</p>
+      </section>
+    )
+  }
 </BaseLayout>

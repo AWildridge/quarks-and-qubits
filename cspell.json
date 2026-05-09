@@ -56,6 +56,8 @@
     "Axe",
     "Astro's",
     "Pegasus",
+    "Embedder",
+    "embedder",
     "helicity",
     "Helicity",
     "antiquark",
@@ -83,6 +85,7 @@
     "prebuild",
     "collab",
     "Collab",
+    "crashpad",
     "qubit",
     "ttbar",
     "vertexing",
@@ -102,6 +105,9 @@
     "infty",
     "mathrm",
     "Souvik",
-    "Higgs"
+    "Higgs",
+    "apos",
+    "labelledby",
+    "hadronization"
   ]
 }

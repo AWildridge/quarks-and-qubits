@@ -25,9 +25,28 @@ const filteredTeaching = teaching.filter((course) => {
 const pageTitle = 'Teaching';
 const pageDescription =
   'Courses, workshops, and teaching experience in physics, quantum computing, and computational methods.';
+const teachingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: pageTitle,
+  description: pageDescription,
+  itemListElement: teaching.map((course, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': 'Course',
+      name: course.data.title,
+      provider: {
+        '@type': 'Organization',
+        name: course.data.institution,
+      },
+      description: `${course.data.role || 'Teaching'} (${course.data.term})`,
+    },
+  })),
+};
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription}>
+<BaseLayout title={pageTitle} description={pageDescription} schema={teachingSchema}>
   <h1>Teaching Experience</h1>
   <p class="mt-2 text-gray-700 dark:text-gray-300">
     {pageDescription}

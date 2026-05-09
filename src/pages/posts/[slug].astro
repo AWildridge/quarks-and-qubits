@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('posts', ({ data }) => !data.draft);
+  return entries.map((post) => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+if (!slug) throw new Error('Missing slug');
+
+const entry = await getEntry('posts', slug);
+if (!entry || entry.data.draft) throw new Error(`Post not found: ${slug}`);
+
+const { title, date, summary, tags = [] } = entry.data;
+const { Content } = await entry.render();
+
+const postSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  datePublished: date.toISOString(),
+  description: summary,
+  author: {
+    '@type': 'Person',
+    name: 'Andrew James Wildridge',
+  },
+  keywords: tags.join(', '),
+};
+---
+
+<BaseLayout
+  title={title}
+  description={summary || `Post: ${title}`}
+  type="article"
+  publishedTime={date.toISOString()}
+  schema={postSchema}
+>
+  <article class="prose dark:prose-invert max-w-none">
+    <header class="not-prose">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        <time datetime={date.toISOString()}>
+          {
+            date.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })
+          }
+        </time>
+      </p>
+      <h1 class="mt-2">{title}</h1>
+      {summary && <p class="mt-2 text-gray-700 dark:text-gray-300">{summary}</p>}
+      {
+        tags.length > 0 && (
+          <ul class="mt-4 flex flex-wrap gap-2 list-none p-0">
+            {tags.map((tag) => (
+              <li class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">
+                {tag}
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    <div class="mt-8">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

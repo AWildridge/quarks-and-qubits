@@ -4,6 +4,7 @@ dist/
 .astro/
 .lighthouseci/
 playwright-report/
+test-results/
 coverage/
 
 # Lockfiles and logs
@@ -14,6 +15,9 @@ yarn.lock
 # Artifacts
 *.min.js
 *.min.css
+public/_headers
+public/**/*.txt
+src/data/cv.json
 
 # OS/editor
 .DS_Store
