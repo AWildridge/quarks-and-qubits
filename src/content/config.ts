@@ -43,11 +43,14 @@ const talks = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
+    displayDate: z.string().optional(),
     event: z.string(),
     venue: z.string().optional(),
     location: z.string().optional(),
     slides: z.string().url().optional(),
     video: z.string().url().optional(),
+    transcript: z.string().url().optional(),
+    source: z.string().url().optional(),
     tags: z.array(z.string()).default([]),
   }),
 });

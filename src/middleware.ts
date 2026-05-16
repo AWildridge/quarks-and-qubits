@@ -12,6 +12,7 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     "style-src 'self' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https:",
+    "media-src 'self' https:",
     "connect-src 'self' https://plausible.io",
     'frame-src https://www.youtube-nocookie.com',
     "frame-ancestors 'none'",

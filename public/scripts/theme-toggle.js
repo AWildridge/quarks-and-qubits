@@ -1,9 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
   const choices = Array.from(document.querySelectorAll('[data-theme-choice]'));
   const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const validThemes = new Set(['light', 'dark', 'system']);
 
   function applyTheme(theme) {
-    const activeTheme = theme || localStorage.getItem('theme') || 'system';
+    const storedTheme = localStorage.getItem('theme');
+    const activeTheme = validThemes.has(theme)
+      ? theme
+      : validThemes.has(storedTheme)
+        ? storedTheme
+        : 'system';
     localStorage.setItem('theme', activeTheme);
     document.documentElement.classList.toggle(
       'dark',

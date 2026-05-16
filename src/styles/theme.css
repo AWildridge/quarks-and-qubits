@@ -1,5 +1,6 @@
 @layer base {
   :root {
+    color-scheme: light;
     --color-bg: 255 255 255;
     --color-fg: 17 24 39;
     --color-border: 229 231 235;
@@ -15,6 +16,7 @@
   }
 
   .dark {
+    color-scheme: dark;
     --color-bg: 17 24 39;
     --color-fg: 243 244 246;
     --color-border: 55 65 81;

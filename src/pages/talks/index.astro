@@ -141,6 +141,10 @@ const talksSchema = {
     {
       filteredTalks.map(async (talk) => {
         const { Content } = await talk.render();
+        const videoUrl = talk.data.video;
+        const directVideoUrl = videoUrl?.match(/\.(mp4|webm|ogg)(?:$|\?)/i) ? videoUrl : null;
+        const youtubeMatch = videoUrl?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+        const youtubeId = youtubeMatch ? youtubeMatch[1] : null;
         return (
           <li class="border-l-4 border-blue-500 pl-4">
             <h2 class="text-xl font-semibold">{talk.data.title}</h2>
@@ -151,11 +155,13 @@ const talksSchema = {
             </p>
             <p class="text-sm text-gray-600 dark:text-gray-400">
               <time datetime={talk.data.date.toISOString()}>
-                {talk.data.date.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
+                {talk.data.displayDate ||
+                  talk.data.date.toLocaleDateString('en-US', {
+                    timeZone: 'UTC',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
               </time>
             </p>
 
@@ -198,6 +204,16 @@ const talksSchema = {
                   Slides
                 </a>
               )}
+              {talk.data.source && (
+                <a
+                  href={talk.data.source}
+                  class="inline-flex items-center px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Source
+                </a>
+              )}
               {talk.data.video && (
                 <a
                   href={talk.data.video}
@@ -230,29 +246,38 @@ const talksSchema = {
               )}
             </div>
 
-            {/* Embed video if YouTube */}
-            {talk.data.video &&
-              talk.data.video.includes('youtube.com') &&
-              (() => {
-                const match = talk.data.video.match(
-                  /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/,
-                );
-                const videoId = match ? match[1] : null;
-                return (
-                  videoId && (
-                    <div class="mt-4 aspect-video">
-                      <iframe
-                        class="w-full h-full rounded"
-                        src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-                        title={`Video: ${talk.data.title}`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen
-                        loading="lazy"
-                      />
-                    </div>
-                  )
-                );
-              })()}
+            {directVideoUrl && (
+              <div class="mt-4">
+                <video
+                  class="w-full rounded border border-gray-200 dark:border-gray-700"
+                  controls
+                  preload="metadata"
+                  src={directVideoUrl}
+                >
+                  {talk.data.transcript && (
+                    <track
+                      kind="captions"
+                      label="English captions"
+                      src={talk.data.transcript}
+                      srclang="en"
+                    />
+                  )}
+                </video>
+              </div>
+            )}
+
+            {youtubeId && (
+              <div class="mt-4 aspect-video">
+                <iframe
+                  class="w-full h-full rounded"
+                  src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
+                  title={`Video: ${talk.data.title}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy"
+                />
+              </div>
+            )}
           </li>
         );
       })

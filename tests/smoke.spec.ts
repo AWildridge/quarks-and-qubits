@@ -89,6 +89,30 @@ test('post detail pages render from RSS links', async ({ page }) => {
   await expect(page.getByText('Welcome to the new site!')).toBeVisible();
 });
 
+test('theme toggle forces light and dark modes independent of system preference', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+
+  await expect(page.locator('html')).toHaveClass(/dark/);
+  await page.getByRole('button', { name: 'Light theme' }).click();
+  await expect(page.locator('html')).not.toHaveClass(/dark/);
+  await expect(page.getByRole('button', { name: 'Light theme' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+
+  await page.getByRole('button', { name: 'Dark theme' }).click();
+  await expect(page.locator('html')).toHaveClass(/dark/);
+  await expect(page.getByRole('button', { name: 'Dark theme' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(17, 24, 39)');
+});
+
 test('pegasus embedder exports mapping JSON', async ({ page }) => {
   await page.goto('/demos/pegasus-embedder/');
 

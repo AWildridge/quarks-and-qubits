@@ -1,20 +1,13 @@
+@import './theme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: light dark;
-}
 /* Base colors without @apply to avoid IDE warnings (Tailwind processes them at build) */
 body {
-  background-color: #ffffff;
-  color: #111827;
-}
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #111827;
-    color: #f3f4f6;
-  }
+  background-color: rgb(var(--color-bg));
+  color: rgb(var(--color-fg));
 }
 
 @layer components {
