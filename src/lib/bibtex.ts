@@ -7,10 +7,49 @@ export interface PublicationRecord {
   title: string;
   authors: string[];
   year: number;
+  date?: Date | string;
   venue?: string;
   doi?: string;
   url?: string;
   tags: string[];
+  bibtexKey?: string;
+  bibtex?: string;
+}
+
+export function publicationDateValue(pub: { year: number; date?: Date | string }): number {
+  if (pub.date) {
+    const date = pub.date instanceof Date ? pub.date : new Date(pub.date);
+    const value = date.valueOf();
+    if (!Number.isNaN(value)) return value;
+  }
+
+  return new Date(pub.year, 0, 1).valueOf();
+}
+
+export function sortPublicationsByDate<T extends { data: { year: number; date?: Date | string } }>(
+  publications: T[],
+): T[] {
+  return publications.sort(
+    (a, b) =>
+      publicationDateValue({ year: b.data.year, date: b.data.date }) -
+      publicationDateValue({ year: a.data.year, date: a.data.date }),
+  );
+}
+
+export function parseBibTeXEntries(bibliography: string): Map<string, string> {
+  const entries = new Map<string, string>();
+  const starts = [...bibliography.matchAll(/^@\w+\{([^,]+),/gm)];
+
+  starts.forEach((match, index) => {
+    const start = match.index || 0;
+    const end =
+      index + 1 < starts.length
+        ? starts[index + 1].index || bibliography.length
+        : bibliography.length;
+    entries.set(match[1], bibliography.slice(start, end).trim());
+  });
+
+  return entries;
 }
 
 /**
@@ -40,6 +79,8 @@ export function generateCiteKey(pub: PublicationRecord): string {
  * Convert a publication record to BibTeX format
  */
 export function toBibTeX(pub: PublicationRecord): string {
+  if (pub.bibtex) return pub.bibtex;
+
   const citeKey = generateCiteKey(pub);
   const lines: string[] = [`@article{${citeKey},`];
 

@@ -178,11 +178,17 @@ function localBibTeX(pub) {
       : ['Andrew J. Wildridge'];
   const identifier = normalizeIdentifier(pub.doi);
   const url = pub.url || identifier.url;
-  const lines = [`@article{${citeKeyFor(pub)},`];
+  const isCdsReport = url && /cds\.cern\.ch\/record\//.test(url);
+  const lines = [`@${isCdsReport ? 'techreport' : 'article'}{${pub.bibtexKey || citeKeyFor(pub)},`];
   lines.push(`  title = {${sanitizeBibTeX(pub.title || pub.slug)}},`);
   lines.push(`  author = {${authors.map(sanitizeBibTeX).join(' and ')}},`);
   lines.push(`  year = {${pub.year || 'n.d.'}},`);
-  if (pub.venue) lines.push(`  journal = {${sanitizeBibTeX(pub.venue)}},`);
+  if (isCdsReport) {
+    lines.push('  institution = {CERN},');
+    if (pub.venue) lines.push(`  reportNumber = {${sanitizeBibTeX(pub.venue)}},`);
+  } else if (pub.venue) {
+    lines.push(`  journal = {${sanitizeBibTeX(pub.venue)}},`);
+  }
   if (identifier.doi) lines.push(`  doi = {${sanitizeBibTeX(identifier.doi)}},`);
   if (identifier.eprint) {
     lines.push(`  eprint = {${sanitizeBibTeX(identifier.eprint)}},`);

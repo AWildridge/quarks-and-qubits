@@ -30,10 +30,12 @@ const publications = defineCollection({
     title: z.string(),
     authors: z.array(z.string()),
     year: z.number().int().min(1900).max(3000),
+    date: z.coerce.date().optional(),
     venue: z.string().optional(),
     doi: z.string().optional(),
     url: z.string().url().optional(),
     tags: z.array(z.string()).default([]),
+    bibtexKey: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });

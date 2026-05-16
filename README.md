@@ -60,7 +60,7 @@ Workflow file: `.github/workflows/ci.yml`
 ## Project structure
 
 - `src/layouts/BaseLayout.astro` — global frame with skip link, header/nav, footer
-- `src/pages/` — home, research, projects, publications, talks, teaching, demos, CV, contact, RSS, and sitemap routes
+- `src/pages/` — home, research, projects, publications, talks, demos, CV, contact, RSS, and sitemap routes
 - `src/components/` — Button, Card, Tag, Tabs (accessible), FigureWithCaption
 - `src/styles/global.css` — Tailwind layers + base colors
 - `src/styles/theme.css` — tokens and base typography/focus styles
@@ -103,5 +103,6 @@ pnpm test
 - Research landing page with topic figures and links into publications, talks, and demos
 - Three-plus project records with detail pages, metrics, reproduce steps, architecture diagrams, and schema
 - Publications index/detail pages with filters, BibTeX export, BibTeX validation, and ScholarlyArticle schema
-- Talks and teaching indexes, RSS, sitemap, contact, CV HTML/PDF generation, press kit, and two interactive demos
+- Talks index, RSS, sitemap, contact, CV HTML/PDF generation, press kit, and two interactive demos
+- The teaching page is parked under `src/_disabled_pages/teaching/` so it can be restored later without exposing it in the site navigation.
 - CI validates formatting, linting, spelling, build, HTML, BibTeX, Playwright, links, axe, Lighthouse, sitemap, headers, and mixed content

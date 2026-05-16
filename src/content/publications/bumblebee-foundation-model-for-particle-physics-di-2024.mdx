@@ -1,9 +1,29 @@
 ---
 title: 'Bumblebee: Foundation Model for Particle Physics Discovery'
-authors: ['Andrew J. Wildridge', 'et. al.']
+authors:
+  [
+    'Andrew J. Wildridge',
+    'Jack P. Rodgers',
+    'Ethan M. Colbert',
+    'Yao yao',
+    'Andreas W. Jung',
+    'Miaoyuan Liu',
+  ]
 year: 2024
-venue: 'Contribution to NeurIPS'
-tags: ['particle-physics', 'foundation-model', 'neurips']
+date: 2024-12-10
+venue: 'Machine Learning and the Physical Sciences Workshop, NeurIPS 2024'
+doi: '10.48550/arXiv.2412.07867'
+url: 'https://arxiv.org/abs/2412.07867'
+tags: ['particle-physics', 'foundation-model', 'neurips', 'hep-ex', 'machine-learning']
+bibtexKey: 'Wildridge:2024yeg'
 ---
 
-Publication in Contribution to NeurIPS.
+Bumblebee is a foundation model for particle physics discovery, inspired by BERT. By removing
+positional encodings and embedding particle 4-vectors, Bumblebee captures both generator- and
+reconstruction-level information while ensuring sequence-order invariance. Pre-trained on a masked
+task, it improves dileptonic top quark reconstruction resolution by 10-20% and excels in downstream
+tasks, including toponium discrimination (AUROC 0.877) and initial state classification (AUROC
+0.625).
+
+The flexibility of Bumblebee makes it suitable for a wide range of particle physics applications,
+especially the discovery of new particles.

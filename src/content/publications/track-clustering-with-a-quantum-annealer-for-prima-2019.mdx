@@ -2,10 +2,29 @@
 title: 'Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders'
 authors: ['Souvik Das', 'Andrew J. Wildridge', 'Andreas Jung']
 year: 2019
+date: 2019-03-21
 venue: 'arXiv:1903.08879'
-doi: 'arXiv:1903.08879'
+doi: '10.48550/arXiv.1903.08879'
 url: 'https://arxiv.org/abs/1903.08879'
 tags: ['quantum', 'collider', 'preprint']
+bibtexKey: 'Das:2019hrw'
 ---
 
-Clustering of charged particle tracks along the beam axis is the first step in reconstructing the positions of hadronic interactions, also known as primary vertices, at hadron collider experiments. We use a 2036 physical qubit D-Wave quantum annealer to perform track clustering in a limited capacity on artificial events where the positions of primary vertices and tracks resemble those measured by the Compact Muon Solenoid experiment at the Large Hadron Collider. We note the quantum algorithm outperforms simulated annealing, constrained to the same processor time per anneal, up to a 56 logical qubit problem that involves 665 physical qubits on average.
+Clustering of charged particle tracks along the beam axis is the first step in reconstructing the
+positions of hadronic interactions, also known as primary vertices, at hadron collider experiments.
+We use a 2036 physical qubit D-Wave quantum annealer to perform track clustering in a limited
+capacity on artificial events where the positions of primary vertices and tracks resemble those
+measured by the Compact Muon Solenoid experiment at the Large Hadron Collider.
+
+The algorithm, which is not a classical-quantum hybrid but relies entirely on quantum annealing, is
+tested on a variety of event topologies. We demonstrate a deterministic graph-embedding of the
+problem on the D-Wave Chimera architecture, a method for optimizing the coupling strengths within
+logical qubits, and a method for optimizing annealing time. Further, we benchmark it against
+simulated annealing on a commercial CPU constrained to the same processor time per anneal as the
+physical annealer.
+
+We note a quantum advantage against simulated annealing up to a 56 logical qubit problem that
+involves 665 physical qubits on average. Our embedding and optimization methods, and the
+benchmarking paradigm, can be applied generally to other clustering problems on quantum annealers.
+This algorithm may be used as a building-block for more sophisticated algorithms to reach the number
+of primary vertices at the LHC.

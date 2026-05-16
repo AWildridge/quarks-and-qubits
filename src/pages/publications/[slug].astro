@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getEntry, getCollection } from 'astro:content';
-import { toBibTeX, type PublicationRecord } from '../../lib/bibtex';
+import { parseBibTeXEntries, toBibTeX, type PublicationRecord } from '../../lib/bibtex';
+import { readFile } from 'node:fs/promises';
 
 export async function getStaticPaths() {
   const entries = await getCollection('publications', ({ data }) => !data.draft);
@@ -13,21 +14,34 @@ if (!slug) throw new Error('Missing slug');
 const entry = await getEntry('publications', slug);
 if (!entry) throw new Error(`Publication not found: ${slug}`);
 
-const { title, authors, year, venue, doi, url, tags = [] } = entry.data;
+const { title, authors, year, date, venue, doi, url, tags = [], bibtexKey } = entry.data;
 const { Content } = await entry.render();
+const bibliography = await readFile('public/bibliography.bib', 'utf8').catch(() => '');
+const bibliographyEntries = parseBibTeXEntries(bibliography);
+const sourceLabel = url?.includes('cds.cern.ch')
+  ? 'View on CERN CDS'
+  : url?.includes('arxiv.org')
+    ? 'View on arXiv'
+    : url?.includes('inspirehep.net')
+      ? 'View on INSPIRE-HEP'
+      : 'View publication source';
 
 const record: PublicationRecord = {
   slug,
   title,
   authors,
   year,
+  date,
   venue,
   doi,
   url,
   tags,
+  bibtexKey,
+  bibtex: bibtexKey ? bibliographyEntries.get(bibtexKey) : undefined,
 };
 
 const bibtex = toBibTeX(record);
+const publishedDate = date ? date.toISOString().slice(0, 10) : `${year}-01-01`;
 const arxivId =
   doi?.match(/^10\.48550\/arXiv\.(.+)$/)?.[1] || doi?.match(/^arXiv:(.+)$/i)?.[1] || null;
 const doiUrl = doi && !doi.match(/^arXiv:/i) ? `https://doi.org/${doi}` : null;
@@ -41,7 +55,7 @@ const publicationSchema = {
     '@type': 'Person',
     name,
   })),
-  datePublished: `${year}-01-01`,
+  datePublished: publishedDate,
   publisher: {
     '@type': 'Organization',
     name: venue,
@@ -56,7 +70,7 @@ const publicationSchema = {
   title={title}
   description={`Publication: ${title} by ${authors.join(', ')} (${year})`}
   type="article"
-  publishedTime={`${year}-01-01`}
+  publishedTime={publishedDate}
   schema={publicationSchema}
 >
   <article itemscope itemtype="https://schema.org/ScholarlyArticle">
@@ -74,7 +88,7 @@ const publicationSchema = {
             </span>
           )
         }
-        <time itemprop="datePublished" datetime={`${year}-01-01`}>{year}</time>
+        <time itemprop="datePublished" datetime={publishedDate}>{year}</time>
       </p>
 
       {
@@ -104,7 +118,7 @@ const publicationSchema = {
                 target="_blank"
                 itemprop="url"
               >
-                View on INSPIRE-HEP
+                {sourceLabel}
               </a>
             </li>
           )

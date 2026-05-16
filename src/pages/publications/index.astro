@@ -1,10 +1,17 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import type { PublicationRecord } from '../../lib/bibtex';
+import {
+  parseBibTeXEntries,
+  sortPublicationsByDate,
+  type PublicationRecord,
+} from '../../lib/bibtex';
+import { readFile } from 'node:fs/promises';
 
 const all = await getCollection('publications');
-const entries = all.filter((p) => !p.data.draft);
+const entries = sortPublicationsByDate(all.filter((p) => !p.data.draft));
+const bibliography = await readFile('public/bibliography.bib', 'utf8').catch(() => '');
+const bibliographyEntries = parseBibTeXEntries(bibliography);
 
 // For static build, we'll render all and filter client-side
 const years = Array.from(new Set(entries.map((p) => p.data.year))).sort((a, b) => b - a);
@@ -16,11 +23,18 @@ const records: PublicationRecord[] = entries.map((p) => ({
   title: p.data.title,
   authors: p.data.authors,
   year: p.data.year,
+  date: p.data.date,
   venue: p.data.venue,
   doi: p.data.doi,
   url: p.data.url,
   tags: p.data.tags || [],
+  bibtexKey: p.data.bibtexKey,
+  bibtex: p.data.bibtexKey ? bibliographyEntries.get(p.data.bibtexKey) : undefined,
 }));
+
+function dateTimeValue(pub: PublicationRecord) {
+  return pub.date ? new Date(pub.date).toISOString().slice(0, 10) : `${pub.year}-01-01`;
+}
 ---
 
 <BaseLayout title="Publications">
@@ -85,6 +99,7 @@ const records: PublicationRecord[] = entries.map((p) => ({
           class="border-l-4 border-blue-500 pl-4 pb-4 pub-item"
           itemscope
           itemtype="https://schema.org/ScholarlyArticle"
+          data-slug={p.slug}
           data-year={p.year}
           data-venue={p.venue || ''}
           data-tags={JSON.stringify(p.tags)}
@@ -114,7 +129,7 @@ const records: PublicationRecord[] = entries.map((p) => ({
                 {' · '}
               </span>
             )}
-            <time itemprop="datePublished" datetime={`${p.year}-01-01`}>
+            <time itemprop="datePublished" datetime={dateTimeValue(p)}>
               {p.year}
             </time>
           </p>
@@ -150,6 +165,13 @@ const records: PublicationRecord[] = entries.map((p) => ({
     No publications match the current filters.
   </p>
 
+  <script
+    is:inline
+    id="publication-records"
+    type="application/json"
+    set:html={JSON.stringify(records)}
+  />
+
   <script>
     import { exportBibTeX, type PublicationRecord } from '../../lib/bibtex';
 
@@ -166,6 +188,10 @@ const records: PublicationRecord[] = entries.map((p) => ({
     const noResults = document.getElementById('no-results') as HTMLParagraphElement;
 
     const allItems = Array.from(pubList.querySelectorAll('.pub-item')) as HTMLElement[];
+    const publicationRecords = JSON.parse(
+      document.getElementById('publication-records')?.textContent || '[]',
+    ) as PublicationRecord[];
+    const recordsBySlug = new Map(publicationRecords.map((record) => [record.slug, record]));
 
     function filterPublications() {
       const yearValue = yearSelect.value;
@@ -214,32 +240,10 @@ const records: PublicationRecord[] = entries.map((p) => ({
     });
 
     exportBtn.addEventListener('click', () => {
-      const visiblePubs: PublicationRecord[] = [];
-
-      allItems.forEach((item) => {
-        if (!item.classList.contains('hidden')) {
-          const tags = JSON.parse(item.dataset.tags || '[]');
-          const titleEl = item.querySelector('[itemprop="name"]');
-          const authorsEl = item.querySelector('[itemprop="author"]');
-          const yearEl = item.querySelector('[itemprop="datePublished"]');
-          const doiEl = item.querySelector('[itemprop="identifier"]');
-          const venueEl = item.querySelector('[itemprop="publisher"] [itemprop="name"]');
-          const urlEl = item.querySelector('a[itemprop="url"]');
-
-          if (titleEl && authorsEl && yearEl) {
-            visiblePubs.push({
-              slug: '',
-              title: titleEl.textContent?.trim() || '',
-              authors: authorsEl.textContent?.split(',').map((a) => a.trim()) || [],
-              year: parseInt((yearEl.getAttribute('datetime') || '0').slice(0, 4)),
-              venue: venueEl?.textContent?.trim(),
-              doi: doiEl?.textContent?.trim(),
-              url: (urlEl as HTMLAnchorElement)?.href,
-              tags,
-            });
-          }
-        }
-      });
+      const visiblePubs = allItems
+        .filter((item) => !item.classList.contains('hidden'))
+        .map((item) => recordsBySlug.get(item.dataset.slug || ''))
+        .filter((record): record is PublicationRecord => Boolean(record));
 
       const bibtex = exportBibTeX(visiblePubs);
       const blob = new Blob([bibtex], { type: 'application/x-bibtex' });

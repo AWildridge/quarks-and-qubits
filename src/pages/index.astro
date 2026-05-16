@@ -3,14 +3,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Card from '../components/Card';
 import Tag from '../components/Tag';
 import { getCollection } from 'astro:content';
+import { publicationDateValue, sortPublicationsByDate } from '../lib/bibtex';
 
 const projects = (await getCollection('projects')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
-const publications = (await getCollection('publications'))
-  .filter((publication) => !publication.data.draft)
-  .sort((a, b) => b.data.year - a.data.year)
-  .slice(0, 3);
+const publications = sortPublicationsByDate(
+  (await getCollection('publications')).filter((publication) => !publication.data.draft),
+).slice(0, 3);
 const talks = (await getCollection('talks'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 2);
@@ -21,13 +21,17 @@ const recentItems = [
     title: item.data.title,
     href: `/publications/${item.slug}/`,
     meta: `${item.data.year} publication`,
+    date: publicationDateValue(item.data),
   })),
   ...talks.map((item) => ({
     title: item.data.title,
     href: '/talks/',
     meta: `${item.data.date.getFullYear()} talk`,
+    date: item.data.date.valueOf(),
   })),
-].slice(0, 5);
+]
+  .sort((a, b) => b.date - a.date)
+  .slice(0, 5);
 ---
 
 <BaseLayout

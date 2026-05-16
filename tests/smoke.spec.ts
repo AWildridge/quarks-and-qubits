@@ -64,6 +64,24 @@ test('publications export bibtex', async ({ page }) => {
   expect(content).toContain('@');
   expect(content).toContain('title');
   expect(content).toContain('author');
+  expect(content).toContain('@article{Afik:2025ejh');
+  expect(content).toContain('@inproceedings{Wildridge:2024yeg');
+});
+
+test('publications render in publication-date order', async ({ page }) => {
+  await page.goto('/publications/');
+
+  const titles = page.locator('#pub-list h2');
+  await expect(titles.first()).toContainText(
+    'Enhanced reconstruction of dileptonic top quark-antiquark events',
+  );
+  await expect(titles.nth(1)).toContainText('Quantum Information meets High-Energy Physics');
+});
+
+test('teaching page is not exposed in primary navigation', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page.getByRole('navigation', { name: 'Primary' })).not.toContainText('Teaching');
 });
 
 test('model card demo updates metrics', async ({ page }) => {

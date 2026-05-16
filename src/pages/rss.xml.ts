@@ -1,6 +1,7 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
+import { publicationDateValue } from '../lib/bibtex';
 
 export async function GET(context: APIContext) {
   const [posts, publications, talks] = await Promise.all([
@@ -26,7 +27,7 @@ export async function GET(context: APIContext) {
       description: [publication.data.venue, String(publication.data.year)]
         .filter(Boolean)
         .join(', '),
-      pubDate: new Date(publication.data.year, 0, 1),
+      pubDate: new Date(publicationDateValue(publication.data)),
       link: `/publications/${publication.slug}/`,
       categories: ['publication', ...publication.data.tags],
     }));
