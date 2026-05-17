@@ -78,6 +78,24 @@ test('publications render in publication-date order', async ({ page }) => {
   await expect(titles.nth(1)).toContainText('Quantum Information meets High-Energy Physics');
 });
 
+test('publications citation chart exposes live filters and modes', async ({ page }) => {
+  await page.goto('/publications/');
+
+  await expect(page.getByRole('heading', { name: 'Citations Over Time' })).toBeVisible();
+  await expect(page.getByLabel('Tag').first()).toBeVisible();
+  await expect(page.getByLabel('Paper')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Per year' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+
+  await page.getByRole('button', { name: 'Cumulative' }).click();
+  await expect(page.getByRole('button', { name: 'Cumulative' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+});
+
 test('teaching page is not exposed in primary navigation', async ({ page }) => {
   await page.goto('/');
 

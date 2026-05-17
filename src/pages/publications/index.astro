@@ -17,6 +17,14 @@ const bibliographyEntries = parseBibTeXEntries(bibliography);
 const years = Array.from(new Set(entries.map((p) => p.data.year))).sort((a, b) => b - a);
 const venues = Array.from(new Set(entries.map((p) => p.data.venue || '').filter(Boolean))).sort();
 const tags = Array.from(new Set(entries.flatMap((p) => p.data.tags || []))).sort();
+const citationTags = [
+  'CMS',
+  'quantum',
+  'top-quark',
+  'machine-learning',
+  'particle-physics',
+  'anomaly-detection',
+].filter((tag) => tags.includes(tag));
 
 const records: PublicationRecord[] = entries.map((p) => ({
   slug: p.slug,
@@ -42,6 +50,88 @@ function dateTimeValue(pub: PublicationRecord) {
   <p class="mt-2 text-sm" aria-live="polite" id="pub-count">
     Showing {records.length} of {records.length} publications
   </p>
+
+  <section
+    class="mt-6 rounded-md border border-gray-200 p-4 dark:border-gray-800"
+    aria-labelledby="citation-chart-heading"
+  >
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <h2 id="citation-chart-heading" class="text-lg font-semibold">Citations Over Time</h2>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400" id="citation-chart-status">
+          Loading live citation data from INSPIRE-HEP...
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <label class="block">
+          <span class="block text-xs font-medium text-gray-600 dark:text-gray-400">Tag</span>
+          <select
+            class="mt-1 w-52 rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-700 dark:bg-gray-900"
+            id="citation-tag-filter"
+          >
+            <option value="">All tags</option>
+            {citationTags.map((tag) => <option value={tag}>{tag}</option>)}
+          </select>
+        </label>
+        <label class="block min-w-0 flex-1 sm:min-w-[28rem]">
+          <span class="block text-xs font-medium text-gray-600 dark:text-gray-400">Paper</span>
+          <select
+            class="mt-1 w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-700 dark:bg-gray-900"
+            id="citation-paper-filter"
+          >
+            <option value="">All papers</option>
+            {records.map((record) => <option value={record.slug}>{record.title}</option>)}
+          </select>
+        </label>
+        <div>
+          <span class="block text-xs font-medium text-gray-600 dark:text-gray-400">Mode</span>
+          <div
+            class="mt-1 inline-flex rounded-md shadow-sm"
+            role="group"
+            aria-label="Citation mode"
+          >
+            <button
+              type="button"
+              class="citation-mode-button rounded-l-md border border-gray-300 px-3 py-1 text-sm dark:border-gray-700"
+              data-citation-mode="year"
+              aria-pressed="true"
+            >
+              Per year
+            </button>
+            <button
+              type="button"
+              class="citation-mode-button rounded-r-md border border-l-0 border-gray-300 px-3 py-1 text-sm dark:border-gray-700"
+              data-citation-mode="cumulative"
+              aria-pressed="false"
+            >
+              Cumulative
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 overflow-x-auto">
+      <svg
+        id="citation-chart"
+        role="img"
+        aria-labelledby="citation-chart-title citation-chart-desc"
+        class="min-w-[42rem] w-full rounded border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
+        viewBox="0 0 760 320"
+      >
+        <title id="citation-chart-title">Citations over time</title>
+        <desc id="citation-chart-desc">Live INSPIRE citation counts grouped by citation year.</desc>
+        <text
+          class="fill-gray-600 dark:fill-gray-300"
+          x="380"
+          y="160"
+          text-anchor="middle"
+          font-size="14"
+        >
+          Loading citation data...
+        </text>
+      </svg>
+    </div>
+  </section>
 
   <form
     role="search"
@@ -192,6 +282,32 @@ function dateTimeValue(pub: PublicationRecord) {
       document.getElementById('publication-records')?.textContent || '[]',
     ) as PublicationRecord[];
     const recordsBySlug = new Map(publicationRecords.map((record) => [record.slug, record]));
+    const citationStatus = document.getElementById('citation-chart-status') as HTMLParagraphElement;
+    const citationChart = document.getElementById('citation-chart') as unknown as SVGSVGElement;
+    const citationTagFilter = document.getElementById('citation-tag-filter') as HTMLSelectElement;
+    const citationPaperFilter = document.getElementById(
+      'citation-paper-filter',
+    ) as HTMLSelectElement;
+    const citationModeButtons = Array.from(
+      document.querySelectorAll('[data-citation-mode]'),
+    ) as HTMLButtonElement[];
+    const svgNamespace = 'http://www.w3.org/2000/svg';
+    const currentYear = new Date().getFullYear();
+    const darkMedia = window.matchMedia('(prefers-color-scheme: dark)');
+    let citationMode = 'year';
+    let citationSeries: Array<{
+      slug: string;
+      title: string;
+      tags: string[];
+      total: number | null;
+      years: Record<string, number>;
+    }> = publicationRecords.map((record) => ({
+      slug: record.slug,
+      title: record.title,
+      tags: record.tags,
+      total: null,
+      years: {},
+    }));
 
     function filterPublications() {
       const yearValue = yearSelect.value;
@@ -254,5 +370,358 @@ function dateTimeValue(pub: PublicationRecord) {
       a.click();
       URL.revokeObjectURL(url);
     });
+
+    function arxivIdFromDoi(doi?: string) {
+      return doi?.match(/^10\.48550\/arXiv\.(.+)$/i)?.[1] || null;
+    }
+
+    function inspireSearchQuery(record: PublicationRecord) {
+      const arxivId = arxivIdFromDoi(record.doi);
+      if (arxivId) return `arxiv:${arxivId}`;
+      if (record.doi) return `doi:${record.doi}`;
+      if (record.bibtexKey) return `texkey:${record.bibtexKey}`;
+      return `title:"${record.title.replace(/"/g, '')}"`;
+    }
+
+    function citationYear(metadata: {
+      earliest_date?: string;
+      imprints?: Array<{ date?: string }>;
+    }) {
+      const year =
+        metadata.earliest_date?.match(/^\d{4}/)?.[0] ||
+        metadata.imprints?.find((imprint) => imprint.date)?.date?.match(/^\d{4}/)?.[0];
+      return year ? Number(year) : null;
+    }
+
+    async function fetchInspireJson(path: string, params: Record<string, string>) {
+      const url = new URL(`https://inspirehep.net/api/${path}`);
+      Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+      url.searchParams.set('_', String(Date.now()));
+      const response = await fetch(url, {
+        headers: { Accept: 'application/json' },
+        cache: 'no-store',
+      });
+      if (!response.ok) throw new Error(`INSPIRE request failed with ${response.status}`);
+      return response.json();
+    }
+
+    function totalHits(total: number | { value?: number } | undefined) {
+      if (typeof total === 'number') return total;
+      return total?.value || 0;
+    }
+
+    async function resolveInspireRecord(record: PublicationRecord) {
+      const data = await fetchInspireJson('literature', {
+        size: '1',
+        fields: 'control_number,citation_count',
+        q: inspireSearchQuery(record),
+      });
+      const hit = data.hits?.hits?.[0]?.metadata;
+      if (!hit?.control_number) return null;
+      return {
+        controlNumber: String(hit.control_number),
+        citationCount: typeof hit.citation_count === 'number' ? hit.citation_count : null,
+      };
+    }
+
+    async function fetchCitationYears(controlNumber: string) {
+      const years: Record<string, number> = {};
+      let page = 1;
+      let fetched = 0;
+      let total = 0;
+
+      do {
+        const data = await fetchInspireJson('literature', {
+          size: '250',
+          page: String(page),
+          fields: 'earliest_date,imprints',
+          q: `refersto:recid:${controlNumber}`,
+        });
+        const hits = data.hits?.hits || [];
+        total = totalHits(data.hits?.total);
+        fetched += hits.length;
+        hits.forEach(
+          (hit: { metadata?: { earliest_date?: string; imprints?: Array<{ date?: string }> } }) => {
+            const year = hit.metadata ? citationYear(hit.metadata) : null;
+            if (year) years[String(year)] = (years[String(year)] || 0) + 1;
+          },
+        );
+        page += 1;
+      } while (fetched < total && page <= 10);
+
+      return years;
+    }
+
+    function filteredCitationSeries() {
+      const tag = citationTagFilter.value;
+      const paper = citationPaperFilter.value;
+      return citationSeries.filter((series) => {
+        const matchesTag = !tag || series.tags.includes(tag);
+        const matchesPaper = !paper || series.slug === paper;
+        return matchesTag && matchesPaper;
+      });
+    }
+
+    function citationBuckets() {
+      const selected = filteredCitationSeries();
+      const years = new Set<number>();
+      selected.forEach((series) => {
+        Object.keys(series.years).forEach((year) => years.add(Number(year)));
+      });
+      publicationRecords.forEach((record) => {
+        if (!selected.some((series) => series.slug === record.slug)) return;
+        const year = record.date ? new Date(record.date).getFullYear() : record.year;
+        if (!Number.isNaN(year)) years.add(year);
+      });
+      years.add(currentYear);
+
+      const sortedYears = Array.from(years).sort((a, b) => a - b);
+      if (sortedYears.length === 0) return [];
+
+      let running = 0;
+      return sortedYears.map((year) => {
+        const yearly = selected.reduce((sum, series) => sum + (series.years[String(year)] || 0), 0);
+        running += yearly;
+        return { year, value: citationMode === 'cumulative' ? running : yearly, yearly };
+      });
+    }
+
+    function svgEl(name: string, attrs: Record<string, string | number>) {
+      const node = document.createElementNS(svgNamespace, name);
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, String(value)));
+      return node;
+    }
+
+    function chartTheme() {
+      const isDark =
+        document.documentElement.classList.contains('dark') ||
+        (!localStorage.getItem('theme') || localStorage.getItem('theme') === 'system'
+          ? darkMedia.matches
+          : false);
+      return isDark
+        ? {
+            background: '#111827',
+            axis: '#6b7280',
+            grid: '#374151',
+            text: '#d1d5db',
+            muted: '#9ca3af',
+            bar: '#60a5fa',
+            line: '#93c5fd',
+            dot: '#bfdbfe',
+          }
+        : {
+            background: '#ffffff',
+            axis: '#9ca3af',
+            grid: '#e5e7eb',
+            text: '#374151',
+            muted: '#4b5563',
+            bar: '#2563eb',
+            line: '#2563eb',
+            dot: '#1d4ed8',
+          };
+    }
+
+    function renderCitationChart() {
+      const buckets = citationBuckets();
+      const selected = filteredCitationSeries();
+      const knownTotal = selected.reduce((sum, series) => sum + (series.total || 0), 0);
+      const plottedTotal = buckets.reduce((max, bucket) => Math.max(max, bucket.value), 0);
+      const maxValue = Math.max(plottedTotal, 1);
+      const width = 760;
+      const height = 320;
+      const padding = { top: 24, right: 24, bottom: 42, left: 48 };
+      const chartWidth = width - padding.left - padding.right;
+      const chartHeight = height - padding.top - padding.bottom;
+      const theme = chartTheme();
+
+      citationChart.replaceChildren();
+      citationChart.append(
+        svgEl('rect', { x: 0, y: 0, width, height, fill: theme.background }),
+        svgEl('line', {
+          x1: padding.left,
+          y1: height - padding.bottom,
+          x2: width - padding.right,
+          y2: height - padding.bottom,
+          stroke: theme.axis,
+        }),
+        svgEl('line', {
+          x1: padding.left,
+          y1: padding.top,
+          x2: padding.left,
+          y2: height - padding.bottom,
+          stroke: theme.axis,
+        }),
+      );
+
+      const selectedTitles = selected.map((series) => series.title);
+      const desc = selectedTitles.length
+        ? `${citationMode === 'cumulative' ? 'Cumulative' : 'Per-year'} citations for ${selectedTitles.length} selected publication${selectedTitles.length === 1 ? '' : 's'}.`
+        : 'No selected publications match the citation filters.';
+      citationChart.append(
+        svgEl('title', { id: 'citation-chart-title' }),
+        svgEl('desc', { id: 'citation-chart-desc' }),
+      );
+      citationChart.querySelector('title')!.textContent = 'Citations over time';
+      citationChart.querySelector('desc')!.textContent = desc;
+
+      if (buckets.length === 0 || selected.length === 0) {
+        const empty = svgEl('text', {
+          x: width / 2,
+          y: height / 2,
+          'text-anchor': 'middle',
+          fill: theme.text,
+          'font-size': 14,
+        });
+        empty.textContent = 'No publications match the selected filters.';
+        citationChart.append(empty);
+        return;
+      }
+
+      const yTicks = [0, Math.ceil(maxValue / 2), maxValue];
+      yTicks.forEach((tick) => {
+        const y = height - padding.bottom - (tick / maxValue) * chartHeight;
+        citationChart.append(
+          svgEl('line', {
+            x1: padding.left,
+            y1: y,
+            x2: width - padding.right,
+            y2: y,
+            stroke: theme.grid,
+          }),
+        );
+        const label = svgEl('text', {
+          x: padding.left - 8,
+          y: y + 4,
+          'text-anchor': 'end',
+          fill: theme.muted,
+          'font-size': 11,
+        });
+        label.textContent = String(tick);
+        citationChart.append(label);
+      });
+
+      const xFor = (index: number) =>
+        buckets.length === 1
+          ? padding.left + chartWidth / 2
+          : padding.left + (index / (buckets.length - 1)) * chartWidth;
+      const yFor = (value: number) => height - padding.bottom - (value / maxValue) * chartHeight;
+
+      if (citationMode === 'year') {
+        const gap = 6;
+        const barWidth = Math.max(8, Math.min(42, chartWidth / buckets.length - gap));
+        buckets.forEach((bucket, index) => {
+          const x = xFor(index) - barWidth / 2;
+          const y = yFor(bucket.value);
+          citationChart.append(
+            svgEl('rect', {
+              x,
+              y,
+              width: barWidth,
+              height: height - padding.bottom - y,
+              fill: theme.bar,
+              rx: 2,
+            }),
+          );
+        });
+      } else {
+        const points = buckets
+          .map((bucket, index) => `${xFor(index)},${yFor(bucket.value)}`)
+          .join(' ');
+        citationChart.append(
+          svgEl('polyline', {
+            points,
+            fill: 'none',
+            stroke: theme.line,
+            'stroke-width': 3,
+            'stroke-linejoin': 'round',
+            'stroke-linecap': 'round',
+          }),
+        );
+        buckets.forEach((bucket, index) => {
+          citationChart.append(
+            svgEl('circle', { cx: xFor(index), cy: yFor(bucket.value), r: 4, fill: theme.dot }),
+          );
+        });
+      }
+
+      const xLabelStep = Math.max(1, Math.ceil(buckets.length / 8));
+      buckets.forEach((bucket, index) => {
+        if (index % xLabelStep !== 0 && index !== buckets.length - 1) return;
+        const label = svgEl('text', {
+          x: xFor(index),
+          y: height - 16,
+          'text-anchor': 'middle',
+          fill: theme.muted,
+          'font-size': 11,
+        });
+        label.textContent = String(bucket.year);
+        citationChart.append(label);
+      });
+
+      const summary = svgEl('text', {
+        x: width - padding.right,
+        y: 18,
+        'text-anchor': 'end',
+        fill: theme.text,
+        'font-size': 12,
+      });
+      summary.textContent = `${knownTotal} live INSPIRE citation${knownTotal === 1 ? '' : 's'}`;
+      citationChart.append(summary);
+    }
+
+    async function loadCitationData() {
+      let resolvedCount = 0;
+      citationStatus.textContent = 'Loading live citation data from INSPIRE-HEP...';
+      citationSeries = await Promise.all(
+        publicationRecords.map(async (record) => {
+          try {
+            const resolved = await resolveInspireRecord(record);
+            if (!resolved) throw new Error('No matching INSPIRE record');
+            const years = await fetchCitationYears(resolved.controlNumber);
+            resolvedCount += 1;
+            return {
+              slug: record.slug,
+              title: record.title,
+              tags: record.tags,
+              total: resolved.citationCount,
+              years,
+            };
+          } catch {
+            return {
+              slug: record.slug,
+              title: record.title,
+              tags: record.tags,
+              total: null,
+              years: {},
+            };
+          }
+        }),
+      );
+      const liveTotal = citationSeries.reduce((sum, series) => sum + (series.total || 0), 0);
+      citationStatus.textContent = `Live INSPIRE-HEP citation data loaded for ${resolvedCount} of ${publicationRecords.length} listed publications: ${liveTotal} total citation${liveTotal === 1 ? '' : 's'}.`;
+      renderCitationChart();
+    }
+
+    citationTagFilter.addEventListener('change', renderCitationChart);
+    citationPaperFilter.addEventListener('change', renderCitationChart);
+    darkMedia.addEventListener('change', renderCitationChart);
+    new MutationObserver(renderCitationChart).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    citationModeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        citationMode = button.dataset.citationMode || 'year';
+        citationModeButtons.forEach((modeButton) => {
+          const pressed = modeButton.dataset.citationMode === citationMode;
+          modeButton.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+          modeButton.classList.toggle('bg-blue-600', pressed);
+          modeButton.classList.toggle('text-white', pressed);
+        });
+        renderCitationChart();
+      });
+    });
+    citationModeButtons[0]?.click();
+    loadCitationData();
   </script>
 </BaseLayout>
