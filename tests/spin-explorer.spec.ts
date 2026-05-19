@@ -1,232 +1,144 @@
-/**
- * Playwright tests for Spin Correlation Explorer
- */
-
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Spin Correlation Explorer', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/demos/spin-explorer');
+    await page.waitForSelector('canvas', { timeout: 10000 });
   });
 
-  test('page loads with title and introduction', async ({ page }) => {
+  test('page loads the integration controls', async ({ page }) => {
     await expect(page).toHaveTitle(/Spin Correlation Explorer/);
     await expect(
       page.getByRole('heading', { name: 'Interactive Spin Correlation Explorer' }),
     ).toBeVisible();
-    await expect(page.getByText(/What are Spin Correlations/)).toBeVisible();
+    await expect(page.locator('#sqrt-s')).toBeVisible();
+    await expect(page.locator('#sqrt-s')).toHaveValue('13.6');
+    await expect(page.locator('#integration-method')).toBeVisible();
+    await expect(page.locator('#mtt-min')).toBeVisible();
+    await expect(page.locator('#mtt-max')).toBeVisible();
+    await expect(page.locator('#phase-observable')).toBeVisible();
+    await expect(page.locator('#phase-observable option[value="A"]')).toHaveCount(0);
+    await expect(page.locator('#phase-observable option[value="Delta"]')).toHaveText(
+      'Δ entanglement witness',
+    );
+    await expect(page.locator('#wilson-coefficient-0')).toBeVisible();
+    await expect(page.locator('#wilson-value-0')).toBeVisible();
+    await expect(page.getByText(/Reference data loaded/)).toBeVisible({
+      timeout: 10000,
+    });
+    await expect(page.locator('canvas')).toHaveCount(3);
   });
 
-  test('all controls are present and interactive', async ({ page }) => {
-    // Wait for React island to load
-    await page.waitForSelector('canvas', { timeout: 10000 });
+  test('changing integration settings updates the phase-space plot', async ({ page }) => {
+    const phaseCanvas = page.locator('canvas').first();
+    const initialImage = await phaseCanvas.screenshot();
 
-    // Check dropdowns
-    await expect(page.locator('#production-mode')).toBeVisible();
-    await expect(page.locator('#basis')).toBeVisible();
-    await expect(page.locator('#energy')).toBeVisible();
+    await page.locator('#mtt-min').fill('0.50');
+    await page.locator('#z-max').fill('0.50');
+    await page.waitForTimeout(300);
 
-    // Check sliders
-    await expect(page.locator('#theta')).toBeVisible();
-    await expect(page.locator('#phi')).toBeVisible();
-
-    // Check canvases
-    const canvases = page.locator('canvas');
-    await expect(canvases).toHaveCount(2); // Heatmap and vector plot
-  });
-
-  test('changing production mode updates visualization', async ({ page }) => {
-    await page.waitForSelector('canvas', { timeout: 10000 });
-
-    // Get initial canvas data
-    const heatmap = page.locator('canvas').first();
-    const initialImage = await heatmap.screenshot();
-
-    // Change production mode
-    await page.selectOption('#production-mode', 'qqbar');
-
-    // Wait for update (brief delay for rendering)
-    await page.waitForTimeout(500);
-
-    // Canvas should have changed
-    const updatedImage = await heatmap.screenshot();
+    const updatedImage = await phaseCanvas.screenshot();
     expect(initialImage).not.toEqual(updatedImage);
   });
 
-  test('changing basis updates visualization', async ({ page }) => {
-    await page.waitForSelector('canvas', { timeout: 10000 });
+  test('mtt upper limit follows center-of-mass energy', async ({ page }) => {
+    await expect(page.locator('#mtt-max')).toHaveAttribute('max', '13.5864');
+    await page.locator('#sqrt-s').fill('7');
+    await expect(page.locator('#mtt-max')).toHaveAttribute('max', '6.993');
+  });
 
-    const heatmap = page.locator('canvas').first();
-    const initialImage = await heatmap.screenshot();
+  test('changing Wilson coefficient value updates the integrated result', async ({ page }) => {
+    const deltaBefore = await page.getByTestId('metric-delta').textContent();
 
-    // Change basis
-    await page.selectOption('#basis', 'beam');
-    await page.waitForTimeout(500);
+    await page.locator('#wilson-value-0').fill('0.000001');
+    await page.waitForTimeout(300);
 
-    const updatedImage = await heatmap.screenshot();
+    const deltaAfter = await page.getByTestId('metric-delta').textContent();
+    expect(deltaBefore).not.toEqual(deltaAfter);
+  });
+
+  test('default C_rk is in the expected range', async ({ page }) => {
+    const text = await page.getByTestId('metric-crk').textContent();
+    const value = Number(text?.replace('C_rk', ''));
+    expect(value).toBeGreaterThan(0.09);
+    expect(value).toBeLessThan(0.13);
+  });
+
+  test('off-diagonal C_rk and C_kr are symmetric', async ({ page }) => {
+    const crkText = await page.getByTestId('metric-crk').textContent();
+    const ckrText = await page.getByTestId('metric-ckr').textContent();
+    const crk = Number(crkText?.replace('C_rk', ''));
+    const ckr = Number(ckrText?.replace('C_kr', ''));
+    expect(ckr).toBeCloseTo(crk, 4);
+  });
+
+  test('can add and remove a coefficient row', async ({ page }) => {
+    await page.getByRole('button', { name: 'Add coefficient' }).click();
+    await expect(page.locator('#wilson-coefficient-1')).toBeVisible();
+    await page.getByRole('button', { name: /Remove cQq83/ }).click();
+    await expect(page.locator('#wilson-coefficient-1')).toHaveCount(0);
+  });
+
+  test('steering ellipsoid rotates on drag', async ({ page }) => {
+    const ellipsoid = page.locator('canvas').nth(2);
+    const initialImage = await ellipsoid.screenshot();
+    const box = await ellipsoid.boundingBox();
+    expect(box).toBeTruthy();
+    if (!box) return;
+
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 + 80, box.y + box.height / 2 + 40);
+    await page.mouse.up();
+    await page.waitForTimeout(150);
+
+    const updatedImage = await ellipsoid.screenshot();
     expect(initialImage).not.toEqual(updatedImage);
   });
 
-  test('theta slider updates angle display', async ({ page }) => {
-    await page.waitForSelector('#theta', { timeout: 10000 });
-
-    // Get initial value
-    const initialLabel = await page.locator('label[for="theta"]').textContent();
-    expect(initialLabel).toContain('°');
-
-    // Move slider (use evaluate for range inputs)
-    const slider = page.locator('#theta');
-    await slider.evaluate((el: HTMLInputElement, value) => {
-      el.value = String(value);
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-      el.dispatchEvent(new Event('change', { bubbles: true }));
-    }, Math.PI / 2); // 90 degrees
-
-    // Wait a bit for React to update
-    await page.waitForTimeout(100);
-
-    // Check updated label
-    const updatedLabel = await page.locator('label[for="theta"]').textContent();
-    expect(updatedLabel).toContain('90');
+  test('steering ellipsoid zoom changes the view', async ({ page }) => {
+    const ellipsoid = page.locator('canvas').nth(2);
+    const initialImage = await ellipsoid.screenshot();
+    await page.locator('#ellipsoid-zoom').evaluate((input: HTMLInputElement) => {
+      input.value = '1.80';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await page.waitForTimeout(150);
+    const updatedImage = await ellipsoid.screenshot();
+    expect(initialImage).not.toEqual(updatedImage);
   });
 
-  test('phi slider updates angle display', async ({ page }) => {
-    await page.waitForSelector('#phi', { timeout: 10000 });
-
-    const slider = page.locator('#phi');
-    await slider.evaluate((el: HTMLInputElement, value) => {
-      el.value = String(value);
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-      el.dispatchEvent(new Event('change', { bubbles: true }));
-    }, Math.PI); // 180 degrees
-
-    // Wait for React to update
-    await page.waitForTimeout(100);
-
-    const label = await page.locator('label[for="phi"]').textContent();
-    expect(label).toContain('180');
-  });
-
-  test('keyboard navigation works on controls', async ({ page }) => {
-    await page.waitForSelector('#production-mode', { timeout: 10000 });
-
-    // Tab through controls
-    await page.keyboard.press('Tab'); // Should focus first interactive element
-    await page.keyboard.press('Tab');
-    await page.keyboard.press('Tab');
-
-    // Check that sliders can be controlled with keyboard
-    const theta = page.locator('#theta');
-    await theta.focus();
-    await page.keyboard.press('ArrowRight');
-
-    // Value should have changed
-    const value = await theta.evaluate((el: HTMLInputElement) => parseFloat(el.value));
-    expect(value).toBeGreaterThan(0);
-  });
-
-  test('heatmap canvas is keyboard accessible', async ({ page }) => {
-    await page.waitForSelector('canvas', { timeout: 10000 });
-
-    const heatmap = page.locator('canvas').first();
-    await heatmap.focus();
-
-    // Should be focusable
-    await expect(heatmap).toBeFocused();
-
-    // Arrow keys should navigate (check aria-label updates)
-    await page.keyboard.press('ArrowDown');
-    await page.keyboard.press('ArrowRight');
-
-    // Check for screen reader announcement - use first() to avoid strict mode violation
-    const srText = await page.locator('.sr-only[aria-live="polite"]').first().textContent();
-    expect(srText).toBeTruthy();
-    expect(srText).toContain('C_');
-  });
-
-  test('export PNG button triggers download', async ({ page }) => {
-    await page.waitForSelector('canvas', { timeout: 10000 });
-
-    // Set up download listener
-    const downloadPromise = page.waitForEvent('download');
-
-    // Click export button
-    await page.getByRole('button', { name: /Export PNG/i }).click();
-
-    // Verify download started
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toContain('.png');
-  });
-
-  test('export SVG button triggers download', async ({ page }) => {
-    await page.waitForSelector('canvas', { timeout: 10000 });
-
-    const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('button', { name: /Export SVG/i }).click();
-
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toContain('.svg');
-  });
-
-  test('export JSON button triggers download', async ({ page }) => {
-    await page.waitForSelector('canvas', { timeout: 10000 });
-
-    const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('button', { name: /Export Parameters/i }).click();
-
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toContain('.json');
-
-    // Verify JSON content structure
-    const path = await download.path();
-    if (path) {
-      const fs = await import('fs/promises');
-      const content = await fs.readFile(path, 'utf-8');
-      const data = JSON.parse(content);
-
-      expect(data).toHaveProperty('parameters');
-      expect(data).toHaveProperty('correlationMatrix');
-      expect(data).toHaveProperty('timestamp');
-      expect(data.parameters).toHaveProperty('productionMode');
-      expect(data.parameters).toHaveProperty('basis');
-      expect(data.parameters).toHaveProperty('theta');
-      expect(data.parameters).toHaveProperty('phi');
+  test('export buttons trigger downloads', async ({ page }) => {
+    for (const [name, extension] of [
+      [/Export PNG/i, '.png'],
+      [/Export SVG/i, '.svg'],
+      [/Export JSON/i, '.json'],
+    ] as const) {
+      const downloadPromise = page.waitForEvent('download');
+      await page.getByRole('button', { name }).click();
+      const download = await downloadPromise;
+      expect(download.suggestedFilename()).toContain(extension);
     }
   });
 
   test('responsive: visualizations render on mobile viewport', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 }); // iPhone SE
-    await page.waitForSelector('canvas', { timeout: 10000 });
-
-    const canvases = page.locator('canvas');
-    await expect(canvases).toHaveCount(2);
-
-    // Both should be visible
-    await expect(canvases.first()).toBeVisible();
-    await expect(canvases.nth(1)).toBeVisible();
+    await page.setViewportSize({ width: 375, height: 667 });
+    await expect(page.locator('canvas')).toHaveCount(3);
+    await expect(page.locator('canvas').first()).toBeVisible();
+    await expect(page.locator('canvas').nth(2)).toBeVisible();
   });
 
-  test('parameter live region announces changes', async ({ page }) => {
-    await page.waitForSelector('canvas', { timeout: 10000 });
-
-    // Change production mode
-    await page.selectOption('#production-mode', 'qqbar');
-
-    // Check live region updates
+  test('live region announces integration changes', async ({ page }) => {
+    await page.selectOption('#integration-method', 'rect');
     const liveRegion = page.locator('[aria-live="polite"]').last();
-    const text = await liveRegion.textContent();
-
-    expect(text).toContain('qqbar');
+    await expect(liveRegion).toContainText('rect');
   });
 
-  test('all reference links are present', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /Related Work/i })).toBeVisible();
-    await expect(page.getByText(/Key Publications/i)).toBeVisible();
-    await expect(page.getByText(/Code & Data/i)).toBeVisible();
-  });
-
-  test('accessibility footer notes are present', async ({ page }) => {
-    await expect(page.getByText(/Keyboard Accessibility/i)).toBeVisible();
-    await expect(page.getByText(/Citation/i)).toBeVisible();
+  test('public page does not expose private code references', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: /Learn More/i })).toBeVisible();
+    await expect(page.getByText(/Source code/i)).toHaveCount(0);
+    await expect(page.locator('article').getByRole('link', { name: /GitHub/i })).toHaveCount(0);
+    await expect(page.locator('article code').filter({ hasText: /src\//i })).toHaveCount(0);
   });
 });

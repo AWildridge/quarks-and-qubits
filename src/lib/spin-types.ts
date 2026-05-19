@@ -45,7 +45,7 @@ export interface SpinAxes {
 }
 
 export interface ExportData {
-  parameters: SpinParameters;
+  parameters: unknown;
   correlationMatrix: CorrelationMatrix;
   timestamp: string;
   version: string;

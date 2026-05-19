@@ -1,17 +1,20 @@
-/**
- * Interactive Spin Correlation Explorer
- * Main component integrating all controls and visualizations
- */
-
-import { useState, useEffect, useRef } from 'react';
-import type {
-  SpinParameters,
-  SpinGrid,
-  ProductionMode,
-  Basis,
-  EnergyPreset,
-} from '../../lib/spin-types';
-import { loadGrid, getCorrelationMatrix, computeSpinAxes } from '../../lib/spin-utils';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { loadDefaultLhaPdfGrid, type LhaPdfGrid } from '../../lib/lhapdf-grid';
+import {
+  DEFAULT_SPIN_EXPLORER_SETTINGS,
+  WILSON_COEFFICIENTS,
+  betaFromMtt,
+  integrateSpinExplorer,
+  mttBoundsForSqrtS,
+  mttFromBeta,
+  normalizedSettings,
+  steeringEllipsoidFromResult,
+  type CoefficientEntry,
+  type EftOrder,
+  type IntegrationMethod,
+  type PhaseObservable,
+  type SpinExplorerSettings,
+} from '../../lib/spin-calculation';
 import {
   exportCanvasToPNG,
   exportHeatmapToSVG,
@@ -19,260 +22,444 @@ import {
   getTimestampString,
 } from '../../lib/export';
 import { Heatmap } from './Heatmap';
-import { SpinVectorPlot } from './SpinVectorPlot';
+import { PhaseSpacePlot } from './PhaseSpacePlot';
+import { SteeringEllipsoidPlot } from './SteeringEllipsoidPlot';
+
+const OBSERVABLES: Array<{ label: string; value: PhaseObservable }> = [
+  { label: 'Δ entanglement witness', value: 'Delta' },
+  { label: 'C_kk', value: 'Ckk' },
+  { label: 'C_rr', value: 'Crr' },
+  { label: 'C_nn', value: 'Cnn' },
+  { label: 'C_rk', value: 'Crk' },
+  { label: 'B_1k', value: 'B1k' },
+  { label: 'B_1r', value: 'B1r' },
+];
+
+function numberValue(value: string, fallback: number): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
 
 export function Explorer() {
-  // Parameters
-  const [parameters, setParameters] = useState<SpinParameters>({
-    productionMode: 'gg',
-    basis: 'helicity',
-    energy: '13TeV',
-    theta: Math.PI / 4, // 45 degrees
-    phi: Math.PI / 2, // 90 degrees
-  });
+  const [settings, setSettings] = useState<SpinExplorerSettings>(DEFAULT_SPIN_EXPLORER_SETTINGS);
+  const [pdfGrid, setPdfGrid] = useState<LhaPdfGrid | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
+  const phaseRef = useRef<HTMLDivElement>(null);
 
-  // Grid data
-  const [grid, setGrid] = useState<SpinGrid | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const normalized = useMemo(() => normalizedSettings(settings), [settings]);
+  const result = useMemo(
+    () => integrateSpinExplorer(normalized, pdfGrid ?? undefined),
+    [normalized, pdfGrid],
+  );
+  const ellipsoid = useMemo(() => steeringEllipsoidFromResult(result), [result]);
+  const mttBounds = mttBoundsForSqrtS(normalized.sqrtS);
+  const mttMinTev = mttFromBeta(normalized.betaMin) / 1000;
+  const mttMaxTev = mttFromBeta(normalized.betaMax) / 1000;
+  const maxMttTev = mttBounds.max / 1000;
 
-  // Canvas refs for export
-  const heatmapRef = useRef<HTMLDivElement>(null);
-  const vectorPlotRef = useRef<HTMLDivElement>(null);
-
-  // Load grid when parameters change
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const newGrid = await loadGrid(
-          parameters.productionMode,
-          parameters.basis,
-          parameters.energy,
-        );
-        setGrid(newGrid);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load grid');
-      } finally {
-        setLoading(false);
-      }
+    let cancelled = false;
+    loadDefaultLhaPdfGrid()
+      .then((grid) => {
+        if (!cancelled) setPdfGrid(grid);
+      })
+      .catch((error: unknown) => {
+        if (!cancelled)
+          setPdfError(error instanceof Error ? error.message : 'Failed to load reference data');
+      });
+    return () => {
+      cancelled = true;
     };
+  }, []);
 
-    loadData();
-  }, [parameters.productionMode, parameters.basis, parameters.energy]);
-
-  // Compute current correlation matrix and spin axes
-  const matrix = grid ? getCorrelationMatrix(grid, parameters.theta, parameters.phi) : null;
-  const axes = matrix ? computeSpinAxes(matrix, parameters.theta, parameters.phi) : null;
-
-  // Update parameter handlers
-  const updateParam = <K extends keyof SpinParameters>(key: K, value: SpinParameters[K]) => {
-    setParameters((prev) => ({ ...prev, [key]: value }));
+  const update = <K extends keyof SpinExplorerSettings>(key: K, value: SpinExplorerSettings[K]) => {
+    setSettings((current) => normalizedSettings({ ...current, [key]: value }));
   };
 
-  // Export handlers
+  const updateCoefficient = (index: number, patch: Partial<CoefficientEntry>) => {
+    setSettings((current) => {
+      const coefficients = current.coefficients.map((entry, i) =>
+        i === index ? { ...entry, ...patch } : entry,
+      );
+      return { ...current, coefficients };
+    });
+  };
+
+  const addCoefficient = () => {
+    setSettings((current) => ({
+      ...current,
+      coefficients: [...current.coefficients, { name: 'cQq83', value: 0 }],
+    }));
+  };
+
+  const removeCoefficient = (index: number) => {
+    setSettings((current) => ({
+      ...current,
+      coefficients:
+        current.coefficients.length > 1
+          ? current.coefficients.filter((_, i) => i !== index)
+          : current.coefficients,
+    }));
+  };
+
   const handleExportPNG = () => {
-    const canvas = heatmapRef.current?.querySelector('canvas');
-    if (canvas) {
-      const filename = `spin-correlation-${getTimestampString()}.png`;
-      exportCanvasToPNG(canvas, filename);
-    }
+    const canvas = phaseRef.current?.querySelector('canvas');
+    if (canvas) exportCanvasToPNG(canvas, `spin-phase-space-${getTimestampString()}.png`);
   };
 
   const handleExportSVG = () => {
-    if (matrix) {
-      const filename = `spin-correlation-${getTimestampString()}.svg`;
-      exportHeatmapToSVG(matrix, filename);
-    }
+    exportHeatmapToSVG(result.matrix, `spin-correlation-${getTimestampString()}.svg`);
   };
 
   const handleExportJSON = () => {
-    if (matrix) {
-      const filename = `spin-params-${getTimestampString()}.json`;
-      exportParametersToJSON(parameters, matrix, filename);
-    }
+    exportParametersToJSON(normalized, result.matrix, `spin-explorer-${getTimestampString()}.json`);
   };
 
-  // Convert radians to degrees for display
-  const thetaDeg = (parameters.theta * 180) / Math.PI;
-  const phiDeg = (parameters.phi * 180) / Math.PI;
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-lg">Loading correlation data...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-8 border border-red-300 bg-red-50 rounded">
-        <h3 className="text-lg font-semibold text-red-800">Error</h3>
-        <p className="text-red-700">{error}</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      {/* Controls Panel */}
-      <div className="bg-gray-50 p-6 rounded-lg space-y-4">
-        <h2 className="text-xl font-semibold">Parameters</h2>
+    <div className="space-y-8">
+      <section className="grid gap-5 rounded border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900 sm:p-5 lg:grid-cols-3">
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-950 dark:text-gray-50">Integration</h2>
+          <div className="rounded border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300">
+            {pdfGrid
+              ? 'Reference data loaded'
+              : pdfError
+                ? `Reference data unavailable: ${pdfError}`
+                : 'Loading reference data'}
+          </div>
 
-        {/* Production Mode */}
-        <div>
-          <label htmlFor="production-mode" className="block text-sm font-medium text-gray-700 mb-2">
-            Production Mode
-          </label>
-          <select
-            id="production-mode"
-            value={parameters.productionMode}
-            onChange={(e) => updateParam('productionMode', e.target.value as ProductionMode)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="gg">Gluon fusion (gg)</option>
-            <option value="qqbar">Quark-antiquark annihilation (qq̄)</option>
-          </select>
-        </div>
+          <div>
+            <label
+              htmlFor="sqrt-s"
+              className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              Center-of-mass energy √s (TeV)
+            </label>
+            <input
+              id="sqrt-s"
+              type="number"
+              min={2}
+              max={100}
+              step={0.1}
+              value={Number((normalized.sqrtS / 1000).toFixed(3))}
+              onChange={(event) =>
+                update('sqrtS', numberValue(event.target.value, normalized.sqrtS / 1000) * 1000)
+              }
+              className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+            />
+          </div>
 
-        {/* Basis */}
-        <div>
-          <label htmlFor="basis" className="block text-sm font-medium text-gray-700 mb-2">
-            Spin Basis
-          </label>
-          <select
-            id="basis"
-            value={parameters.basis}
-            onChange={(e) => updateParam('basis', e.target.value as Basis)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="helicity">Helicity basis</option>
-            <option value="beam">Beam basis</option>
-            <option value="off-diagonal">Off-diagonal basis</option>
-          </select>
-        </div>
+          <div>
+            <label
+              htmlFor="integration-method"
+              className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              Integration method
+            </label>
+            <select
+              id="integration-method"
+              value={normalized.method}
+              onChange={(event) => update('method', event.target.value as IntegrationMethod)}
+              className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+            >
+              <option value="gl">Gauss-Legendre</option>
+              <option value="rect">Rectangular midpoint</option>
+            </select>
+          </div>
 
-        {/* Energy Preset */}
-        <div>
-          <label htmlFor="energy" className="block text-sm font-medium text-gray-700 mb-2">
-            Center-of-Mass Energy
-          </label>
-          <select
-            id="energy"
-            value={parameters.energy}
-            onChange={(e) => updateParam('energy', e.target.value as EnergyPreset)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="7TeV">7 TeV (Run 1)</option>
-            <option value="8TeV">8 TeV (Run 1)</option>
-            <option value="13TeV">13 TeV (Run 2)</option>
-            <option value="14TeV">14 TeV (Run 3/Future)</option>
-          </select>
-        </div>
-
-        {/* Theta Slider */}
-        <div>
-          <label htmlFor="theta" className="block text-sm font-medium text-gray-700 mb-2">
-            Polar Angle θ: {thetaDeg.toFixed(1)}° ({parameters.theta.toFixed(3)} rad)
-          </label>
-          <input
-            id="theta"
-            type="range"
-            min="0"
-            max={Math.PI}
-            step={Math.PI / 180}
-            value={parameters.theta}
-            onChange={(e) => updateParam('theta', parseFloat(e.target.value))}
-            className="w-full"
-            aria-valuemin={0}
-            aria-valuemax={Math.PI}
-            aria-valuenow={parameters.theta}
-            aria-valuetext={`${thetaDeg.toFixed(1)} degrees`}
-          />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>0°</span>
-            <span>90°</span>
-            <span>180°</span>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                htmlFor="n-beta"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                m(ttbar) points
+              </label>
+              <input
+                id="n-beta"
+                type="number"
+                min={8}
+                max={96}
+                value={normalized.nBeta}
+                onChange={(event) =>
+                  update('nBeta', numberValue(event.target.value, normalized.nBeta))
+                }
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="n-z"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                cos(θ*) points
+              </label>
+              <input
+                id="n-z"
+                type="number"
+                min={8}
+                max={96}
+                value={normalized.nZ}
+                onChange={(event) => update('nZ', numberValue(event.target.value, normalized.nZ))}
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Phi Slider */}
-        <div>
-          <label htmlFor="phi" className="block text-sm font-medium text-gray-700 mb-2">
-            Azimuthal Angle φ: {phiDeg.toFixed(1)}° ({parameters.phi.toFixed(3)} rad)
-          </label>
-          <input
-            id="phi"
-            type="range"
-            min="0"
-            max={2 * Math.PI}
-            step={Math.PI / 180}
-            value={parameters.phi}
-            onChange={(e) => updateParam('phi', parseFloat(e.target.value))}
-            className="w-full"
-            aria-valuemin={0}
-            aria-valuemax={2 * Math.PI}
-            aria-valuenow={parameters.phi}
-            aria-valuetext={`${phiDeg.toFixed(1)} degrees`}
-          />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>0°</span>
-            <span>180°</span>
-            <span>360°</span>
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-950 dark:text-gray-50">Phase Space</h2>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                htmlFor="mtt-min"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                m(ttbar) min (TeV)
+              </label>
+              <input
+                id="mtt-min"
+                type="number"
+                min={mttBounds.min / 1000}
+                max={maxMttTev}
+                step={0.01}
+                value={Number(mttMinTev.toFixed(3))}
+                onChange={(event) =>
+                  update('betaMin', betaFromMtt(numberValue(event.target.value, mttMinTev) * 1000))
+                }
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="mtt-max"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                m(ttbar) max (TeV)
+              </label>
+              <input
+                id="mtt-max"
+                type="number"
+                min={mttBounds.min / 1000}
+                max={maxMttTev}
+                step={0.01}
+                value={Number(mttMaxTev.toFixed(3))}
+                onChange={(event) =>
+                  update('betaMax', betaFromMtt(numberValue(event.target.value, mttMaxTev) * 1000))
+                }
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+              />
+              <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                ≤ {maxMttTev.toFixed(2)} TeV
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="z-min"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                cos(θ*) min
+              </label>
+              <input
+                id="z-min"
+                type="number"
+                min={-1}
+                max={0.99}
+                step={0.01}
+                value={normalized.zMin}
+                onChange={(event) =>
+                  update('zMin', numberValue(event.target.value, normalized.zMin))
+                }
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="z-max"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                cos(θ*) max
+              </label>
+              <input
+                id="z-max"
+                type="number"
+                min={-0.99}
+                max={1}
+                step={0.01}
+                value={normalized.zMax}
+                onChange={(event) =>
+                  update('zMax', numberValue(event.target.value, normalized.zMax))
+                }
+                className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="phase-observable"
+              className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              Phase-space observable
+            </label>
+            <select
+              id="phase-observable"
+              value={normalized.observable}
+              onChange={(event) => update('observable', event.target.value as PhaseObservable)}
+              className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+            >
+              {OBSERVABLES.map((observable) => (
+                <option key={observable.value} value={observable.value}>
+                  {observable.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
-      </div>
 
-      {/* Visualizations */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Heatmap */}
-        <div ref={heatmapRef}>
-          <h3 className="text-lg font-semibold mb-3">Correlation Matrix</h3>
-          {matrix && <Heatmap matrix={matrix} />}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-950 dark:text-gray-50">SMEFT</h2>
+          <div>
+            <label
+              htmlFor="eft-order"
+              className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              EFT order
+            </label>
+            <select
+              id="eft-order"
+              value={normalized.eftOrder}
+              onChange={(event) => update('eftOrder', Number(event.target.value) as EftOrder)}
+              className="w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+            >
+              <option value={0}>SM</option>
+              <option value={1}>SM + linear</option>
+              <option value={2}>SM + linear + quadratic</option>
+            </select>
+          </div>
+
+          <div className="space-y-3">
+            {normalized.coefficients.map((entry, index) => (
+              <div
+                key={`${entry.name}-${index}`}
+                className="grid grid-cols-[minmax(0,1fr)_7rem_2.5rem] gap-2"
+              >
+                <label htmlFor={`wilson-coefficient-${index}`} className="sr-only">
+                  Wilson coefficient
+                </label>
+                <select
+                  id={`wilson-coefficient-${index}`}
+                  value={entry.name}
+                  onChange={(event) => updateCoefficient(index, { name: event.target.value })}
+                  className="min-w-0 rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+                >
+                  {WILSON_COEFFICIENTS.map((coefficient) => (
+                    <option key={coefficient} value={coefficient}>
+                      {coefficient}
+                    </option>
+                  ))}
+                </select>
+                <label htmlFor={`wilson-value-${index}`} className="sr-only">
+                  Wilson value
+                </label>
+                <input
+                  id={`wilson-value-${index}`}
+                  type="number"
+                  step="0.000001"
+                  value={entry.value}
+                  onChange={(event) =>
+                    updateCoefficient(index, { value: numberValue(event.target.value, 0) })
+                  }
+                  className="min-w-0 rounded border border-gray-300 bg-white px-3 py-2 text-gray-950 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-50"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeCoefficient(index)}
+                  className="rounded border border-gray-300 bg-white px-2 py-2 text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-950 dark:text-gray-200 dark:hover:bg-gray-800"
+                  aria-label={`Remove ${entry.name}`}
+                >
+                  -
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addCoefficient}
+              className="rounded bg-teal-700 px-3 py-2 text-sm font-medium text-white hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            >
+              Add coefficient
+            </button>
+          </div>
         </div>
+      </section>
 
-        {/* Vector Plot */}
-        <div ref={vectorPlotRef}>
-          <h3 className="text-lg font-semibold mb-3">Spin Orientation</h3>
-          {axes && <SpinVectorPlot axes={axes} />}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          ['sigma weight', result.sigma.toExponential(3), 'metric-sigma'],
+          ['Delta', result.Delta.toFixed(4), 'metric-delta'],
+          ['C_kk', result.Ckk.toFixed(4), 'metric-ckk'],
+          ['C_rk', result.Crk.toFixed(4), 'metric-crk'],
+          ['C_kr', result.Ckr.toFixed(4), 'metric-ckr'],
+          ['C_rr + C_nn', (result.Crr + result.Cnn).toFixed(4), 'metric-crr-cnn'],
+        ].map(([label, value, testId]) => (
+          <div
+            key={label}
+            className="rounded border border-gray-200 p-4 dark:border-gray-700"
+            data-testid={testId}
+          >
+            <div className="text-sm text-gray-600 dark:text-gray-400">{label}</div>
+            <div className="mt-1 font-mono text-xl text-gray-950 dark:text-gray-50">{value}</div>
+          </div>
+        ))}
+      </section>
+
+      <section ref={phaseRef}>
+        <h2 className="mb-3 text-xl font-semibold text-gray-950 dark:text-gray-50">Phase Space</h2>
+        <PhaseSpacePlot result={result} observable={normalized.observable} />
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-2">
+        <div>
+          <h2 className="mb-3 text-xl font-semibold text-gray-950 dark:text-gray-50">
+            Integrated Matrix
+          </h2>
+          <Heatmap matrix={result.matrix} />
         </div>
-      </div>
+        <div>
+          <h2 className="mb-3 text-xl font-semibold text-gray-950 dark:text-gray-50">
+            Steering Ellipsoid
+          </h2>
+          <SteeringEllipsoidPlot ellipsoid={ellipsoid} />
+        </div>
+      </section>
 
-      {/* Export Controls */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h3 className="text-lg font-semibold mb-3">Export</h3>
+      <section className="rounded border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+        <h2 className="mb-3 text-lg font-semibold text-gray-950 dark:text-gray-50">Export</h2>
         <div className="flex flex-wrap gap-3">
           <button
             onClick={handleExportPNG}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded bg-teal-700 px-4 py-2 text-white hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             Export PNG
           </button>
           <button
             onClick={handleExportSVG}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded bg-teal-700 px-4 py-2 text-white hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             Export SVG
           </button>
           <button
             onClick={handleExportJSON}
-            className="px-4 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="rounded bg-gray-800 px-4 py-2 text-white hover:bg-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-200 dark:text-gray-950 dark:hover:bg-white"
           >
-            Export Parameters (JSON)
+            Export JSON
           </button>
         </div>
-        <p className="mt-3 text-sm text-gray-600">
-          Export the current visualization as an image or download the parameters and correlation
-          matrix as JSON for further analysis.
-        </p>
-      </div>
+      </section>
 
-      {/* Live region for screen readers */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
-        Current parameters: {parameters.productionMode} production, {parameters.basis} basis,{' '}
-        {parameters.energy}, theta {thetaDeg.toFixed(1)} degrees, phi {phiDeg.toFixed(1)} degrees
+        spin integration at {(normalized.sqrtS / 1000).toFixed(1)} TeV, {normalized.method}, Delta{' '}
+        {result.Delta.toFixed(4)}, C kk {result.Ckk.toFixed(4)}
       </div>
     </div>
   );

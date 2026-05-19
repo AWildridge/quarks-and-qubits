@@ -33,8 +33,13 @@ export function Heatmap({ matrix, width = 400, height = 400 }: HeatmapProps) {
     canvas.style.height = `${height}px`;
     ctx.scale(dpr, dpr);
 
-    // Clear canvas
-    ctx.clearRect(0, 0, width, height);
+    const isDark = document.documentElement.classList.contains('dark');
+    const bg = isDark ? '#111827' : '#ffffff';
+    const fg = isDark ? '#e5e7eb' : '#111827';
+    const grid = isDark ? '#9ca3af' : '#333333';
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, width, height);
 
     // Layout
     const margin = 60;
@@ -54,7 +59,7 @@ export function Heatmap({ matrix, width = 400, height = 400 }: HeatmapProps) {
         ctx.fillRect(x, y, cellSize, cellSize);
 
         // Cell border
-        ctx.strokeStyle = '#333';
+        ctx.strokeStyle = grid;
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y, cellSize, cellSize);
 
@@ -63,7 +68,7 @@ export function Heatmap({ matrix, width = 400, height = 400 }: HeatmapProps) {
           (hoveredCell?.row === row && hoveredCell?.col === col) ||
           (focusedCell?.row === row && focusedCell?.col === col)
         ) {
-          ctx.strokeStyle = '#000';
+          ctx.strokeStyle = fg;
           ctx.lineWidth = 3;
           ctx.strokeRect(x, y, cellSize, cellSize);
         }
@@ -78,11 +83,11 @@ export function Heatmap({ matrix, width = 400, height = 400 }: HeatmapProps) {
     }
 
     // Draw axis labels
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = fg;
     ctx.font = '16px sans-serif';
     ctx.textAlign = 'center';
 
-    const labels = ['x', 'y', 'z'];
+    const labels = ['n', 'r', 'k'];
     for (let i = 0; i < matrix.size; i++) {
       // Column labels (top)
       ctx.fillText(labels[i], matrixStartX + (i + 0.5) * cellSize, matrixStartY - 20);
@@ -109,10 +114,10 @@ export function Heatmap({ matrix, width = 400, height = 400 }: HeatmapProps) {
       ctx.fillRect(legendX + i, legendY, 1, legendHeight);
     }
 
-    ctx.strokeStyle = '#333';
+    ctx.strokeStyle = grid;
     ctx.strokeRect(legendX, legendY, legendWidth, legendHeight);
 
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = fg;
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('-1', legendX - 15, legendY + legendHeight / 2);
@@ -200,13 +205,13 @@ export function Heatmap({ matrix, width = 400, height = 400 }: HeatmapProps) {
         tabIndex={0}
         role="img"
         aria-label={`Correlation matrix heatmap. ${getFocusedCellInfo()}`}
-        className="border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="max-w-full border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 dark:border-gray-700 dark:bg-gray-900"
       />
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {getFocusedCellInfo()}
       </div>
       {hoveredCell && (
-        <div className="mt-2 text-sm text-gray-700">
+        <div className="mt-2 text-sm text-gray-700 dark:text-gray-300">
           Hover: {getMatrixLabel(hoveredCell.row, hoveredCell.col)} ={' '}
           {matrix.data[hoveredCell.row * matrix.size + hoveredCell.col].toFixed(4)}
         </div>

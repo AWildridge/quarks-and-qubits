@@ -12,7 +12,9 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "build:fresh": "pnpm browser-data:update && pnpm build",
     "build:check": "pnpm prebuild && astro check && astro build && node scripts/generate-csp-hashes.js && node scripts/generate-cv-pdf.js",
+    "build:check:fresh": "pnpm browser-data:update && pnpm build:check",
     "check": "pnpm format:check && pnpm lint && pnpm cspell && pnpm build:check && pnpm html:validate && node scripts/validate-bibtex.js && node scripts/validate-security-headers.js && node scripts/validate-sitemap.js",
     "typecheck": "astro check",
     "preview": "astro preview",
@@ -31,6 +33,7 @@
     "prepare": "husky",
     "prebuild": "node scripts/extract-cv-from-docx.js && node scripts/fetch-bibtex.js",
     "postbuild": "node scripts/generate-csp-hashes.js && node scripts/generate-cv-pdf.js",
+    "browser-data:update": "node scripts/update-browser-data.js",
     "cv:extract": "node scripts/extract-cv-from-docx.js",
     "cv:generate": "node scripts/generate-content-from-cv.js",
     "cv:sync": "pnpm cv:extract && pnpm cv:generate && node scripts/fetch-bibtex.js",
@@ -59,6 +62,8 @@
     "@typescript-eslint/parser": "^8.7.0",
     "astro-eslint-parser": "^1.0.3",
     "autoprefixer": "^10.4.20",
+    "baseline-browser-mapping": "^2.10.31",
+    "caniuse-lite": "^1.0.30001793",
     "cspell": "^8.14.2",
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.1.0",
@@ -77,7 +82,8 @@
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "tailwindcss": "^3.4.10",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "update-browserslist-db": "^1.2.3"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,astro,css,md,mdx,json,yml,yaml}": [

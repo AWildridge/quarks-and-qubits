@@ -120,7 +120,7 @@ export function computeSpinAxes(matrix: CorrelationMatrix, theta: number, phi: n
  * Get a readable label for matrix element
  */
 export function getMatrixLabel(row: number, col: number): string {
-  const labels = ['x', 'y', 'z'];
+  const labels = ['n', 'r', 'k'];
   return `C_{${labels[row]}${labels[col]}}`;
 }
 

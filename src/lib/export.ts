@@ -2,7 +2,7 @@
  * Export utilities for spin correlation explorer
  */
 
-import type { ExportData, SpinParameters, CorrelationMatrix } from './spin-types';
+import type { ExportData, CorrelationMatrix } from './spin-types';
 import { getHeatmapColor, getMatrixLabel } from './spin-utils';
 
 /**
@@ -50,7 +50,7 @@ export function exportHeatmapToSVG(matrix: CorrelationMatrix, filename: string):
   const cellSize = (Math.min(width, height) - 2 * margin) / matrix.size;
   const matrixStartX = margin;
   const matrixStartY = margin;
-  const labels = ['x', 'y', 'z'];
+  const labels = ['n', 'r', 'k'];
   const elements: string[] = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">`,
@@ -110,7 +110,7 @@ export function exportHeatmapToSVG(matrix: CorrelationMatrix, filename: string):
  * Export current parameters and correlation matrix as JSON
  */
 export function exportParametersToJSON(
-  parameters: SpinParameters,
+  parameters: unknown,
   correlationMatrix: CorrelationMatrix,
   filename: string,
 ): void {
