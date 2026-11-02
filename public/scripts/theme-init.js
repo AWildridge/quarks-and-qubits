@@ -1,10 +1,13 @@
 (() => {
-  const validThemes = new Set(['light', 'dark', 'system']);
-  const storedTheme = localStorage.getItem('theme');
-  const theme = validThemes.has(storedTheme) ? storedTheme : 'system';
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let theme = 'system';
+  try {
+    theme = localStorage.getItem('theme') || theme;
+  } catch {
+    /* Storage can be disabled. */
+  }
   document.documentElement.classList.toggle(
     'dark',
-    theme === 'dark' || (theme === 'system' && prefersDark),
+    theme === 'dark' ||
+      (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches),
   );
 })();

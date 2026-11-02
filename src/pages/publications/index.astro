@@ -27,7 +27,7 @@ const citationTags = [
 ].filter((tag) => tags.includes(tag));
 
 const records: PublicationRecord[] = entries.map((p) => ({
-  slug: p.slug,
+  slug: p.id,
   title: p.data.title,
   authors: p.data.authors,
   year: p.data.year,
@@ -259,7 +259,7 @@ function dateTimeValue(pub: PublicationRecord) {
     is:inline
     id="publication-records"
     type="application/json"
-    set:html={JSON.stringify(records)}
+    set:html={JSON.stringify(records).replace(/</g, '\\u003c')}
   />
 
   <script>

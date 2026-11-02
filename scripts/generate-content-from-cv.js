@@ -11,6 +11,7 @@
  */
 
 import fs from 'fs/promises';
+import { parse } from 'yaml';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -22,6 +23,25 @@ const PUBLICATIONS_DIR = path.join(__dirname, '../src/content/publications');
 const TALKS_DIR = path.join(__dirname, '../src/content/talks');
 const PROF_DEV_DIR = path.join(__dirname, '../src/content/professional-development');
 const POSTERS_DIR = path.join(__dirname, '../src/content/posters');
+
+// Curated entries may use a different slug from the legacy DOCX importer.
+async function hasCuratedEntry(directory, title, year) {
+  const normalize = (value) =>
+    String(value)
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+  for (const file of await fs.readdir(directory)) {
+    if (!file.endsWith('.mdx')) continue;
+    const raw = await fs.readFile(path.join(directory, file), 'utf8');
+    const match = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw);
+    if (!match) continue;
+    const data = parse(match[1]);
+    const entryYear = data.year || new Date(data.date).getUTCFullYear();
+    if (normalize(data.title) === normalize(title) && Number(entryYear) === Number(year))
+      return true;
+  }
+  return false;
+}
 
 /**
  * Convert a title to a slug (filename-safe)
@@ -294,6 +314,7 @@ async function main() {
     let pubCount = 0;
     for (let i = 0; i < publications.length; i++) {
       const pub = publications[i];
+      if (await hasCuratedEntry(PUBLICATIONS_DIR, pub.title, pub.year)) continue;
       const mdx = generatePublicationMDX(pub, i);
 
       const filePath = path.join(PUBLICATIONS_DIR, mdx.filename);
@@ -321,6 +342,7 @@ async function main() {
     let talkCount = 0;
     for (let i = 0; i < talks.length; i++) {
       const talk = talks[i];
+      if (await hasCuratedEntry(TALKS_DIR, talk.title, talk.year)) continue;
       const mdx = generateTalkMDX(talk, i);
 
       const filePath = path.join(TALKS_DIR, mdx.filename);

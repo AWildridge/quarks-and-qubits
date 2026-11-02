@@ -5,69 +5,63 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ASTRO_TELEMETRY_DISABLED: '1'
 
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          node-version: '20'
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile=false
-
-      - name: Typecheck
-        run: pnpm typecheck
-      - name: Lint
-        run: pnpm lint
-      - name: Format check
-        run: pnpm format:check
-      - name: Spellcheck
-        run: pnpm cspell
-      - name: Build (typecheck + build)
-        run: pnpm build:check
-      - name: HTML validate
-        run: pnpm html:validate
-
-      - name: BibTeX validation
-        run: node scripts/validate-bibtex.js
-
-      - name: Playwright smoke
+          persist-credentials: false
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Audit dependencies
+        run: pnpm audit --audit-level=moderate
+      - name: Install browser and system dependencies
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Validate source and production build
+        run: pnpm check
+      - name: Browser regression tests with production CSP
         run: pnpm test
-
-      - name: Serve site for checks
-        run: pnpm ci:serve &
-      - name: Wait for server
-        run: npx wait-on http://127.0.0.1:4321 --timeout 60000
-
-      - name: Link check
-        run: npx linkinator http://127.0.0.1:4321 --recurse --timeout 30000 --skip "https://aj-wildridge.web.cern.ch.*"
-
-      - name: Axe accessibility scan
-        run: node scripts/run-axe-scan.js
-
-      - name: Lighthouse CI
-        run: npx lhci autorun --config=lighthouserc.json
-        env:
-          LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
-
-      - name: Upload Lighthouse reports
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Accessibility in light and dark themes
+        run: pnpm a11y
+      - name: Lighthouse quality gates
+        run: pnpm lighthouse
+      - name: Package verified site including Apache headers
+        run: tar -C dist -czf site-dist.tar.gz .
+      - name: Upload verified site
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: lighthouse-reports
-          path: .lighthouseci/
-
-      - name: Validate sitemap
-        run: node scripts/validate-sitemap.js
-
-      - name: Check production security headers
-        run: node scripts/validate-security-headers.js
-
-      - name: Check for mixed content
-        run: |
-          grep -r "http://" dist/ --include="*.html" --exclude-dir=node_modules | grep -v "http://127.0.0.1" | grep -v "http://localhost" | grep -v "http://www.w3.org" | grep -v "http://schema.org" | grep -v "http://www.sitemaps.org" && echo "Found mixed content!" && exit 1 || echo "No mixed content found"
+          name: verified-site-${{ github.sha }}
+          path: site-dist.tar.gz
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: quality-reports-${{ github.run_id }}
+          path: |
+            .lighthouseci/
+            playwright-report/
+            test-results/
+          include-hidden-files: true
+          retention-days: 14

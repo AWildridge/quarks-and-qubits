@@ -1,14 +1,16 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
+import { glob } from 'astro/loaders';
 
 const projects = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
     tags: z.array(z.string()).default([]),
     language: z.string().optional(),
     summary: z.string().optional(),
-    repo: z.string().url().optional(),
+    repo: z.url().optional(),
     demo: z.string().optional(),
     data: z.string().optional(),
     citation: z.string().optional(),
@@ -25,7 +27,7 @@ const projects = defineCollection({
 });
 
 const publications = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/publications' }),
   schema: z.object({
     title: z.string(),
     authors: z.array(z.string()),
@@ -33,7 +35,7 @@ const publications = defineCollection({
     date: z.coerce.date().optional(),
     venue: z.string().optional(),
     doi: z.string().optional(),
-    url: z.string().url().optional(),
+    url: z.url().optional(),
     tags: z.array(z.string()).default([]),
     bibtexKey: z.string().optional(),
     draft: z.boolean().default(false),
@@ -41,7 +43,7 @@ const publications = defineCollection({
 });
 
 const talks = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/talks' }),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
@@ -49,42 +51,42 @@ const talks = defineCollection({
     event: z.string(),
     venue: z.string().optional(),
     location: z.string().optional(),
-    slides: z.string().url().optional(),
-    video: z.string().url().optional(),
-    transcript: z.string().url().optional(),
-    source: z.string().url().optional(),
+    slides: z.url().optional(),
+    video: z.url().optional(),
+    transcript: z.url().optional(),
+    source: z.url().optional(),
     tags: z.array(z.string()).default([]),
   }),
 });
 
 const posters = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posters' }),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
     event: z.string(),
     venue: z.string().optional(),
     location: z.string().optional(),
-    link: z.string().url().optional(),
+    link: z.url().optional(),
     tags: z.array(z.string()).default(['poster']),
   }),
 });
 
 const teaching = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/teaching' }),
   schema: z.object({
     title: z.string(),
     term: z.string(), // e.g., "Fall 2023"
     institution: z.string(),
     level: z.enum(['undergraduate', 'graduate', 'workshop']).optional(),
     role: z.string().optional(), // e.g., "Instructor", "TA"
-    materials: z.string().url().optional(),
-    syllabus: z.string().url().optional(),
+    materials: z.url().optional(),
+    syllabus: z.url().optional(),
   }),
 });
 
 const posts = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
@@ -96,22 +98,22 @@ const posts = defineCollection({
 });
 
 const people = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/people' }),
   schema: z.object({
     name: z.string(),
     role: z.string().optional(),
-    email: z.string().email().optional(),
+    email: z.email().optional(),
     location: z.string().optional(),
   }),
 });
 
 const professionalDevelopment = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/professional-development' }),
   schema: z.object({
     role: z.string(), // e.g., "Organizer", "Session Chair", "Program Committee"
     event: z.string(),
     year: z.number().int().min(1900).max(3000),
-    url: z.string().url().optional(),
+    url: z.url().optional(),
     description: z.string().optional(),
   }),
 });

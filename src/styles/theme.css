@@ -1,47 +1,71 @@
 @layer base {
   :root {
     color-scheme: light;
-    --color-bg: 255 255 255;
-    --color-fg: 17 24 39;
-    --color-border: 229 231 235;
-    --radius-sm: 0.25rem;
-    --radius-md: 0.5rem;
-    --radius-lg: 0.75rem;
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
+    --color-bg: 248 247 243;
+    --color-fg: 28 42 48;
+    --color-border: 211 218 215;
+    --color-muted: 79 97 103;
+    --color-accent: 19 99 91;
+    --color-surface: 239 242 237;
+    --color-paper: 255 255 252;
   }
-
   .dark {
     color-scheme: dark;
-    --color-bg: 17 24 39;
-    --color-fg: 243 244 246;
-    --color-border: 55 65 81;
+    --color-bg: 13 22 29;
+    --color-fg: 232 237 230;
+    --color-border: 49 67 74;
+    --color-muted: 171 189 190;
+    --color-accent: 129 211 188;
+    --color-surface: 23 37 43;
+    --color-paper: 19 31 38;
   }
-
   *:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px theme('colors.blue.500');
+    outline: 2px solid rgb(var(--color-accent));
+    outline-offset: 4px;
+  }
+  html {
+    scroll-padding-top: 2rem;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.65;
+  }
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+    text-wrap: balance;
   }
   h1 {
-    @apply text-3xl font-semibold;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(2.4rem, 4.5vw, 3.7rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
   }
   h2 {
-    @apply text-2xl font-semibold;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
   h3 {
-    @apply text-xl font-semibold;
+    font-size: 1.25rem;
+    font-weight: 600;
   }
-
-  /* Ensure smooth transitions except when prefers-reduced-motion */
-  * {
-    @media (prefers-reduced-motion: no-preference) {
-      transition-property: color, background-color, border-color;
-      transition-duration: 200ms;
-      transition-timing-function: ease-in-out;
-    }
+  a {
+    text-underline-offset: 0.2em;
+  }
+  input,
+  select,
+  textarea {
+    color: rgb(var(--color-fg));
+    background: rgb(var(--color-paper));
+    border-color: rgb(var(--color-border));
+  }
+  [hidden] {
+    display: none !important;
+  }
+  ::selection {
+    background: rgb(var(--color-accent) / 0.2);
   }
 }

@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import rawCvData from '../data/cv.json';
+import { getCollection } from 'astro:content';
+import { sortPublicationsByDate } from '../lib/bibtex';
 type CV = {
   name: string;
   title: string;
@@ -32,6 +34,7 @@ type CV = {
     venue?: string;
     year: number;
     doi?: string;
+    url?: string;
     citations?: number;
   }>;
   teaching?: Array<{
@@ -58,7 +61,13 @@ type CV = {
     domains?: string[];
   };
 };
-const cvData = rawCvData as CV;
+const publications = sortPublicationsByDate(
+  (await getCollection('publications')).filter((entry) => !entry.data.draft),
+).map((entry) => entry.data);
+const talks = (await getCollection('talks')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const cvData = { ...rawCvData, publications } as CV;
 
 const pageTitle = `CV - ${cvData.name}`;
 const pageDescription = `Curriculum Vitae for ${cvData.name}, ${cvData.title}`;
@@ -78,9 +87,9 @@ const awards = (cvData.awards ?? []) as Award[];
 const service = (cvData.service ?? []) as Service[];
 const skills = (cvData.skills ?? {}) as Skills;
 
-function publicationLink(pub: { doi?: string }) {
+function publicationLink(pub: { doi?: string; url?: string }) {
   const doi = pub.doi?.trim();
-  if (!doi) return null;
+  if (!doi) return pub.url ? { href: pub.url, label: 'Publication' } : null;
   const arxivId = doi.match(/^arXiv:(.+)$/i)?.[1] || doi.match(/^10\.48550\/arXiv\.(.+)$/)?.[1];
   if (arxivId) return { href: `https://arxiv.org/abs/${arxivId}`, label: doi };
   return { href: `https://doi.org/${doi}`, label: doi };
@@ -277,9 +286,51 @@ function publicationLink(pub: { doi?: string }) {
       )
     }
 
+    <section class="cv-section mb-8 print:mb-6">
+      <h2
+        class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl"
+      >
+        Talks &amp; Presentations
+      </h2>
+      <ol class="space-y-3">
+        {
+          talks.map(({ data: talk }) => (
+            <li class="cv-entry print:text-xs">
+              <p class="font-semibold">{talk.title}</p>
+              <p class="text-sm text-gray-700 dark:text-gray-300 print:text-xs">
+                {talk.event}
+                {talk.location && ` · ${talk.location}`} ·{' '}
+                <time datetime={talk.date.toISOString().slice(0, 10)}>
+                  {talk.displayDate ||
+                    talk.date.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      timeZone: 'UTC',
+                    })}
+                </time>
+              </p>
+              <div class="flex gap-3 text-sm print:text-xs">
+                {talk.slides && (
+                  <a class="underline" href={talk.slides}>
+                    Slides
+                  </a>
+                )}
+                {talk.source && (
+                  <a class="underline" href={talk.source}>
+                    Event
+                  </a>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
     <!-- Skills -->
     {
-      skills && (
+      Object.values(skills).some((items) => items?.length) && (
         <section class="cv-section mb-8 print:mb-6">
           <h2 class="text-2xl font-bold mb-3 border-b-2 border-gray-300 dark:border-gray-600 pb-2 print:text-xl">
             Skills
@@ -413,6 +464,7 @@ function publicationLink(pub: { doi?: string }) {
     }
 
     /* Hide navigation, footer, and other non-CV elements */
+    body > header,
     nav,
     footer,
     .skip-link {
@@ -421,7 +473,16 @@ function publicationLink(pub: { doi?: string }) {
 
     /* Avoid breaking inside sections */
     .cv-section {
-      page-break-inside: avoid;
+      break-inside: auto !important;
+    }
+
+    .cv-entry,
+    .publication-entry {
+      break-inside: avoid;
+    }
+
+    .cv-section h2 {
+      break-after: avoid;
     }
 
     /* Ensure links are visible */
@@ -438,8 +499,7 @@ function publicationLink(pub: { doi?: string }) {
     }
 
     /* Preserve link colors for DOIs */
-    a[href^="https://doi.org/"]
-    {
+    a[href^='https://doi.org/'] {
       color: #0066cc !important;
     }
   }

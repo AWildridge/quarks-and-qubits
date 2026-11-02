@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 
 const allTalks = await getCollection('talks');
 
@@ -17,9 +17,9 @@ const venues = Array.from(new Set(talks.map((t) => t.data.venue).filter(Boolean)
 const allTags = Array.from(new Set(talks.flatMap((t) => t.data.tags || []))).sort();
 
 // Apply filters from URL params
-const selectedYear = Astro.url.searchParams.get('year') || '';
-const selectedVenue = Astro.url.searchParams.get('venue') || '';
-const selectedTag = Astro.url.searchParams.get('tag') || '';
+const selectedYear = '';
+const selectedVenue = '';
+const selectedTag = '';
 
 const filteredTalks = talks.filter((talk) => {
   if (selectedYear && talk.data.date.getFullYear() !== Number(selectedYear)) return false;
@@ -60,12 +60,12 @@ const talksSchema = {
     {pageDescription}
   </p>
 
-  <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" aria-live="polite">
+  <p class="mt-2 text-sm text-gray-600 dark:text-gray-400" aria-live="polite" id="talk-count">
     Showing {filteredTalks.length} of {talks.length} talks
   </p>
 
   <!-- Filters -->
-  <form method="get" role="search" class="mt-6">
+  <form method="get" role="search" aria-label="Talk filters" id="talk-filters" class="mt-6">
     <fieldset class="grid gap-3 sm:grid-cols-3">
       <legend class="sr-only">Filter talks</legend>
       <label class="block">
@@ -88,6 +88,7 @@ const talksSchema = {
       <label class="block">
         <span class="block text-sm mb-1">Venue</span>
         <select
+          id="talk-venue"
           name="venue"
           class="w-full border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
         >
@@ -137,16 +138,23 @@ const talksSchema = {
   </form>
 
   <!-- Talks List -->
-  <ul class="mt-8 space-y-6">
+  <ul id="talk-list" data-label="talks" class="mt-8 space-y-6">
     {
       filteredTalks.map(async (talk) => {
-        const { Content } = await talk.render();
+        const { Content } = await render(talk);
         const videoUrl = talk.data.video;
         const directVideoUrl = videoUrl?.match(/\.(mp4|webm|ogg)(?:$|\?)/i) ? videoUrl : null;
         const youtubeMatch = videoUrl?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
         const youtubeId = youtubeMatch ? youtubeMatch[1] : null;
         return (
-          <li class="border-l-4 border-blue-500 pl-4">
+          <li
+            id={talk.id}
+            data-filter-item
+            data-year={talk.data.date.getUTCFullYear()}
+            data-venue={talk.data.venue || ''}
+            data-tags={JSON.stringify(talk.data.tags)}
+            class="border-l-2 border-gray-300 dark:border-gray-700 pl-5"
+          >
             <h2 class="text-xl font-semibold">{talk.data.title}</h2>
             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
               {talk.data.event}
@@ -251,7 +259,7 @@ const talksSchema = {
                 <video
                   class="w-full rounded border border-gray-200 dark:border-gray-700"
                   controls
-                  preload="metadata"
+                  preload="none"
                   src={directVideoUrl}
                 >
                   {talk.data.transcript && (
@@ -284,28 +292,16 @@ const talksSchema = {
     }
   </ul>
 
-  {
-    filteredTalks.length === 0 && (
-      <p class="mt-8 text-center text-gray-600 dark:text-gray-400">
-        No talks match the selected filters.
-      </p>
-    )
-  }
+  <p class="mt-8" data-filter-empty hidden>
+    No talks match these filters. Try another selection or clear the filters.
+  </p>
 
   <script>
-    // Auto-submit form on filter change for better UX
-    const form = document.querySelector('form[role="search"]') as HTMLFormElement | null;
-    if (form) {
-      const selects = form.querySelectorAll('select');
-      selects.forEach((select) => {
-        select.addEventListener('change', () => {
-          if (typeof form.requestSubmit === 'function') {
-            form.requestSubmit();
-          } else {
-            form.submit();
-          }
-        });
-      });
-    }
+    import { enhanceFilters } from '../../lib/filter-list';
+    enhanceFilters(
+      document.querySelector<HTMLFormElement>('#talk-filters')!,
+      document.querySelector<HTMLElement>('#talk-list')!,
+      document.querySelector<HTMLElement>('#talk-count')!,
+    );
   </script>
 </BaseLayout>

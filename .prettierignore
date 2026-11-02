@@ -22,3 +22,6 @@ src/data/cv.json
 # OS/editor
 .DS_Store
 .vscode/
+
+# Separate research submodule
+top-smeft/

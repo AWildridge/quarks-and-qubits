@@ -1,0 +1,52 @@
+name: Deploy to CERN EOS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cern-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/ci.yml
+  production:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: verified-site-${{ github.sha }}
+      - name: Unpack verified site
+        run: mkdir -p dist && tar -xzf site-dist.tar.gz -C dist
+      - name: Install transfer client
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y lftp
+      - name: Check server policy, publish, and verify
+        env:
+          CERN_USER: ${{ secrets.CERN_USER }}
+          CERN_PASSWORD: ${{ secrets.CERN_PASSWORD }}
+          EOS_PATH: ${{ secrets.EOS_PATH }}
+          CERN_WEB_URL: ${{ vars.CERN_WEB_URL || 'https://aj-wildridge.web.cern.ch' }}
+          RELEASE: ${{ github.run_id }}-${{ github.sha }}
+        run: bash scripts/deploy-eos.sh
+      - name: Preserve rollback snapshot after a failed update
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: cern-rollback-${{ github.run_id }}
+          path: cern-rollback.tar.gz
+          retention-days: 7

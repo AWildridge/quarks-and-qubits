@@ -1,35 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
   const choices = Array.from(document.querySelectorAll('[data-theme-choice]'));
   const media = window.matchMedia('(prefers-color-scheme: dark)');
-  const validThemes = new Set(['light', 'dark', 'system']);
-
+  let activeTheme = 'system';
+  try {
+    activeTheme = localStorage.getItem('theme') || activeTheme;
+  } catch {
+    /* Storage can be disabled. */
+  }
   function applyTheme(theme) {
-    const storedTheme = localStorage.getItem('theme');
-    const activeTheme = validThemes.has(theme)
-      ? theme
-      : validThemes.has(storedTheme)
-        ? storedTheme
-        : 'system';
-    localStorage.setItem('theme', activeTheme);
+    activeTheme = ['light', 'dark', 'system'].includes(theme) ? theme : 'system';
+    try {
+      localStorage.setItem('theme', activeTheme);
+    } catch {
+      /* The choice still works for this page. */
+    }
     document.documentElement.classList.toggle(
       'dark',
       activeTheme === 'dark' || (activeTheme === 'system' && media.matches),
     );
-    choices.forEach((button) => {
+    choices.forEach((button) =>
       button.setAttribute(
         'aria-pressed',
-        button.getAttribute('data-theme-choice') === activeTheme ? 'true' : 'false',
-      );
-    });
+        String(button.getAttribute('data-theme-choice') === activeTheme),
+      ),
+    );
   }
-
-  choices.forEach((button) => {
-    button.addEventListener('click', () => {
-      applyTheme(button.getAttribute('data-theme-choice'));
-    });
-  });
+  choices.forEach((button) =>
+    button.addEventListener('click', () => applyTheme(button.getAttribute('data-theme-choice'))),
+  );
   media.addEventListener('change', () => {
-    if ((localStorage.getItem('theme') || 'system') === 'system') applyTheme('system');
+    if (activeTheme === 'system') applyTheme('system');
   });
-  applyTheme();
+  applyTheme(activeTheme);
 });

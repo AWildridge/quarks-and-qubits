@@ -6,7 +6,8 @@ const SITE_URL = 'https://aj-wildridge.web.cern.ch';
 export const GET: APIRoute = async () => {
   // Get all content collections
   const projects = await getCollection('projects');
-  const publications = await getCollection('publications');
+  const publications = await getCollection('publications', ({ data }) => !data.draft);
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
 
   // Define static pages
   const staticPages = [
@@ -34,13 +35,19 @@ export const GET: APIRoute = async () => {
       priority: page.priority,
     })),
     ...projects.map((project) => ({
-      url: `${SITE_URL}/projects/${project.slug}`,
+      url: `${SITE_URL}/projects/${project.id}`,
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: 'monthly',
       priority: 0.7,
     })),
+    ...posts.map((post) => ({
+      url: `${SITE_URL}/posts/${post.id}/`,
+      lastmod: post.data.date.toISOString().split('T')[0],
+      changefreq: 'monthly',
+      priority: 0.6,
+    })),
     ...publications.map((pub) => ({
-      url: `${SITE_URL}/publications/${pub.slug}`,
+      url: `${SITE_URL}/publications/${pub.id}`,
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: 'yearly',
       priority: 0.8,

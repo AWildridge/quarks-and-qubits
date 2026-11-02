@@ -417,9 +417,12 @@ async function main() {
   console.log(`   - Posters: ${cvData.posters.length}`);
   console.log(`   - Professional Development: ${cvData.professionalDevelopment.length}`);
 
-  await fs.writeFile(JSON_PATH, JSON.stringify(cvData, null, 2));
+  await fs.writeFile(JSON_PATH, JSON.stringify(cvData, null, 2) + '\n');
   console.log(`✓ Wrote to ${JSON_PATH}`);
   console.log('✅ Done!');
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

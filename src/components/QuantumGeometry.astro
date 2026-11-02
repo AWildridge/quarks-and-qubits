@@ -1,0 +1,60 @@
+---
+// Schematic projection of an ellipsoid inside a unit Bloch sphere, not measured data.
+const project = (x: number, y: number, z: number) => [
+  245 + 174 * (0.87 * x - 0.5 * y),
+  238 + 174 * (0.25 * x + 0.43 * y - 0.86 * z),
+];
+const curve = (point: (t: number) => number[]) =>
+  Array.from({ length: 97 }, (_, i) => {
+    const [x, y, z] = point((i * Math.PI) / 48);
+    const [px, py] = project(x, y, z);
+    return `${i ? 'L' : 'M'}${px.toFixed(2)},${py.toFixed(2)}`;
+  }).join(' ');
+const latitude = (angle: number, a = 1, b = 1, c = 1) =>
+  curve((t) => [
+    a * Math.cos(angle) * Math.cos(t),
+    b * Math.cos(angle) * Math.sin(t),
+    c * Math.sin(angle),
+  ]);
+const longitude = (angle: number, a = 1, b = 1, c = 1) =>
+  curve((t) => [
+    a * Math.cos(t) * Math.cos(angle),
+    b * Math.cos(t) * Math.sin(angle),
+    c * Math.sin(t),
+  ]);
+const rings = [-0.9, -0.45, 0, 0.45, 0.9];
+const meridians = Array.from({ length: 8 }, (_, i) => (i * Math.PI) / 8);
+---
+
+<figure class="quantum-figure">
+  <div class="figure-kicker"><span>Quantum geometry</span><span>01 / QSE</span></div>
+  <svg viewBox="0 0 490 465" role="img" aria-labelledby="geometry-title geometry-desc">
+    <title id="geometry-title">A quantum steering ellipsoid inside the Bloch sphere</title>
+    <desc id="geometry-desc"
+      >A teal wireframe ellipsoid sits inside a larger sphere with three coordinate axes. This is a
+      conceptual illustration, not a measurement.</desc
+    >
+    <g class="geometry-sphere" fill="none" stroke-width="0.8">
+      <circle cx="245" cy="238" r="174"></circle>
+      {rings.map((angle) => <path d={latitude(angle)} />)}
+      {meridians.slice(0, 4).map((angle) => <path d={longitude(angle)} />)}
+    </g>
+    <g class="geometry-axis" fill="none" stroke-width="1" stroke-dasharray="4 5">
+      <path d="M51 182 L439 294 M127 340 L363 136 M245 435 L245 38"></path>
+    </g>
+    <g class="geometry-ellipsoid" fill="none" stroke-width="1.25">
+      {rings.map((angle) => <path d={latitude(angle, 0.8, 0.52, 0.69)} />)}
+      {meridians.map((angle) => <path d={longitude(angle, 0.8, 0.52, 0.69)} />)}
+    </g>
+    <path class="geometry-vector" d="M245 238 L332 155" fill="none" stroke-width="2"></path>
+    <circle class="geometry-point" cx="332" cy="155" r="5"></circle>
+    <circle class="geometry-center" cx="245" cy="238" r="3"></circle>
+    <g class="geometry-label" font-size="13" font-family="monospace">
+      <text x="252" y="37">z</text><text x="446" y="303">x</text><text x="109" y="354">y</text>
+      <text x="345" y="151">ρ</text>
+    </g>
+  </svg>
+  <figcaption>
+    Making quantum correlations visible.<span>Steering ellipsoid · schematic</span>
+  </figcaption>
+</figure>

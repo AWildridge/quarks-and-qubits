@@ -1,130 +1,109 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { filterProjects, type ProjectRecord } from '../../lib/search';
-const all = await getCollection('projects');
-
-const q = (Astro.url.searchParams.get('q') || '').toLowerCase();
-const tag = Astro.url.searchParams.get('tag') || '';
-const year = Astro.url.searchParams.get('year') || '';
-const language = Astro.url.searchParams.get('language') || '';
-const n = Math.max(3, Math.min(120, Number(Astro.url.searchParams.get('n') || 12)));
-
-const tags = Array.from(new Set(all.flatMap((p) => (p.data.tags as string[]) || []))).sort();
-const languages = Array.from(
-  new Set(all.map((p) => (p.data.language as string) || '').filter(Boolean)),
-).sort();
-const years = Array.from(new Set(all.map((p) => new Date(p.data.date as any).getFullYear()))).sort(
-  (a, b) => b - a,
+const projects = (await getCollection('projects')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
-
-const records: ProjectRecord[] = all.map((p) => ({
-  slug: p.slug,
-  title: p.data.title as string,
-  summary: p.data.summary as string | undefined,
-  tags: (p.data.tags as string[]) || [],
-  year: new Date(p.data.date as any).getFullYear(),
-  language: (p.data.language as string) || undefined,
-}));
-const filtered = filterProjects(records, { q, tag, year, language });
-const displayed = filtered.slice(0, n);
+const tags = [...new Set(projects.flatMap((p) => p.data.tags))].sort();
+const years = [...new Set(projects.map((p) => p.data.date.getUTCFullYear()))].sort((a, b) => b - a);
+const languages = [...new Set(projects.map((p) => p.data.language).filter(Boolean))].sort();
 ---
 
-<BaseLayout title="Projects">
-  <h1>Projects</h1>
-  <p class="mt-2 text-sm" aria-live="polite">
-    Showing {Math.min(n, filtered.length)} of {filtered.length} projects
+<BaseLayout
+  title="Projects"
+  description="Open research software, quantum computing tools, and interactive particle physics demonstrations by AJ Wildridge."
+>
+  <p class="eyebrow">Ideas into tools</p>
+  <h1 class="mt-3">Projects</h1>
+  <p class="mt-3 max-w-2xl text-gray-700 dark:text-gray-300">
+    Research software and interactive experiments in particle physics, quantum computing, and
+    machine learning.
   </p>
-
+  <p class="mt-5 text-sm" id="project-count" aria-live="polite">
+    Showing {projects.length} of {projects.length} projects
+  </p>
   <form
+    id="project-filters"
     role="search"
     aria-label="Project filters"
-    class="mt-4 grid gap-3 md:grid-cols-3"
+    class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
     method="get"
   >
-    <input type="hidden" name="n" value={String(n)} />
-    <label class="block">
-      <span class="block text-sm mb-1">Search</span>
-      <input
-        class="w-full border rounded px-2 py-1"
+    <label
+      ><span class="block text-sm mb-1">Search</span><input
+        class="w-full border rounded px-3 py-2"
         type="search"
         name="q"
-        value={q}
         placeholder="Search projects"
-      />
-    </label>
-    <label class="block">
-      <span class="block text-sm mb-1">Tag</span>
-      <select class="w-full border rounded px-2 py-1" name="tag" value={tag}>
-        <option value="">All</option>
-        {tags.map((t) => <option value={t}>{t}</option>)}
-      </select>
-    </label>
-    <label class="block">
-      <span class="block text-sm mb-1">Year</span>
-      <select class="w-full border rounded px-2 py-1" name="year" value={year}>
-        <option value="">All</option>
-        {years.map((y) => <option value={y}>{y}</option>)}
-      </select>
-    </label>
-    <label class="block">
-      <span class="block text-sm mb-1">Language</span>
-      <select class="w-full border rounded px-2 py-1" name="language" value={language}>
-        <option value="">All</option>
-        {languages.map((l) => <option value={l}>{l}</option>)}
-      </select>
-    </label>
-    <div class="md:col-span-3">
-      <button type="submit" class="px-3 py-1 rounded bg-blue-600 text-white">Apply</button>
+      /></label
+    >
+    <label
+      ><span class="block text-sm mb-1">Tag</span><select
+        class="w-full border rounded px-3 py-2"
+        name="tag"
+        ><option value="">All</option>{
+          tags.map((tag) => <option value={tag}>{tag}</option>)
+        }</select
+      ></label
+    >
+    <label
+      ><span class="block text-sm mb-1">Year</span><select
+        class="w-full border rounded px-3 py-2"
+        name="year"
+        ><option value="">All</option>{
+          years.map((year) => <option value={year}>{year}</option>)
+        }</select
+      ></label
+    >
+    <label
+      ><span class="block text-sm mb-1">Language</span><select
+        class="w-full border rounded px-3 py-2"
+        name="language"
+        ><option value="">All</option>{
+          languages.map((language) => <option value={language}>{language}</option>)
+        }</select
+      ></label
+    >
+    <div class="sm:col-span-2 lg:col-span-4 flex gap-4 items-center">
+      <button type="submit" class="button-primary">Apply filters</button><a
+        href="/projects/"
+        class="text-link">Clear filters</a
+      >
     </div>
   </form>
-
-  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite" aria-busy={false}>
+  <div id="project-list" class="mt-8 grid gap-5 sm:grid-cols-2" data-label="projects">
     {
-      displayed.map((p) => (
+      projects.map(({ id, data: project }) => (
         <a
-          class="block border rounded p-3 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-          href={`/projects/${p.slug}/`}
+          class="block border rounded p-6 hover:shadow-sm"
+          href={`/projects/${id}/`}
+          data-filter-item
+          data-search={`${project.title} ${project.summary || ''}`}
+          data-tags={JSON.stringify(project.tags)}
+          data-year={project.date.getUTCFullYear()}
+          data-language={project.language || ''}
         >
-          <h2 class="font-semibold">{p.title}</h2>
-          {p.summary && <p class="text-sm mt-1 text-gray-700 dark:text-gray-300">{p.summary}</p>}
-          <div class="mt-2 flex gap-2 flex-wrap">
-            {p.tags.slice(0, 3).map((t) => (
-              <span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">
-                {t}
-              </span>
-            ))}
-          </div>
+          <p class="eyebrow mb-3">
+            {project.date.getUTCFullYear()} · {project.language || 'Research'}
+          </p>
+          <>
+            <h2 class="text-xl">{project.title}</h2>
+            <p class="mt-3 text-sm text-gray-700 dark:text-gray-300">{project.summary}</p>
+          </>
+          <p class="mt-5 text-xs text-gray-600 dark:text-gray-400">{project.tags.join(' · ')}</p>
         </a>
       ))
     }
   </div>
-
-  {
-    filtered.length > n && (
-      <form class="mt-6 flex justify-center" method="get" aria-label="Show more projects">
-        <input type="hidden" name="q" value={q} />
-        <input type="hidden" name="tag" value={tag} />
-        <input type="hidden" name="year" value={year} />
-        <input type="hidden" name="language" value={language} />
-        <input type="hidden" name="n" value={String(n + 12)} />
-        <button
-          type="submit"
-          class="px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-        >
-          Show more
-          <span class="sr-only"> projects</span>
-        </button>
-      </form>
-    )
-  }
-
+  <p class="mt-8" data-filter-empty hidden>
+    No projects match these filters. Try another search or clear the filters.
+  </p>
   <script>
-    // minimal enhancement: update on change without CLS by submitting the form, SSR handles rendering
-    const form = document.currentScript?.previousElementSibling
-      ?.previousElementSibling as HTMLFormElement | null;
-    if (form) {
-      form.addEventListener('change', () => form.requestSubmit());
-    }
+    import { enhanceFilters } from '../../lib/filter-list';
+    enhanceFilters(
+      document.querySelector<HTMLFormElement>('#project-filters')!,
+      document.querySelector<HTMLElement>('#project-list')!,
+      document.querySelector<HTMLElement>('#project-count')!,
+    );
   </script>
 </BaseLayout>

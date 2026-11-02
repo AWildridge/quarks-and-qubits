@@ -179,7 +179,6 @@ function gaussLegendre(
 
   for (let i = 0; i < m; i++) {
     let z = Math.cos((Math.PI * (i + 0.75)) / (n + 0.5));
-    let previous = 0;
 
     for (let iteration = 0; iteration < 32; iteration++) {
       let p1 = 1;
@@ -190,7 +189,7 @@ function gaussLegendre(
         p1 = ((2 * j - 1) * z * p2 - (j - 1) * p3) / j;
       }
       const derivative = (n * (z * p1 - p2)) / (z * z - 1);
-      previous = z;
+      const previous = z;
       z -= p1 / derivative;
       if (Math.abs(z - previous) < 1e-14) break;
     }

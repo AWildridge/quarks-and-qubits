@@ -79,6 +79,7 @@ async function fetchInspireBy(query) {
   )}`;
   const res = await fetch(url, {
     headers: { Accept: 'application/x-bibtex' },
+    signal: AbortSignal.timeout(10000),
   });
   if (!res.ok) return null;
   const text = await res.text();
@@ -89,7 +90,10 @@ async function fetchInspireBy(query) {
 async function fetchBibTeXViaDoi(doi) {
   if (!doi) return null;
   const url = `https://doi.org/${encodeURIComponent(doi)}`;
-  const res = await fetch(url, { headers: { Accept: 'application/x-bibtex' } });
+  const res = await fetch(url, {
+    headers: { Accept: 'application/x-bibtex' },
+    signal: AbortSignal.timeout(10000),
+  });
   if (!res.ok) return null;
   const text = await res.text();
   return text && text.trim().length > 0 ? text.trim() : null;
@@ -105,7 +109,10 @@ async function fetchCdsBibTeX(cdsUrl) {
       `${cdsUrl.replace(/\/$/, '')}/export/bibtex`,
     ];
     for (const u of exportUrls) {
-      const res = await fetch(u, { headers: { Accept: 'text/plain' } });
+      const res = await fetch(u, {
+        headers: { Accept: 'text/plain' },
+        signal: AbortSignal.timeout(10000),
+      });
       if (res.ok) {
         const text = (await res.text()).trim();
         if (/^@\w+\{/.test(text)) return text;
@@ -238,7 +245,7 @@ async function main() {
         bib = await fetchBibTeXViaDoi(doi);
       }
 
-      if (bib) {
+      if (bib && /^@\w+\s*\{/.test(bib.trim())) {
         const normalized = normalizeBibtexEntry(bib, slug);
         entries.push(normalized);
         fetchedCount++;

@@ -1,13 +1,23 @@
-// Flat ESLint config for ESLint v9
+// Flat ESLint configuration
 import js from '@eslint/js';
 import ts from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import astroPlugin from 'eslint-plugin-astro';
-import astroParser from 'astro-eslint-parser';
+import * as astroParser from 'astro-eslint-parser';
 import globals from 'globals';
 
 export default [
-  { ignores: ['dist/**', 'node_modules/**', 'playwright-report/**', '.astro/**', 'src/env.d.ts'] },
+  {
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'playwright-report/**',
+      '.astro/**',
+      'src/env.d.ts',
+      'test-results/**',
+      '.lighthouseci/**',
+    ],
+  },
   {
     files: ['**/*.{js,mjs,cjs,ts,tsx}'],
     languageOptions: {

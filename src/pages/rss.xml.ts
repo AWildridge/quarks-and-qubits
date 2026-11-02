@@ -16,7 +16,7 @@ export async function GET(context: APIContext) {
       title: post.data.title,
       description: post.data.summary || '',
       pubDate: post.data.date,
-      link: `/posts/${post.slug}/`,
+      link: `/posts/${post.id}/`,
       categories: [post.data.kind, ...post.data.tags],
     }));
 
@@ -28,7 +28,7 @@ export async function GET(context: APIContext) {
         .filter(Boolean)
         .join(', '),
       pubDate: new Date(publicationDateValue(publication.data)),
-      link: `/publications/${publication.slug}/`,
+      link: `/publications/${publication.id}/`,
       categories: ['publication', ...publication.data.tags],
     }));
 

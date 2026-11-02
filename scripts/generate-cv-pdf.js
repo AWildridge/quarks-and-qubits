@@ -1,75 +1,26 @@
-#!/usr/bin/env node
+import { chromium } from '@playwright/test';
+import { startPreview } from './serve-dist.js';
 
-/**
- * Generate PDF from the CV HTML page
- * Uses puppeteer to render the CV page and export as PDF
- */
-
-import puppeteer from 'puppeteer';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { existsSync } from 'fs';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const DIST_DIR = join(__dirname, '..', 'dist');
-const CV_HTML_PATH = join(DIST_DIR, 'cv', 'index.html');
-const PDF_OUTPUT_PATH = join(DIST_DIR, 'AJ_Wildridge_CV.pdf');
-
-async function generatePDF() {
-  console.log('🚀 Starting PDF generation...');
-
-  // Check if dist/cv/index.html exists
-  if (!existsSync(CV_HTML_PATH)) {
-    console.error('❌ Error: CV HTML file not found at', CV_HTML_PATH);
-    console.error('   Please run `pnpm build` first to generate the HTML.');
-    process.exit(1);
-  }
-
-  let browser;
-  try {
-    console.log('📖 Opening browser...');
-    browser = await puppeteer.launch({
-      headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-crash-reporter',
-        '--disable-crashpad',
-        '--disable-dev-shm-usage',
-      ],
-    });
-
-    const page = await browser.newPage();
-
-    console.log('📄 Loading CV page...');
-    await page.goto(`file://${CV_HTML_PATH}`, {
-      waitUntil: 'networkidle0',
-    });
-
-    console.log('🖨️  Generating PDF...');
-    await page.pdf({
-      path: PDF_OUTPUT_PATH,
-      format: 'Letter',
-      printBackground: false,
-      margin: {
-        top: '0.5in',
-        right: '0.5in',
-        bottom: '0.5in',
-        left: '0.5in',
-      },
-    });
-
-    console.log('✅ PDF generated successfully:', PDF_OUTPUT_PATH);
-  } catch (error) {
-    console.error('❌ Error generating PDF:', error.message);
-    process.exit(1);
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
-  }
+const { server, url } = await startPreview();
+let browser;
+try {
+  browser = await chromium.launch();
+  const page = await browser.newPage({ colorScheme: 'light' });
+  const failures = [];
+  page.on('requestfailed', (request) => failures.push(request.url()));
+  const response = await page.goto(`${url}/cv/`, { waitUntil: 'networkidle' });
+  if (!response?.ok()) throw new Error('CV page failed to load');
+  await page.evaluate(() => document.fonts.ready);
+  await page.emulateMedia({ media: 'print', colorScheme: 'light' });
+  if (failures.length) throw new Error(`CV resources failed to load: ${failures.join(', ')}`);
+  await page.pdf({
+    path: 'dist/AJ_Wildridge_CV.pdf',
+    format: 'Letter',
+    printBackground: false,
+    margin: { top: '0.5in', right: '0.5in', bottom: '0.5in', left: '0.5in' },
+  });
+  console.log('Generated dist/AJ_Wildridge_CV.pdf with local styles and fonts.');
+} finally {
+  await browser?.close();
+  await new Promise((ok) => server.close(ok));
 }
-
-generatePDF();

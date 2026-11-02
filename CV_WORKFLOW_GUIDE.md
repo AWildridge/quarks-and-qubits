@@ -1,5 +1,7 @@
 # CV Workflow Guide
 
+> Current workflow: builds read curated publication/talk MDX and CV metadata directly. DOCX import is now explicit and cannot overwrite the CV during a build. See [the current README](README.md#content-and-cv). The sections below document the original import workflow.
+
 This guide explains the automated workflow for extracting data from your CV and generating publication and talk pages.
 
 ## Overview

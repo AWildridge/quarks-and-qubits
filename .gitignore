@@ -7,3 +7,10 @@ dist
 .lighthouseci/
 .DS_Store
 ~$*.docx
+
+.astro/
+playwright-report/
+test-results/
+.env
+.env.*
+!.env.example

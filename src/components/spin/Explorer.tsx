@@ -437,18 +437,21 @@ export function Explorer() {
         <h2 className="mb-3 text-lg font-semibold text-gray-950 dark:text-gray-50">Export</h2>
         <div className="flex flex-wrap gap-3">
           <button
+            type="button"
             onClick={handleExportPNG}
             className="rounded bg-teal-700 px-4 py-2 text-white hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             Export PNG
           </button>
           <button
+            type="button"
             onClick={handleExportSVG}
             className="rounded bg-teal-700 px-4 py-2 text-white hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             Export SVG
           </button>
           <button
+            type="button"
             onClick={handleExportJSON}
             className="rounded bg-gray-800 px-4 py-2 text-white hover:bg-gray-950 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-200 dark:text-gray-950 dark:hover:bg-white"
           >

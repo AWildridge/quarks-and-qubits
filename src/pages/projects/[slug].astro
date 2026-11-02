@@ -2,11 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FigureWithCaption from '../../components/FigureWithCaption.astro';
 import CopyButton from '../../components/CopyButton';
-import { getEntry, getCollection } from 'astro:content';
+import { getEntry, getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const entries = await getCollection('projects');
-  return entries.map((p) => ({ params: { slug: p.slug } }));
+  return entries.map((p) => ({ params: { slug: p.id } }));
 }
 
 const { slug } = Astro.params;
@@ -28,7 +28,7 @@ const {
   reproduce = [],
 } = entry.data as any;
 const year = new Date(date).getFullYear();
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 // Schema.org structured data for SoftwareSourceCode
 const projectSchema = {

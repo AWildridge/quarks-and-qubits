@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getEntry, getCollection } from 'astro:content';
+import { getEntry, getCollection, render } from 'astro:content';
 import { parseBibTeXEntries, toBibTeX, type PublicationRecord } from '../../lib/bibtex';
 import { readFile } from 'node:fs/promises';
 
 export async function getStaticPaths() {
   const entries = await getCollection('publications', ({ data }) => !data.draft);
-  return entries.map((p) => ({ params: { slug: p.slug } }));
+  return entries.map((p) => ({ params: { slug: p.id } }));
 }
 
 const { slug } = Astro.params;
@@ -15,7 +15,7 @@ const entry = await getEntry('publications', slug);
 if (!entry) throw new Error(`Publication not found: ${slug}`);
 
 const { title, authors, year, date, venue, doi, url, tags = [], bibtexKey } = entry.data;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 const bibliography = await readFile('public/bibliography.bib', 'utf8').catch(() => '');
 const bibliographyEntries = parseBibTeXEntries(bibliography);
 const sourceLabel = url?.includes('cds.cern.ch')

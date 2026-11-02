@@ -9,80 +9,149 @@
   "experience": [],
   "publications": [
     {
+      "title": "Quantum Steering Geometry at High Energy Particle Colliders",
+      "authors": [
+        "Juan J. Mejia Alvarez",
+        "Andrew J. Wildridge",
+        "Angelo Arisi",
+        "Juan M. Duarte-Quiros",
+        "Santosh Bhandari",
+        "Jingyan Li",
+        "Giulia Negro",
+        "Andreas W. Jung"
+      ],
+      "year": 2026,
+      "date": "2026-08-30",
+      "venue": "arXiv preprint, hep-ph / quant-ph",
+      "doi": "10.48550/arXiv.2608.30037",
+      "url": "https://arxiv.org/abs/2608.30037",
+      "tags": [
+        "quantum",
+        "top-quark",
+        "particle-physics",
+        "hep-ph"
+      ],
+      "bibtexKey": "MejiaAlvarez2026Steering"
+    },
+    {
       "title": "Enhanced reconstruction of dileptonic top quark-antiquark events using supervised machine learning methods",
       "authors": [
         "The CMS Collaboration"
       ],
-      "venue": "CMS-NOTE-",
       "year": 2025,
-      "doi": "",
+      "date": "2025-09-13",
+      "venue": "CMS-NOTE-2025-010",
       "url": "https://cds.cern.ch/record/2944724",
-      "abstract": "",
-      "citations": 0
+      "tags": [
+        "machine-learning",
+        "algorithm",
+        "transformer",
+        "top-quark",
+        "dilepton",
+        "reconstruction",
+        "hep-ph",
+        "CMS"
+      ],
+      "bibtexKey": "CMS:2025mlttbar"
     },
     {
-      "title": "Quantum information meets high-energy physics: input to the update of the European strategy for particle physics",
+      "title": "Quantum Information meets High-Energy Physics: Input to the update of the European Strategy for Particle Physics",
       "authors": [
-        "Afik",
-        "Y",
-        "et. al"
+        "Yoav Afik et al."
       ],
-      "venue": "Eur. Phys. J. Plus 140 (",
       "year": 2025,
-      "doi": "",
-      "url": "",
-      "abstract": "",
-      "citations": 0
+      "date": "2025-09-01",
+      "venue": "European Physical Journal Plus 140, 855",
+      "doi": "10.1140/epjp/s13360-025-06752-9",
+      "url": "https://arxiv.org/abs/2504.00086",
+      "tags": [
+        "quantum",
+        "particle-physics",
+        "hep-ph",
+        "hep-ex"
+      ],
+      "bibtexKey": "Afik:2025ejh"
     },
     {
-      "title": "“Building Machine Learning Challenges for Anomaly Detection in Science.” arXiv:2503.02112 (2025)",
+      "title": "Building Machine Learning Challenges for Anomaly Detection in Science",
       "authors": [
-        "Campolongo",
-        "E. G"
+        "Elizabeth G. Campolongo et al."
       ],
-      "venue": "",
       "year": 2025,
-      "doi": "arXiv:2503.02112",
+      "date": "2025-03-03",
+      "venue": "arXiv:2503.02112",
+      "doi": "10.48550/arXiv.2503.02112",
       "url": "https://arxiv.org/abs/2503.02112",
-      "abstract": "",
-      "citations": 0
+      "tags": [
+        "machine-learning",
+        "anomaly-detection",
+        "preprint",
+        "cs.LG"
+      ],
+      "bibtexKey": "Campolongo:2025bkc"
     },
     {
       "title": "Bumblebee: Foundation Model for Particle Physics Discovery",
       "authors": [
         "Andrew J. Wildridge",
-        "et. al"
+        "Jack P. Rodgers",
+        "Ethan M. Colbert",
+        "Yao yao",
+        "Andreas W. Jung",
+        "Miaoyuan Liu"
       ],
-      "venue": "Contribution to NeurIPS",
       "year": 2024,
-      "doi": "arXiv:2412.07867",
+      "date": "2024-12-10",
+      "venue": "Machine Learning and the Physical Sciences Workshop, NeurIPS 2024",
+      "doi": "10.48550/arXiv.2412.07867",
       "url": "https://arxiv.org/abs/2412.07867",
-      "abstract": "",
-      "citations": 0
+      "tags": [
+        "particle-physics",
+        "foundation-model",
+        "neurips",
+        "hep-ex",
+        "machine-learning"
+      ],
+      "bibtexKey": "Wildridge:2024yeg"
     },
     {
-      "title": "Observation of quantum entanglement in top quark pair production in proton-proton collisions at  = 13 TeV",
+      "title": "Observation of quantum entanglement in top quark pair production in proton-proton collisions at sqrt(s) = 13 TeV",
       "authors": [
         "The CMS Collaboration"
       ],
-      "venue": "Rep. Prog. Phys. 87 117801",
       "year": 2024,
-      "doi": "",
-      "url": "",
-      "abstract": "",
-      "citations": 0
+      "date": "2024-06-06",
+      "venue": "Reports on Progress in Physics 87, 117801",
+      "doi": "10.1088/1361-6633/ad7e4d",
+      "url": "https://arxiv.org/abs/2406.03976",
+      "tags": [
+        "quantum",
+        "top-quark",
+        "entanglement",
+        "hep-ex",
+        "spin correlations",
+        "CMS"
+      ],
+      "bibtexKey": "CMS:2024pts"
     },
     {
       "title": "Top quarks as a probe to quantum information",
       "authors": [
-        "Andrew Wildridge. \""
+        "Andrew Wildridge"
       ],
-      "venue": "\", Proceedings for the 14th International Workshop on Top Quark Physics (videoconference), arXiv:2202.11347",
       "year": 2022,
-      "doi": "arXiv:2202.11347",
+      "date": "2022-02-23",
+      "venue": "14th International Workshop on Top Quark Physics",
+      "doi": "10.48550/arXiv.2202.11347",
       "url": "https://arxiv.org/abs/2202.11347",
-      "abstract": "",
-      "citations": 0
+      "tags": [
+        "quantum",
+        "top-quark",
+        "top-quarks",
+        "preprint",
+        "hep-ph"
+      ],
+      "bibtexKey": "Wildridge:2022ogn"
     },
     {
       "title": "Track clustering with a quantum annealer for primary vertex reconstruction at hadron colliders",
@@ -91,188 +160,253 @@
         "Andrew J. Wildridge",
         "Andreas Jung"
       ],
-      "venue": "arXiv:1903.08879",
       "year": 2019,
-      "doi": "arXiv:1903.08879",
+      "date": "2019-03-21",
+      "venue": "arXiv:1903.08879",
+      "doi": "10.48550/arXiv.1903.08879",
       "url": "https://arxiv.org/abs/1903.08879",
-      "abstract": "",
-      "citations": 0
+      "tags": [
+        "quantum",
+        "collider",
+        "preprint"
+      ],
+      "bibtexKey": "Das:2019hrw"
     }
   ],
   "talks": [
     {
-      "title": "Challenges in high-energy experiments measuring quantum observables",
-      "event": "“Challenges in high-energy experiments measuring quantum observables”",
-      "venue": "Quantum Observables for Collider Physics",
-      "location": "",
-      "date": "",
-      "year": 2023,
-      "month": 0,
-      "slides": "https://agenda.infn.it/event/34555/overview",
-      "video": "",
-      "abstract": "",
+      "title": "ML usage in statistical interpretation (ATLAS/CMS)",
+      "date": "2026-10-05",
+      "event": "TOP2026 — 19th International Workshop on Top Quark Physics",
+      "venue": "TOP2026",
+      "location": "Antalya, Türkiye",
+      "source": "https://indico.cern.ch/event/1643686/contributions/7208114/",
+      "slides": "https://indico.cern.ch/event/1643686/contributions/7208114/attachments/3355366/6017371/ML_TOP2026.pdf",
       "tags": [
-        "panel"
-      ]
+        "machine learning",
+        "top quarks",
+        "ATLAS",
+        "CMS"
+      ],
+      "year": 2026
     },
     {
-      "title": "PANEL SESSION: Making it happen: steps needed for real experimental measurements",
-      "event": "“PANEL SESSION: Making it happen: steps needed for real experimental measurements”",
-      "venue": "Foundational Tests of Quantum Mechanics at the LHC",
-      "location": "",
-      "date": "",
-      "year": 2023,
-      "month": 0,
-      "slides": "https://indico.cern.ch/event/1246316/timetable/",
-      "video": "",
-      "abstract": "",
+      "title": "Overview of recent ttbar spin and entanglement results from ATLAS and CMS",
+      "date": "2026-04-10",
+      "event": "Standard Model at the LHC 2026 (SM@LHC 2026)",
+      "venue": "SM@LHC 2026",
+      "location": "Torino, Italy",
+      "source": "https://agenda.infn.it/event/48435/contributions/289837/",
+      "slides": "https://agenda.infn.it/event/48435/contributions/289837/attachments/148229/226494/SMLHC2026_ttbar_spin_overview.pdf",
       "tags": [
-        "panel"
-      ]
+        "top quarks",
+        "quantum entanglement",
+        "ATLAS",
+        "CMS"
+      ],
+      "year": 2026
     },
     {
       "title": "Observation of entangled top quarks with the CMS Detector",
-      "event": "”",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2025,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2025-02-20",
+      "event": "LPC Physics Forum",
+      "venue": "LHC Physics Center",
+      "location": "FNAL/Zoom",
+      "slides": "https://indico.cern.ch/event/1503051/contributions/6326844/attachments/3018952/5325697/Fermilab%20Physics%20Forum%202025.pdf",
+      "video": "https://indico.cern.ch/event/1503051/contributions/6326844/attachments/3018952/5325745/20Feb2025_LPCPhysicsForum_AJWildridge_1920x1080.mp4",
+      "transcript": "https://indico.cern.ch/event/1503051/contributions/6326844/attachments/3018952/5325746/20Feb2025_LPCPhysicsForum_AJWildridge.transcript.vtt",
+      "source": "https://indico.cern.ch/event/1503051/",
+      "tags": [
+        "top quarks",
+        "quantum entanglement",
+        "CMS"
+      ],
+      "year": 2025
     },
     {
       "title": "Entanglement of top quarks in the production threshold region at CMS",
-      "event": "”",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2024,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2024-10-01",
+      "event": "Quantum tests in collider physics",
+      "venue": "Merton College",
+      "location": "Oxford, United Kingdom",
+      "slides": "https://conference.ippp.dur.ac.uk/event/1300/contributions/7775/attachments/6199/8364/Wildridge-Oxford24_Entanglement.pdf",
+      "source": "https://conference.ippp.dur.ac.uk/event/1300/timetable/?view=indico_weeks_view",
+      "tags": [
+        "top quarks",
+        "quantum entanglement",
+        "CMS",
+        "invited"
+      ],
+      "year": 2024
     },
     {
       "title": "Recent measurements of top-quark properties at CMS",
-      "event": "”",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2024,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2024-07-20",
+      "event": "ICHEP 2024",
+      "venue": "International Conference on High Energy Physics",
+      "location": "Prague, Czech Republic",
+      "slides": "https://indico.cern.ch/event/1291157/contributions/5878627/attachments/2900897/5087089/ICHEP24_SpinCorr.pdf",
+      "source": "https://indico.cern.ch/event/1291157/timetable/?view=nicecompact",
+      "tags": [
+        "top quarks",
+        "CMS",
+        "spin correlations",
+        "invited"
+      ],
+      "year": 2024
     },
     {
       "title": "Entangled Top Quarks at the LHC measured with the CMS Detector at sqrt(s) = 13 TeV",
-      "event": "”",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2024,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2024-04-06",
+      "event": "APS April Meeting",
+      "venue": "American Physical Society",
+      "location": "Sacramento, CA",
+      "source": "https://meetings.aps.org/Meeting/APR24/SessionIndex2/?VirtualSession=R",
+      "tags": [
+        "top quarks",
+        "quantum entanglement",
+        "CMS"
+      ],
+      "year": 2024
     },
     {
       "title": "Recent highlights of top-quark property measurements from CMS",
-      "event": "”",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2024,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2024-02-19",
+      "event": "Lake Louise Winter Institute 2024",
+      "location": "Lake Louise, Alberta, Canada",
+      "slides": "https://indico.global/event/482/contributions/13641/attachments/3801/5924/LakeLouise.pdf",
+      "source": "https://indico.global/event/482/contributions/13641/",
+      "tags": [
+        "top quarks",
+        "CMS",
+        "invited"
+      ],
+      "year": 2024
+    },
+    {
+      "title": "Challenges in high-energy experiments measuring quantum observables",
+      "date": "2023-11-08",
+      "event": "Quantum Observables for Collider Physics",
+      "venue": "Quantum Observables for Collider Physics",
+      "location": "GGI, Florence, Italy",
+      "source": "https://agenda.infn.it/event/34555/timetable/?view=standard",
+      "tags": [
+        "panel",
+        "quantum observables"
+      ],
+      "year": 2023
     },
     {
       "title": "Quantum Annealing applications in Collider HEP-ex",
-      "event": "",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2023,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2023-10-04",
+      "event": "3rd Top Quark Physics at the Precision Frontier",
+      "venue": "Purdue University",
+      "location": "West Lafayette, IN",
+      "slides": "https://indico.cern.ch/event/1282455/contributions/5388029/attachments/2725024/4739184/TPF2023.pdf",
+      "source": "https://indico.cern.ch/event/1282455/timetable/?print=1",
+      "tags": [
+        "quantum annealing",
+        "collider physics",
+        "top quarks"
+      ],
+      "year": 2023
     },
     {
       "title": "Challenges of entanglement measurement in ttbar final states",
-      "event": "",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2023,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2023-07-12",
+      "event": "Standard Model at the LHC 2023",
+      "venue": "Fermilab",
+      "location": "Batavia, IL",
+      "source": "https://indico.fnal.gov/event/59091/timetable/",
+      "tags": [
+        "top quarks",
+        "quantum entanglement",
+        "invited"
+      ],
+      "year": 2023
+    },
+    {
+      "title": "PANEL SESSION: Making it happen: steps needed for real experimental measurements",
+      "date": "2023-03-22",
+      "event": "Foundational Tests of Quantum Mechanics at the LHC",
+      "venue": "Foundational Tests of Quantum Mechanics at the LHC",
+      "location": "Merton College, Oxford, United Kingdom",
+      "source": "https://indico.cern.ch/event/1246316/timetable/?view=standard",
+      "tags": [
+        "panel"
+      ],
+      "year": 2023
     },
     {
       "title": "Towards quantum measurements at CMS",
-      "event": "",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2023,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
-    },
-    {
-      "title": "Entanglement & More at the CMS",
-      "event": "",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2022,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2023-03-22",
+      "event": "Foundational Tests of Quantum Mechanics at the LHC",
+      "venue": "Merton College",
+      "location": "Oxford, United Kingdom",
+      "source": "https://indico.cern.ch/event/1246316/timetable/?view=standard",
+      "tags": [
+        "quantum measurements",
+        "CMS",
+        "invited"
+      ],
+      "year": 2023
     },
     {
       "title": "Investigation of Entangled and Bound ttbar Pairs at the LHC with the CMS Detector",
-      "event": "",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2022,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2022-04-12",
+      "event": "APS April Meeting",
+      "venue": "American Physical Society",
+      "source": "https://meetings.aps.org/Meeting/APR22/SessionIndex2/?VirtualSession=Y",
+      "tags": [
+        "top quarks",
+        "quantum entanglement",
+        "CMS"
+      ],
+      "year": 2022
+    },
+    {
+      "title": "Entanglement & More at the CMS",
+      "date": "2022-01-01",
+      "displayDate": "2022",
+      "event": "quantumTANGO: Quantum Information with Top quarks and Higgs bosons",
+      "tags": [
+        "quantum entanglement",
+        "CMS",
+        "invited",
+        "needs-source"
+      ],
+      "year": 2022
     },
     {
       "title": "Reconstructing proton-proton collision positions at the Large Hadron Collider with a D-Wave quantum computer",
-      "event": "",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2021,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2021-07-13",
+      "event": "Meeting of the Division of Particles and Fields of the American Physical Society",
+      "venue": "DPF21",
+      "location": "Virtual",
+      "slides": "https://indico.cern.ch/event/1034469/contributions/4432259/attachments/2281345/3876267/APS%20DPF%20Summer%202021.pdf",
+      "video": "https://fsu-my.sharepoint.com/:v:/g/personal/tadams_fsu_edu/EfCkpRzgnEVDhZxKdjEH7a8B1bR4n8vTN2YS3gBTJdnkBg?e=RnwPeS",
+      "source": "https://indico.cern.ch/event/1034469/contributions/4432259/",
+      "tags": [
+        "quantum annealing",
+        "D-Wave",
+        "primary vertexing"
+      ],
+      "year": 2021
     },
     {
       "title": "Reconstructing proton-proton collision positions at the Large Hadron Collider with a D-Wave quantum computer",
-      "event": "",
-      "venue": "",
-      "location": "",
-      "date": "",
-      "year": 2019,
-      "month": 0,
-      "slides": "",
-      "video": "",
-      "abstract": ""
+      "date": "2019-06-11",
+      "event": "New Perspectives 2019",
+      "venue": "Fermi National Accelerator Laboratory",
+      "location": "Batavia, IL",
+      "slides": "https://indico.fnal.gov/event/20381/contributions/57324/attachments/35841/43690/New_Perspectives_2019_QA.pdf",
+      "source": "https://indico.fnal.gov/event/20381/contributions/57324/",
+      "tags": [
+        "quantum annealing",
+        "D-Wave",
+        "primary vertexing"
+      ],
+      "year": 2019
     }
   ],
   "posters": [
