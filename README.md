@@ -47,11 +47,11 @@ Push to `main` or run **Deploy to CERN EOS** manually. Configure the `production
 | Setting         | Kind     | Purpose                                                                                                     |
 | --------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
 | `CERN_USER`     | Secret   | CERN transfer account                                                                                       |
-| `CERN_PASSWORD` | Secret   | Its WebDAV credential                                                                                       |
+| `CERN_PASSWORD` | Secret   | A CERNBox app credential with write access to the website directory                                         |
 | `EOS_PATH`      | Secret   | Exact website directory under `/eos/user/<initial>/<account>/www` or `/eos/project/<initial>/<project>/www` |
 | `CERN_WEB_URL`  | Variable | `https://aj-wildridge.web.cern.ch`                                                                          |
 
-The workflow reruns all CI gates. It then uploads a harmless probe to verify that CERN’s Apache server actually applies the generated headers **before updating the website**. It snapshots the previous site, publishes the verified artifact, and checks headers on HTML and PDF responses. Failed promotion triggers restoration; a failed update also preserves a rollback artifact. Transfer credentials stay in the environment, not command arguments or logs. The website directory must contain only this site; mirror deletion is confined to that directory.
+The workflow reruns all CI gates. Transfers use CERNBox’s HTTPS WebDAV endpoint at `https://cernbox.cern.ch/remote.php/dav/files/<CERN_USER><EOS_PATH>/`, which maps to the existing EOS website directory ([CERNBox protocol documentation](https://github.com/cernbox/cernbox-cli/blob/main/docs/design.md)). The transfer client explicitly enables WebDAV directory operations. It checks directory access, then uploads a harmless probe to verify that CERN’s Apache server actually applies the generated headers **before updating the website**. It snapshots the previous site, publishes the verified artifact, and checks headers on HTML and PDF responses. Failed promotion triggers restoration; a failed update also preserves a rollback artifact. Transfer credentials stay in the environment, not command arguments or logs. The website directory must contain only this site; mirror deletion is confined to that directory.
 
 ## Security controls and limits
 
