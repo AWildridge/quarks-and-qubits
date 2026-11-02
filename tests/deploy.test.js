@@ -25,7 +25,7 @@ if (command.includes(process.env.LFTP_PASSWORD) || process.argv.includes(process
 if (process.argv.at(-1) !== 'https://cernbox.cern.ch') process.exit(98);
 if (!command.includes('set http:use-propfind yes')) process.exit(97);
 fs.appendFileSync('transfers.jsonl', JSON.stringify(command) + '\\n');
-if (process.env.SCENARIO === 'auth-failure' && command.includes('cls -d ')) process.exit(1);
+if (process.env.SCENARIO === 'auth-failure' && command.includes('cls -l ')) process.exit(1);
 const backup = command.match(/mirror --exclude-glob _deploy\\/ '[^']+' '([^']+)'/);
 if (backup) fs.writeFileSync(backup[1] + 'index.html', 'previous site');
 `,
@@ -75,7 +75,7 @@ esac
 test('WebDAV publication uses the EOS website path and retains the staging directory', () => {
   const result = simulate('success');
   assert.equal(result.status, 0, result.output);
-  assert.ok(result.commands[0].includes(`cls -d '${remote}'`));
+  assert.ok(result.commands[0].includes(`cls -l '${remote}' > /dev/null`));
   assert.equal(result.commands.filter((command) => command.includes("'dist/'")).length, 1);
   assert.ok(result.commands.at(-1).includes(`rm -r '${remote}_deploy/`));
   assert.equal(result.backup, false);

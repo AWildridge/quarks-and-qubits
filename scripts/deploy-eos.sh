@@ -49,7 +49,7 @@ cleanup() {
   exit "$status"
 }
 trap cleanup EXIT
-if ! transfer "cls -d '$remote_root/'"; then
+if ! transfer "cls -l '$remote_root/' > /dev/null"; then
   echo 'Cannot access the website directory through CERNBox WebDAV. Check CERN_USER, the CERNBox app credential in CERN_PASSWORD, and EOS_PATH.' >&2
   exit 1
 fi
