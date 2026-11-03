@@ -34,7 +34,7 @@ jobs:
       - name: Unpack verified site
         run: mkdir -p dist && tar -xzf site-dist.tar.gz -C dist
       - name: Install transfer client
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y lftp
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y rclone
       - name: Check server policy, publish, and verify
         env:
           CERN_USER: ${{ secrets.CERN_USER }}

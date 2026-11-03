@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const deploy = resolve('scripts/deploy-eos.sh');
-const remote = '/cernbox/webdav/eos/user/t/tester/www/';
+const remote = 'cern:';
 
 function simulate(scenario, extraEnv = {}) {
   const root = mkdtempSync(join(tmpdir(), 'eos-deploy-test-'));
@@ -17,17 +17,23 @@ function simulate(scenario, extraEnv = {}) {
       writeFileSync(join(root, 'dist', file), 'fixture');
     }
     writeFileSync(
-      join(root, 'bin/lftp'),
+      join(root, 'bin/rclone'),
       `#!${process.execPath}
 const fs = require('node:fs');
-const command = fs.readFileSync(0, 'utf8');
-if (command.includes(process.env.LFTP_PASSWORD) || process.argv.includes(process.env.LFTP_PASSWORD)) process.exit(99);
-if (process.argv.at(-1) !== 'https://cernbox.cern.ch') process.exit(98);
-if (!command.includes('set http:use-propfind yes')) process.exit(97);
-fs.appendFileSync('transfers.jsonl', JSON.stringify(command) + '\\n');
-if (process.env.SCENARIO === 'auth-failure' && command.includes('cls -l ')) process.exit(1);
-const backup = command.match(/mirror --exclude-glob _deploy\\/ '[^']+' '([^']+)'/);
-if (backup) fs.writeFileSync(backup[1] + 'index.html', 'previous site');
+const args = process.argv.slice(2);
+if (args.some((arg) => arg.includes('test-secret-never-in-commands') || arg.includes('test-obscured-password'))) process.exit(99);
+if (args[0] === 'obscure') {
+  if (args[1] !== '-' || fs.readFileSync(0, 'utf8') !== process.env.CERN_PASSWORD + '\\n') process.exit(96);
+  process.stdout.write('test-obscured-password\\n');
+  process.exit(0);
+}
+if (process.env.CERN_PASSWORD || process.env.RCLONE_CONFIG_CERN_PASS !== 'test-obscured-password') process.exit(95);
+if (process.env.RCLONE_CONFIG_CERN_URL !== 'https://cernbox.cern.ch/cernbox/webdav/eos/user/t/tester/www/') process.exit(98);
+if (process.env.RCLONE_CONFIG_CERN_TYPE !== 'webdav' || process.env.RCLONE_CONFIG_CERN_VENDOR !== 'other') process.exit(97);
+fs.appendFileSync('transfers.jsonl', JSON.stringify(args) + '\\n');
+if (process.env.SCENARIO === 'auth-failure' && args[0] === 'lsf') process.exit(1);
+if (process.env.SCENARIO === 'upload-failure' && args[0] === 'sync' && args[1] === 'dist/') process.exit(1);
+if (args[0] === 'copy' && args[1] === 'cern:') fs.writeFileSync(args[2] + 'index.html', 'previous site');
 `,
       { mode: 0o700 },
     );
@@ -75,10 +81,13 @@ esac
 test('WebDAV publication uses the EOS website path and retains the staging directory', () => {
   const result = simulate('success');
   assert.equal(result.status, 0, result.output);
-  assert.ok(result.commands[0].includes(`cls -l '${remote}' > /dev/null`));
-  assert.ok(result.commands.every((command) => !command.includes('/remote.php/dav/files/')));
-  assert.equal(result.commands.filter((command) => command.includes("'dist/'")).length, 1);
-  assert.ok(result.commands.at(-1).includes(`rm -r '${remote}_deploy/`));
+  assert.deepEqual(result.commands[0].slice(0, 4), ['lsf', remote, '--max-depth', '1']);
+  assert.equal(result.commands.filter((command) => command.includes('dist/')).length, 1);
+  assert.equal(result.commands.at(-1)[0], 'purge');
+  assert.ok(result.commands.at(-1)[1].startsWith(`${remote}_deploy/`));
+  const publication = result.commands.find((command) => command[0] === 'sync');
+  assert.equal(publication[publication.indexOf('--exclude') + 1], '/_deploy/**');
+  assert.ok(publication.includes('--ignore-times'));
   assert.equal(result.backup, false);
 });
 
@@ -86,24 +95,27 @@ test('failed authentication or server policy never promotes files', () => {
   for (const scenario of ['auth-failure', 'probe-failure']) {
     const result = simulate(scenario);
     assert.notEqual(result.status, 0);
-    assert.ok(result.commands.every((command) => !command.includes("'dist/'")));
+    assert.ok(result.commands.every((command) => !command.includes('dist/')));
     assert.equal(result.backup, false);
   }
 });
 
-test('a failed live check restores the previous website and preserves a rollback archive', () => {
-  const result = simulate('live-failure');
-  assert.notEqual(result.status, 0);
-  const updates = result.commands.filter((command) => command.includes('mirror -R --delete'));
-  assert.equal(updates.length, 2);
-  assert.ok(updates[0].includes("'dist/'"));
-  assert.ok(updates[1].includes("/backup/'"));
-  assert.ok(
-    updates.every(
-      (command) => command.includes(`--exclude-glob _deploy/`) && command.includes(`'${remote}'`),
-    ),
-  );
-  assert.equal(result.backup, true);
+test('a failed upload or live check restores the previous website and preserves a rollback archive', () => {
+  for (const scenario of ['upload-failure', 'live-failure']) {
+    const result = simulate(scenario);
+    assert.notEqual(result.status, 0);
+    const updates = result.commands.filter((command) => command[0] === 'sync');
+    assert.equal(updates.length, 2);
+    assert.equal(updates[0][1], 'dist/');
+    assert.ok(updates[1][1].endsWith('/backup/'));
+    assert.ok(
+      updates.every(
+        (command) =>
+          command[2] === remote && command[command.indexOf('--exclude') + 1] === '/_deploy/**',
+      ),
+    );
+    assert.equal(result.backup, true);
+  }
 });
 
 test('paths outside a website directory are rejected before contacting CERN', () => {

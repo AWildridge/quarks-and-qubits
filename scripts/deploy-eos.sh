@@ -13,45 +13,43 @@ EOS_PATH="${EOS_PATH%/}"
 [[ "$RELEASE" =~ ^[0-9]+-[a-f0-9]{40}$ ]] || fail 'Invalid RELEASE format.'
 [[ "$CERN_WEB_URL" =~ ^https://[a-zA-Z0-9.-]+\.web\.cern\.ch/?$ ]] || fail 'Invalid CERN_WEB_URL format.'
 [[ -f dist/index.html && -f dist/.htaccess && -f dist/AJ_Wildridge_CV.pdf ]] || fail 'Missing required website artifacts in dist/.'
-export LFTP_PASSWORD="$CERN_PASSWORD"
+export RCLONE_CONFIG=/dev/null
+export RCLONE_CONFIG_CERN_TYPE=webdav
+export RCLONE_CONFIG_CERN_VENDOR=other
+export RCLONE_CONFIG_CERN_URL="https://cernbox.cern.ch/cernbox/webdav$EOS_PATH/"
+export RCLONE_CONFIG_CERN_USER="$CERN_USER"
+# rclone requires an obscured password; stdin keeps it out of command arguments.
+obscured_password=$(printf '%s\n' "$CERN_PASSWORD" | rclone obscure -)
+export RCLONE_CONFIG_CERN_PASS="$obscured_password"
+unset obscured_password
 unset CERN_PASSWORD
 work=$(mktemp -d)
-# This external WebDAV route accepts the configured CERN account credential.
-remote_root="/cernbox/webdav$EOS_PATH"
-stage="$remote_root/_deploy/$RELEASE"
+stage="cern:_deploy/$RELEASE"
 stage_started=false
 backup_ready=false
 production_touched=false
 transfer() {
-  lftp --env-password -u "$CERN_USER" https://cernbox.cern.ch <<LFTP
-set cmd:fail-exit yes
-set net:timeout 30
-set net:max-retries 2
-set ssl:verify-certificate yes
-set http:use-propfind yes
-set http:use-allprop yes
-set http:use-mkcol yes
-set http:cache no
-set mirror:set-permissions no
-$1
-bye
-LFTP
+  rclone "$@" --contimeout 15s --timeout 30s --retries 2 --low-level-retries 2
+}
+publish() {
+  # Excluded staging content is protected from sync's destination deletion.
+  transfer sync "$1" cern: --exclude '/_deploy/**' --create-empty-src-dirs --ignore-times
 }
 cleanup() {
   status=$?
   if [[ "$status" -ne 0 && "$backup_ready" == true && "$production_touched" == true ]]; then
     echo 'Deployment failed; restoring the previous website.' >&2
-    transfer "mirror -R --delete --exclude-glob _deploy/ '$work/backup/' '$remote_root/'" || echo 'Automatic restore failed; the backup artifact must be restored manually.' >&2
+    publish "$work/backup/" || echo 'Automatic restore failed; the backup artifact must be restored manually.' >&2
   fi
-  if [[ "$stage_started" == true ]]; then transfer "rm -r '$stage'" || true; fi
+  if [[ "$stage_started" == true ]]; then transfer purge "$stage/" || true; fi
   # Preserve a recoverable backup on a failed update for the artifact upload step.
   if [[ "$status" -ne 0 && "$backup_ready" == true ]]; then tar -C "$work/backup" -czf cern-rollback.tar.gz .; fi
   rm -rf "$work"
-  unset LFTP_PASSWORD
+  unset RCLONE_CONFIG_CERN_PASS
   exit "$status"
 }
 trap cleanup EXIT
-if ! transfer "cls -l '$remote_root/' > /dev/null"; then
+if ! transfer lsf cern: --max-depth 1 > /dev/null; then
   echo 'Cannot access the website directory through CERNBox WebDAV. Run Diagnose CERN EOS access and check CERN_USER, CERN_PASSWORD, and EOS_PATH.' >&2
   exit 1
 fi
@@ -60,12 +58,11 @@ printf '%s\n' '<!doctype html><html lang="en"><head><title>Deployment check</tit
 cp dist/.htaccess "$work/probe/.htaccess"
 # Verify the actual Apache header policy on a harmless probe before publishing the site.
 stage_started=true
-transfer "mkdir -p '$stage'
-mirror -R '$work/probe/' '$stage/'"
+transfer copy "$work/probe/" "$stage/" --create-empty-src-dirs
 node scripts/validate-security-headers.js "${CERN_WEB_URL%/}/_deploy/$RELEASE/" --root-only
-transfer "mirror --exclude-glob _deploy/ '$remote_root/' '$work/backup/'"
+transfer copy cern: "$work/backup/" --exclude '/_deploy/**'
 backup_ready=true
 production_touched=true
-transfer "mirror -R --delete --exclude-glob _deploy/ 'dist/' '$remote_root/'"
+publish dist/
 node scripts/validate-security-headers.js "$CERN_WEB_URL"
 echo 'CERN publication and security-header verification passed.'
