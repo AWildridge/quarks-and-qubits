@@ -54,11 +54,12 @@ class DiagnosticTests(unittest.TestCase):
         env = {"CERN_USER": "tester", "CERN_PASSWORD": "a-private-password", "EOS_PATH": "/eos/user/t/tester/www/"}
         output = io.StringIO()
         with patch.dict(os.environ, env, clear=True), patch.object(
-            diagnose, "probe", side_effect=[(False, "HTTP 401"), (True, "HTTP 207"), (False, "DNS lookup failed")]
+            diagnose, "probe", side_effect=[(True, "HTTP 207"), (False, "HTTP 401"), (False, "DNS lookup failed")]
         ) as probe, contextlib.redirect_stdout(output):
             self.assertEqual(diagnose.main(), 0)
         self.assertEqual(probe.call_count, 3)
-        self.assertEqual(probe.call_args_list[1].args[1], "/cernbox/webdav/eos/user/t/tester/www/")
+        self.assertEqual(probe.call_args_list[0].args[1], "/cernbox/webdav/eos/user/t/tester/www/")
+        self.assertEqual(probe.call_args_list[1].args[1], "/remote.php/dav/files/tester/eos/user/t/tester/www/")
         for value in env.values():
             self.assertNotIn(value, output.getvalue())
 

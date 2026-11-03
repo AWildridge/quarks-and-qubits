@@ -75,8 +75,8 @@ def main():
         return 1
     credential = base64.b64encode(f"{user}:{os.environ['CERN_PASSWORD']}".encode()).decode()
     endpoints = (
-        ("Current deployment route", "cernbox.cern.ch", f"/remote.php/dav/files/{user}{path}/"),
-        ("Documented external WebDAV route", "cernbox.cern.ch", f"/cernbox/webdav{path}/"),
+        ("Current deployment route (external WebDAV)", "cernbox.cern.ch", f"/cernbox/webdav{path}/"),
+        ("Alternate DAV files route", "cernbox.cern.ch", f"/remote.php/dav/files/{user}{path}/"),
         ("Documented CERN-network API route", "api.cernbox.cern.ch", f"/remote.php/dav/files/{user}{path}/"),
     )
     lines = ["CERN access diagnostics: read-only PROPFIND requests; no remote files changed."]

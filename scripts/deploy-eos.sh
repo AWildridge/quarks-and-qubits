@@ -5,17 +5,19 @@ set -euo pipefail
 : "${EOS_PATH:?Missing EOS_PATH}"
 : "${CERN_WEB_URL:?Set the public HTTPS site URL in the production environment}"
 : "${RELEASE:?Missing release identifier}"
-[[ "$CERN_USER" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]]
+fail() { echo "$1" >&2; exit 1; }
+[[ "$CERN_USER" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]] || fail 'Invalid CERN_USER format.'
 EOS_PATH="${EOS_PATH%/}"
 # Restrict destructive mirror operations to a website directory, never an EOS account root.
-[[ "$EOS_PATH" =~ ^/eos/(user|project)/[a-zA-Z0-9]/[a-zA-Z0-9_-]+/www(/[a-zA-Z0-9_-]+)*$ ]]
-[[ "$RELEASE" =~ ^[0-9]+-[a-f0-9]{40}$ ]]
-[[ "$CERN_WEB_URL" =~ ^https://[a-zA-Z0-9.-]+\.web\.cern\.ch/?$ ]]
-[[ -f dist/index.html && -f dist/.htaccess && -f dist/AJ_Wildridge_CV.pdf ]]
+[[ "$EOS_PATH" =~ ^/eos/(user|project)/[a-zA-Z0-9]/[a-zA-Z0-9_-]+/www(/[a-zA-Z0-9_-]+)*$ ]] || fail 'EOS_PATH must be an EOS website directory.'
+[[ "$RELEASE" =~ ^[0-9]+-[a-f0-9]{40}$ ]] || fail 'Invalid RELEASE format.'
+[[ "$CERN_WEB_URL" =~ ^https://[a-zA-Z0-9.-]+\.web\.cern\.ch/?$ ]] || fail 'Invalid CERN_WEB_URL format.'
+[[ -f dist/index.html && -f dist/.htaccess && -f dist/AJ_Wildridge_CV.pdf ]] || fail 'Missing required website artifacts in dist/.'
 export LFTP_PASSWORD="$CERN_PASSWORD"
 unset CERN_PASSWORD
 work=$(mktemp -d)
-remote_root="/remote.php/dav/files/$CERN_USER$EOS_PATH"
+# This external WebDAV route accepts the configured CERN account credential.
+remote_root="/cernbox/webdav$EOS_PATH"
 stage="$remote_root/_deploy/$RELEASE"
 stage_started=false
 backup_ready=false
@@ -50,7 +52,7 @@ cleanup() {
 }
 trap cleanup EXIT
 if ! transfer "cls -l '$remote_root/' > /dev/null"; then
-  echo 'Cannot access the website directory through CERNBox WebDAV. Check CERN_USER, the CERNBox app credential in CERN_PASSWORD, and EOS_PATH.' >&2
+  echo 'Cannot access the website directory through CERNBox WebDAV. Run Diagnose CERN EOS access and check CERN_USER, CERN_PASSWORD, and EOS_PATH.' >&2
   exit 1
 fi
 mkdir -p "$work/probe" "$work/backup"

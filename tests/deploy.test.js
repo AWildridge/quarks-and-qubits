@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const deploy = resolve('scripts/deploy-eos.sh');
-const remote = '/remote.php/dav/files/tester/eos/user/t/tester/www/';
+const remote = '/cernbox/webdav/eos/user/t/tester/www/';
 
 function simulate(scenario, extraEnv = {}) {
   const root = mkdtempSync(join(tmpdir(), 'eos-deploy-test-'));
@@ -76,6 +76,7 @@ test('WebDAV publication uses the EOS website path and retains the staging direc
   const result = simulate('success');
   assert.equal(result.status, 0, result.output);
   assert.ok(result.commands[0].includes(`cls -l '${remote}' > /dev/null`));
+  assert.ok(result.commands.every((command) => !command.includes('/remote.php/dav/files/')));
   assert.equal(result.commands.filter((command) => command.includes("'dist/'")).length, 1);
   assert.ok(result.commands.at(-1).includes(`rm -r '${remote}_deploy/`));
   assert.equal(result.backup, false);
@@ -109,4 +110,16 @@ test('paths outside a website directory are rejected before contacting CERN', ()
   const result = simulate('success', { EOS_PATH: '/eos/user/t/tester' });
   assert.notEqual(result.status, 0);
   assert.equal(result.commands.length, 0);
+});
+
+test('invalid transfer inputs are rejected before contacting CERN', () => {
+  for (const extraEnv of [
+    { CERN_USER: 'invalid/user' },
+    { RELEASE: 'invalid-release' },
+    { CERN_WEB_URL: 'https://example.com' },
+  ]) {
+    const result = simulate('success', extraEnv);
+    assert.notEqual(result.status, 0);
+    assert.equal(result.commands.length, 0);
+  }
 });
