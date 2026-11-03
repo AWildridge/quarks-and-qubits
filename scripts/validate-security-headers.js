@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { parseHeaders, validateHeaders } from './security-policy.js';
+import { checkLiveHeaders } from './check-live-headers.js';
 
 const target = process.argv[2] || process.env.HEADER_CHECK_URL;
 if (target) {
@@ -11,15 +12,8 @@ if (target) {
     : ['', 'cv/', 'publications/', 'talks/', 'AJ_Wildridge_CV.pdf'];
   for (const path of paths) {
     const url = new URL(path, base.href.endsWith('/') ? base : new URL(base.href + '/'));
-    const response = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(20000) });
-    if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
-    validateHeaders(response.headers);
-    for (const [name, value] of Object.entries(expected)) {
-      if (response.headers.get(name) !== value) {
-        throw new Error(`${url}: ${name} does not match the verified build`);
-      }
-    }
-    await response.body?.cancel();
+    await checkLiveHeaders(url, expected);
+    console.log(`Verified security headers: ${url}`);
   }
 } else {
   const headers = parseHeaders(readFileSync('dist/_headers', 'utf8'));
