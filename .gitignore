@@ -1,6 +1,7 @@
 node_modules
 top-smeft/
 dist
+dist-deploy
 .out
 .vercel
 .netlify

@@ -12,7 +12,14 @@ EOS_PATH="${EOS_PATH%/}"
 [[ "$EOS_PATH" =~ ^/eos/(user|project)/[a-zA-Z0-9]/[a-zA-Z0-9_-]+/www(/[a-zA-Z0-9_-]+)*$ ]] || fail 'EOS_PATH must be an EOS website directory.'
 [[ "$RELEASE" =~ ^[0-9]+-[a-f0-9]{40}$ ]] || fail 'Invalid RELEASE format.'
 [[ "$CERN_WEB_URL" =~ ^https://[a-zA-Z0-9.-]+\.web\.cern\.ch/?$ ]] || fail 'Invalid CERN_WEB_URL format.'
-[[ -f dist/index.html && -f dist/.htaccess && -f dist/AJ_Wildridge_CV.pdf ]] || fail 'Missing required website artifacts in dist/.'
+[[ -f dist/index.html && -f dist/.htaccess && -f dist/_headers ]] || fail 'Missing required website artifacts in dist/.'
+publication_mode=full
+if [[ -f dist/.publication-mode ]]; then publication_mode=$(cat dist/.publication-mode); fi
+case "$publication_mode" in
+  coming-soon) [[ -f dist/coming-soon.css && ! -f dist/AJ_Wildridge_CV.pdf ]] || fail 'Invalid coming-soon artifact.' ;;
+  full) [[ -f dist/AJ_Wildridge_CV.pdf ]] || fail 'Missing CV in full-site artifact.' ;;
+  *) fail 'Unknown publication mode.' ;;
+esac
 export RCLONE_CONFIG=/dev/null
 export RCLONE_CONFIG_CERN_TYPE=webdav
 export RCLONE_CONFIG_CERN_VENDOR=other
@@ -64,5 +71,10 @@ transfer copy cern: "$work/backup/" --exclude '/_deploy/**'
 backup_ready=true
 production_touched=true
 publish dist/
-node scripts/validate-security-headers.js "$CERN_WEB_URL"
+if [[ "$publication_mode" == coming-soon ]]; then
+  node scripts/validate-security-headers.js "$CERN_WEB_URL" --root-only
+  node scripts/check-coming-soon.js "${CERN_WEB_URL%/}/"
+else
+  node scripts/validate-security-headers.js "$CERN_WEB_URL"
+fi
 echo 'CERN publication and security-header verification passed.'

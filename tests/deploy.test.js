@@ -13,7 +13,7 @@ function simulate(scenario, extraEnv = {}) {
   try {
     mkdirSync(join(root, 'bin'));
     mkdirSync(join(root, 'dist'));
-    for (const file of ['index.html', '.htaccess', 'AJ_Wildridge_CV.pdf']) {
+    for (const file of ['index.html', '.htaccess', '_headers', 'AJ_Wildridge_CV.pdf']) {
       writeFileSync(join(root, 'dist', file), 'fixture');
     }
     writeFileSync(
