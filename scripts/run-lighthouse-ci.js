@@ -15,7 +15,7 @@ const paths = [
   '/demos/pegasus-embedder/',
   '/posts/',
   '/publications/',
-  '/projects/',
+  '/research/',
 ];
 const failures = [];
 await mkdir('.lighthouseci', { recursive: true });

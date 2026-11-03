@@ -197,10 +197,10 @@ Implemented rich snippets for enhanced search results:
   "name": "Andrew James Wildridge",
   "alternateName": "AJ Wildridge",
   "url": "https://aj-wildridge.web.cern.ch",
-  "jobTitle": "PhD Student",
+  "jobTitle": "Postdoctoral Researcher",
   "affiliation": {
     "@type": "Organization",
-    "name": "Purdue University"
+    "name": "Fermilab"
   },
   "alumniOf": [
     {
@@ -208,7 +208,7 @@ Implemented rich snippets for enhanced search results:
       "name": "Massachusetts Institute of Technology"
     }
   ],
-  "email": "andrew.james.wildridge@cern.ch",
+  "email": "anwildri@fnal.gov",
   "sameAs": [
     "https://github.com/AWildridge",
     "https://orcid.org/0000-0000-0000-0000",

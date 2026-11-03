@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 800 800">
-  <title id="title">AJ Wildridge profile image</title>
-  <desc id="desc">Downloadable profile image with AJ Wildridge initials for press-kit use.</desc>
-  <rect width="800" height="800" fill="#0f172a"/>
-  <circle cx="400" cy="300" r="130" fill="#dbeafe"/>
-  <path d="M170 710c38-145 122-220 230-220s192 75 230 220" fill="#dbeafe"/>
-  <text x="400" y="752" text-anchor="middle" font-family="Arial, sans-serif" font-size="76" font-weight="700" fill="#ffffff">AJ Wildridge</text>
-</svg>

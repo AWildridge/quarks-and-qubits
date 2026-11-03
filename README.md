@@ -26,17 +26,34 @@ pnpm preview    # built site at http://127.0.0.1:4321 with security headers
 
 ## Content and CV
 
-- `src/content/publications/` and `src/content/talks/` are the curated source for both the website and the CV.
+- Research and studies share `/research/`; former `/projects/` URLs redirect to their research equivalents. Content entries stay in `src/content/projects/` for authoring.
+- `src/content/publications/` and `src/content/talks/` supply the website and CV. Official publication metadata and abstracts are pinned in `src/data/publication-sources.json`.
 - `src/data/cv.json` holds personal details and other CV sections.
-- `src/data/Andrew_Wildridge_CV.docx` is the editable Word CV; it includes the three new 2026 entries. Import with `pnpm cv:extract`, review the result, then use `pnpm cv:generate` to add missing records. Existing curated records are preserved by title and year, even when their filenames differ.
-- `pnpm bib:fetch` is an explicit network refresh. Review the bibliography diff before committing it.
+- `src/data/Andrew_Wildridge_CV.docx` is the editable Word CV; it includes the new 2026 papers and talks. Import with `pnpm cv:extract`, review the result, then use `pnpm cv:generate` to add missing records. Existing curated records are preserved by title and year, even when their filenames differ.
+- `pnpm publications:refresh` fetches official sources and updates their snapshots, publication frontmatter, CV records, and BibTeX. Review the diff before committing. `pnpm publications:apply` (also `pnpm bib:fetch`) regenerates those files from the saved snapshots without network access.
 - The PDF is rendered over a local HTTP server so root-relative styles and fonts load correctly.
 
 The 2026 entries were checked against [the steering preprint](https://arxiv.org/abs/2608.30037), [SM@LHC slides](https://agenda.infn.it/event/48435/contributions/289837/attachments/148229/226494/SMLHC2026_ttbar_spin_overview.pdf), and [the TOP2026 timetable](https://indico.cern.ch/event/1643686/timetable/?view=standard).
 
+### Official abstracts and source checks
+
+Publication pages render the complete abstract from the saved official record, with LaTeX typeset for display. Editorial summaries belong on the Research page. Publication MDX bodies must be empty, so a summary cannot accidentally appear under “Official abstract.” Titles, author lists, dates, venues, DOIs, URLs, and exported citations are checked against the same saved records on every CI run. Long author lists are abbreviated in the overview and CV; the paper page exposes the complete list.
+
+`pnpm publications:verify` compares all entries with their current arXiv or CERN CDS records. It detects abstract and metadata changes, arXiv version changes even when the abstract is unchanged, and CERN record/file revisions. Source errors fail the check and are reported as **unverified**, never as an unchanged record. CERN may require its normal JavaScript browser check; install Chromium with the command above. Ordinary builds use the saved records and work offline.
+
+The **Check official publication sources** workflow runs weekly, on relevant pushes and pull requests, or manually. Its summary and `publication-source-report` artifact identify changed or unavailable records. A full-site publication also requires a successful live source check. To accept a new version, run `pnpm publications:refresh`, inspect the exact source changes, run `pnpm check`, and commit. A partial network failure never updates the saved snapshots.
+
+TOP-23-006 is included as a CMS Physics Analysis Summary, with its full abstract from CERN CDS and its release date from the CMS result page.
+
+To add a paper, create a publication entry with tags and a stable `bibtexKey`, then add its slug and `source` (`{"kind":"arxiv","id":"..."}` or `{"kind":"cds","id":"..."}`) to the source JSON before refreshing. Published entries without an official source fail CI.
+
+The media kit includes the original 512 × 512 JPEG from [AJ’s A3D3 profile](https://a3d3.ai/team/graduate-students/). Its source is recorded in `public/press/photo-source.json`.
+
 ## CI and publication
 
-CI uses a frozen lockfile, read-only repository permissions, and actions pinned to verified release commits. It runs the same checks listed above and packages **the tested build**, including hidden Apache configuration, as `site-dist.tar.gz` inside the `verified-site-<commit>` workflow artifact. PRs have no deployment secrets. Dependabot proposes dependency and action updates.
+CI uses a frozen lockfile, read-only repository permissions, and actions pinned to verified release commits. It runs the same checks listed above and packages the selected publication, including hidden Apache configuration, as `site-dist.tar.gz` inside the `verified-site-<commit>` workflow artifact. PRs have no deployment secrets. Dependabot proposes dependency and action updates.
+
+**Production is currently in coming-soon mode**, selected in `deployment/config.json`. `pnpm dev`, `pnpm build`, and `pnpm preview` still show the full site locally. After checking that build, CI prepares `dist-deploy/` with an explicit allowlist: only the holding page, its stylesheet, robots policy, and server headers. The deployment sync removes previous pages, media, and downloads, then verifies that the holding page is live and representative retired URLs return 404 or 410. Future pushes retain this mode. To launch the complete site, deliberately change `mode` to `full` and review that change before pushing.
 
 Publishing runs after pushes to `main` and can also be started manually on `main`. CERN EOS/WebDAV is the only deployment route. The credential-bearing job downloads the tested artifact and does not rebuild it.
 

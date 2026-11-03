@@ -15,7 +15,7 @@
     "build:fresh": "pnpm browser-data:update && pnpm build",
     "build:check": "pnpm typecheck && pnpm build",
     "build:check:fresh": "pnpm browser-data:update && pnpm build:check",
-    "check": "pnpm format:check && pnpm lint && pnpm cspell && pnpm test:unit && pnpm build:check && pnpm html:validate && node scripts/validate-bibtex.js && pnpm security:check && node scripts/validate-sitemap.js",
+    "check": "pnpm format:check && pnpm lint && pnpm cspell && pnpm test:unit && pnpm publications:check && pnpm build:check && pnpm html:validate && node scripts/validate-bibtex.js && pnpm security:check && node scripts/validate-sitemap.js",
     "typecheck": "astro check",
     "preview": "node scripts/serve-dist.js",
     "ci:serve": "node scripts/serve-dist.js",
@@ -33,12 +33,16 @@
     "browser-data:update": "node scripts/update-browser-data.js",
     "cv:extract": "node scripts/extract-cv-from-docx.js",
     "cv:generate": "node scripts/generate-content-from-cv.js",
-    "cv:sync": "pnpm cv:extract && pnpm cv:generate && node scripts/fetch-bibtex.js",
-    "bib:fetch": "node scripts/fetch-bibtex.js",
+    "cv:sync": "pnpm cv:extract && pnpm cv:generate && pnpm publications:apply",
+    "bib:fetch": "node scripts/check-publications.js --apply",
     "test:unit": "node --test tests/*.test.js",
     "security:check": "node scripts/validate-security-headers.js && node scripts/validate-site.js",
     "a11y": "node scripts/run-axe-scan.js",
-    "browsers:install": "playwright install chromium"
+    "browsers:install": "playwright install chromium",
+    "publications:check": "node scripts/check-publications.js",
+    "publications:verify": "node scripts/check-publications.js --remote",
+    "publications:apply": "node scripts/check-publications.js --apply",
+    "publications:refresh": "node scripts/check-publications.js --refresh --apply"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.5",

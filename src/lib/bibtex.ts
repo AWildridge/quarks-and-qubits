@@ -16,6 +16,10 @@ export interface PublicationRecord {
   bibtex?: string;
 }
 
+export function formatAuthors(authors: string[], limit = 8): string {
+  return authors.length > limit ? `${authors.slice(0, 3).join(', ')}, et al.` : authors.join(', ');
+}
+
 export function publicationDateValue(pub: { year: number; date?: Date | string }): number {
   if (pub.date) {
     const date = pub.date instanceof Date ? pub.date : new Date(pub.date);

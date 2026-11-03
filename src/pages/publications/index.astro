@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import OfficialAbstract from '../../components/OfficialAbstract.astro';
 import { getCollection } from 'astro:content';
 import {
   parseBibTeXEntries,
   sortPublicationsByDate,
+  formatAuthors,
   type PublicationRecord,
 } from '../../lib/bibtex';
 import { readFile } from 'node:fs/promises';
@@ -203,14 +205,14 @@ function dateTimeValue(pub: PublicationRecord) {
                 target="_blank"
                 itemprop="url"
               >
-                {p.title}
+                <OfficialAbstract text={p.title} inline />
               </a>
             ) : (
               p.title
             )}
           </h2>
           <p class="mt-1 text-sm text-gray-700 dark:text-gray-300" itemprop="author">
-            {p.authors.join(', ')}
+            {formatAuthors(p.authors)}
           </p>
           <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {p.venue && (

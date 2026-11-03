@@ -1,6 +1,7 @@
 # Generated and build outputs
 node_modules/
 dist/
+dist-deploy/
 .astro/
 .lighthouseci/
 playwright-report/

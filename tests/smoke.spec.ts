@@ -8,8 +8,46 @@ test('home page has an h1', async ({ page }) => {
   await expect(h1.first()).toBeVisible();
 });
 
+test('research replaces projects in navigation and old URLs still reach the work', async ({
+  page,
+}) => {
+  await page.goto('/projects/');
+  await page.waitForURL('**/research/');
+  await expect(page.getByRole('navigation', { name: 'Primary' })).not.toContainText('Projects');
+  await expect(page.getByRole('heading', { name: 'Studies & interactive tools' })).toBeVisible();
+  await page.goto('/projects/example/');
+  await page.waitForURL('**/research/spin-correlation-explorer/');
+  await expect(page.locator('h1')).toHaveText('Spin Correlation Explorer');
+});
+
+test('every displayed abstract matches its official saved source including math', async ({
+  page,
+}) => {
+  const sources = JSON.parse(await readFile('src/data/publication-sources.json', 'utf8')) as Record<
+    string,
+    { abstract: string }
+  >;
+  for (const [slug, source] of Object.entries(sources)) {
+    await page.goto(`/publications/${slug}/`);
+    const displayed = await page.locator('[data-official-abstract]').evaluate((node) => {
+      const copy = node.cloneNode(true) as HTMLElement;
+      for (const math of copy.querySelectorAll('.katex')) {
+        const latex = math.querySelector('annotation[encoding="application/x-tex"]')?.textContent;
+        math.replaceWith(document.createTextNode(`$${latex}$`));
+      }
+      return copy.textContent?.replace(/\s+/g, ' ').trim();
+    });
+    expect(displayed).toBe(
+      source.abstract
+        .replace(/\\([%&#_])/g, '$1')
+        .replace(/\s+/g, ' ')
+        .trim(),
+    );
+  }
+});
+
 test('project filters work on a static site and preserve query links', async ({ page }) => {
-  await page.goto('/projects/?tag=quantum');
+  await page.goto('/research/?tag=quantum');
   const projects = page.locator('#project-list > a:visible');
   await expect(projects).toHaveCount(1);
   await expect(projects.first()).toContainText('Quantum Annealing');
@@ -20,12 +58,13 @@ test('project filters work on a static site and preserve query links', async ({ 
   await expect(projects).toHaveCount(4);
 });
 
-test('publications year filter selects the new paper', async ({ page }) => {
+test('publications year filter includes TOP-23-006 and the steering preprint', async ({ page }) => {
   await page.goto('/publications/');
   await page.locator('select[name="year"]').selectOption('2026');
   const papers = page.locator('#pub-list > li:visible');
-  await expect(papers).toHaveCount(1);
-  await expect(papers.first()).toContainText('Quantum Steering Geometry');
+  await expect(papers).toHaveCount(2);
+  await expect(papers.first()).toContainText('CMS-PAS-TOP-23-006');
+  await expect(papers.nth(1)).toContainText('Quantum Steering Geometry');
 });
 
 test('publications export bibtex', async ({ page }) => {
@@ -51,10 +90,11 @@ test('publications render in publication-date order', async ({ page }) => {
   await page.goto('/publications/');
 
   const titles = page.locator('#pub-list h2');
-  await expect(titles.first()).toContainText(
+  await expect(titles.first()).toContainText('Measurement of the top quark polarization');
+  await expect(titles.nth(1)).toContainText(
     'Quantum Steering Geometry at High Energy Particle Colliders',
   );
-  await expect(titles.nth(1)).toContainText(
+  await expect(titles.nth(2)).toContainText(
     'Enhanced reconstruction of dileptonic top quark-antiquark events',
   );
 });
@@ -182,7 +222,6 @@ for (const path of [
   '/publications/',
   '/talks/',
   '/cv/',
-  '/projects/',
   '/demos/spin-explorer/',
   '/demos/pegasus-embedder/',
   '/demos/model-card/',
@@ -216,7 +255,7 @@ test('mobile layout has no horizontal overflow and navigation stays accessible',
   page,
 }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  for (const path of ['/', '/research/', '/publications/', '/cv/', '/talks/', '/projects/']) {
+  for (const path of ['/', '/research/', '/publications/', '/cv/', '/talks/']) {
     await page.goto(path);
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),

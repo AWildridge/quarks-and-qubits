@@ -39,6 +39,8 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: Validate source and production build
         run: pnpm check
+      - name: Verify current official paper versions before a full-site publication
+        run: node scripts/check-publications.js --before-publish
       - name: Browser regression tests with production CSP
         run: pnpm test
       - name: Accessibility in light and dark themes

@@ -145,18 +145,11 @@ function generatePublicationMDX(pub, index) {
   yaml += `tags: [${tags.map((t) => `"${t}"`).join(', ')}]\n`;
   yaml += '---\n\n';
 
-  // Generate content (extract abstract or description if available)
-  let content = pub.abstract || pub.description || pub.summary || '';
-
-  if (!content && pub.title) {
-    // Generate a placeholder description
-    content = `Publication in ${frontmatter.venue || 'conference proceedings'}.`;
-  }
-
+  // Official abstracts are supplied by publication-sources.json, never by CV summaries.
   return {
     slug,
     filename: `${slug}.mdx`,
-    content: yaml + content + '\n',
+    content: yaml,
   };
 }
 
@@ -418,7 +411,10 @@ async function main() {
 
     console.log('🎉 Content generation complete!');
     console.log('\n💡 Tips:');
-    console.log('   - Review generated files and add abstracts/descriptions');
+    console.log(
+      '   - Register official sources for new publications, then run `pnpm publications:refresh`',
+    );
+    console.log('   - Review talk and poster descriptions');
     console.log('   - Add slides/video URLs to talk frontmatter');
     console.log('   - Verify tags are appropriate');
     console.log('   - Run `pnpm build` to see the new content');

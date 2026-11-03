@@ -13,7 +13,6 @@ export const GET: APIRoute = async () => {
   const staticPages = [
     { url: '', priority: 1.0, changefreq: 'weekly' },
     { url: 'research', priority: 0.9, changefreq: 'monthly' },
-    { url: 'projects', priority: 0.9, changefreq: 'weekly' },
     { url: 'publications', priority: 0.9, changefreq: 'monthly' },
     { url: 'talks', priority: 0.8, changefreq: 'monthly' },
     { url: 'posts', priority: 0.7, changefreq: 'weekly' },
@@ -35,7 +34,7 @@ export const GET: APIRoute = async () => {
       priority: page.priority,
     })),
     ...projects.map((project) => ({
-      url: `${SITE_URL}/projects/${project.id}`,
+      url: `${SITE_URL}/research/${project.id}`,
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: 'monthly',
       priority: 0.7,

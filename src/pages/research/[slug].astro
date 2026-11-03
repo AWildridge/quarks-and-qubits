@@ -49,6 +49,7 @@ const projectSchema = {
 ---
 
 <BaseLayout title={title} description={summary || `Project: ${title}`} schema={projectSchema}>
+  <p class="mb-4"><a class="text-link" href="/research/#tools">← Back to research</a></p>
   <h1>{title}</h1>
   {summary && <p class="mt-2 text-gray-700 dark:text-gray-300">{summary}</p>}
 
@@ -88,7 +89,7 @@ const projectSchema = {
   }
 
   <section class="mt-8" aria-labelledby="reproduce-heading">
-    <h2 id="reproduce-heading" class="text-lg font-semibold">Reproduce</h2>
+    <h2 id="reproduce-heading" class="text-lg font-semibold">Explore this work</h2>
     <ul class="list-disc pl-6 mt-2">
       {
         repo && (
@@ -119,7 +120,7 @@ const projectSchema = {
       {
         data && (
           <li>
-            Data:{' '}
+            Reference:{' '}
             <a href={data} class="underline">
               {data}
             </a>
@@ -134,7 +135,7 @@ const projectSchema = {
     metrics.length > 0 && (
       <section class="mt-8" aria-labelledby="metrics-heading">
         <h2 id="metrics-heading" class="text-lg font-semibold">
-          Metrics
+          What this work covers
         </h2>
         <ul class="list-disc pl-6 mt-2">
           {metrics.map((metric: string) => (
@@ -146,7 +147,7 @@ const projectSchema = {
   }
 
   <section class="mt-8" aria-labelledby="architecture-heading">
-    <h2 id="architecture-heading" class="text-lg font-semibold">Architecture</h2>
+    <h2 id="architecture-heading" class="text-lg font-semibold">Research overview</h2>
     <FigureWithCaption
       src={architecture?.image || '/images/research-top-spin.svg'}
       alt={architecture?.alt || `Architecture diagram for ${title}`}
@@ -155,7 +156,7 @@ const projectSchema = {
   </section>
 
   <section class="mt-8 prose dark:prose-invert max-w-none" aria-labelledby="abstract-heading">
-    <h2 id="abstract-heading">Abstract</h2>
+    <h2 id="abstract-heading">About this work</h2>
     <Content />
   </section>
 

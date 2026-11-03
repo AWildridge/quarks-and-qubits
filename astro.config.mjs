@@ -15,6 +15,13 @@ export default defineConfig({
     react(),
   ],
   output: 'static',
+  redirects: {
+    '/projects/': '/research/',
+    '/projects/example/': '/research/spin-correlation-explorer/',
+    '/projects/model-card-demo/': '/research/model-card-demo/',
+    '/projects/quantum-annealing-vertexing/': '/research/quantum-annealing-vertexing/',
+    '/projects/bumblebee-foundation-model/': '/research/bumblebee-foundation-model/',
+  },
   markdown: { processor: unified() },
   compressHTML: true,
   prefetch: true,

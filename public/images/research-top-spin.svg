@@ -1,63 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 720 360">
-  <title id="title">Top-quark spin correlations and entanglement observables</title>
-  <desc id="desc">A proton-proton collision produces a top-antitop pair. Lepton decay directions define spin analyzers that feed a correlation matrix and an entanglement-sensitive D observable.</desc>
-  <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M1 1l8 4-8 4z" fill="#334155"/>
-    </marker>
-    <linearGradient id="beam" x1="0" x2="1">
-      <stop offset="0" stop-color="#2563eb"/>
-      <stop offset="1" stop-color="#0f766e"/>
-    </linearGradient>
-  </defs>
-  <rect width="720" height="360" rx="0" fill="#f8fafc"/>
-  <rect x="24" y="24" width="672" height="312" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 720 520">
+<title id="title">The geometry of a top-quark pair</title><desc id="desc">Conceptual illustration of decay directions, spin correlations and a steering ellipsoid. No experimental data are plotted.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M1 1 L6 4 L1 7" fill="none" stroke="#13635b" stroke-width="1.5"/></marker></defs>
+<rect width="720" height="520" rx="16" fill="#eff2ed"/>
+<g font-family="system-ui, sans-serif" fill="#1c2a30">
 
-  <g stroke-linecap="round" stroke-linejoin="round">
-    <path d="M58 176h154" stroke="url(#beam)" stroke-width="8"/>
-    <path d="M58 192h154" stroke="#94a3b8" stroke-width="3"/>
-    <path d="M212 176h154" stroke="url(#beam)" stroke-width="8"/>
-    <path d="M212 192h154" stroke="#94a3b8" stroke-width="3"/>
-    <circle cx="212" cy="176" r="18" fill="#fef3c7" stroke="#b45309" stroke-width="3"/>
-    <text x="77" y="153" font-family="Arial, sans-serif" font-size="16" fill="#1e3a8a">p</text>
-    <text x="344" y="153" font-family="Arial, sans-serif" font-size="16" fill="#0f766e">p</text>
-
-    <path d="M234 166c38-44 82-55 132-40" fill="none" stroke="#7c3aed" stroke-width="4"/>
-    <path d="M234 187c44 43 90 55 138 37" fill="none" stroke="#dc2626" stroke-width="4"/>
-    <circle cx="300" cy="117" r="25" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
-    <circle cx="304" cy="232" r="25" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
-    <text x="300" y="123" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#4c1d95">t</text>
-    <text x="304" y="238" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#7f1d1d">t</text>
-    <path d="M300 117l58-35" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow)"/>
-    <path d="M304 232l58 38" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow)"/>
-    <circle cx="374" cy="72" r="9" fill="#0f172a"/>
-    <circle cx="374" cy="281" r="9" fill="#0f172a"/>
-    <text x="389" y="76" font-family="Arial, sans-serif" font-size="15" fill="#0f172a">lepton analyzer</text>
-    <text x="389" y="286" font-family="Arial, sans-serif" font-size="15" fill="#0f172a">lepton analyzer</text>
-  </g>
-
-  <g transform="translate(455 62)" font-family="Arial, sans-serif">
-    <text x="0" y="0" font-size="16" font-weight="700" fill="#0f172a">spin-density terms</text>
-    <rect x="0" y="14" width="132" height="132" rx="7" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-    <g stroke="#2563eb" stroke-width="1.6">
-      <path d="M44 14v132M88 14v132M0 58h132M0 102h132"/>
-    </g>
-    <g text-anchor="middle" font-size="18" fill="#172554">
-      <text x="22" y="42">Ckk</text>
-      <text x="66" y="42">Ckr</text>
-      <text x="110" y="42">Ckn</text>
-      <text x="22" y="86">Crk</text>
-      <text x="66" y="86">Crr</text>
-      <text x="110" y="86">Crn</text>
-      <text x="22" y="130">Cnk</text>
-      <text x="66" y="130">Cnr</text>
-      <text x="110" y="130">Cnn</text>
-    </g>
-    <path d="M66 154v31" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
-    <rect x="-7" y="194" width="146" height="50" rx="7" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
-    <text x="66" y="216" text-anchor="middle" font-size="17" font-weight="700" fill="#7f1d1d">D &lt; -1/3</text>
-    <text x="66" y="235" text-anchor="middle" font-size="13" fill="#7f1d1d">entanglement region</text>
-  </g>
-
-  <text x="48" y="318" font-family="Arial, sans-serif" font-size="14" fill="#475569">Angles of decay products reconstruct spin correlations in selected top-antitop phase space.</text>
-</svg>
+<text x="36" y="44" font-size="16" letter-spacing="2" fill="#4f6167">COLLIDER QUANTUM INFORMATION</text>
+<path d="M64 161H309" stroke="#bbc9c0" stroke-width="3" stroke-dasharray="7 7"/>
+<circle cx="185" cy="161" r="8" fill="#b17c37"/>
+<path d="M185 161L116 110M185 161L255 212" stroke="#13635b" stroke-width="3"/>
+<circle cx="116" cy="110" r="26" fill="#13635b"/><circle cx="255" cy="212" r="26" fill="#685d81"/>
+<text x="116" y="119" fill="white" text-anchor="middle" font-size="28" font-style="italic">t</text>
+<text x="255" y="221" fill="white" text-anchor="middle" font-size="28" font-style="italic">t̄</text>
+<path d="M98 90L61 72M139 99L172 74M238 233L212 264M277 225L311 244" stroke="#4f6167" stroke-width="2.5"/>
+<text x="48" y="97" font-size="20">ℓ⁺</text><text x="318" y="255" font-size="20">ℓ⁻</text>
+<text x="36" y="304" font-size="23">Decay directions</text>
+<path d="M337 176H404" stroke="#13635b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<g transform="translate(443 82)">
+ <rect width="204" height="204" rx="9" fill="#fffef9" stroke="#b8c7bd"/>
+ <path d="M68 0V204M136 0V204M0 68H204M0 136H204" stroke="#cdd7cf"/>
+ <rect x="5" y="5" width="58" height="58" rx="3" fill="#13635b" opacity="0.8"/>
+ <rect x="73" y="73" width="58" height="58" rx="3" fill="#13635b" opacity="0.5"/>
+ <rect x="141" y="141" width="58" height="58" rx="3" fill="#685d81" opacity="0.7"/>
+ <text x="102" y="119" text-anchor="middle" font-size="30">Cᵢⱼ</text>
+</g>
+<text x="442" y="320" font-size="23">Spin correlations</text>
+<path d="M545 341V374H440" fill="none" stroke="#13635b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<circle cx="329" cy="414" r="77" fill="#fffef9" stroke="#b8c7bd" stroke-width="2"/>
+<ellipse cx="329" cy="414" rx="77" ry="23" fill="none" stroke="#b8c7bd" stroke-dasharray="5 5"/>
+<ellipse cx="329" cy="414" rx="59" ry="34" transform="rotate(-28 329 414)" fill="#a8d3c0" stroke="#13635b" stroke-width="2"/>
+<path d="M266 450L391 378M294 354L364 474" stroke="#13635b" stroke-width="1.4"/>
+<text x="36" y="400" font-size="23">Conditional</text><text x="36" y="430" font-size="23">spin states</text>
+<text x="466" y="449" font-size="18" fill="#4f6167">Steering geometry</text>
+<text x="466" y="480" font-size="15" fill="#4f6167">Schematic · no measured data</text>
+</g></svg>

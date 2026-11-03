@@ -60,7 +60,7 @@ pnpm preview
 The script (`scripts/extract-cv-from-docx.js`) now:
 
 1. ✅ Reads `Andrew_Wildridge_CV.docx`
-2. ✅ Extracts basic info (name: "Andrew Wildridge", email: "awildrid@purdue.edu")
+2. ✅ Extracts basic info (name: "Andrew Wildridge", email: "anwildri@fnal.gov")
 3. ✅ Finds the "Publications" section
 4. ✅ Parses each publication line to extract:
    - Title (handles quotes and "Collaboration." format)

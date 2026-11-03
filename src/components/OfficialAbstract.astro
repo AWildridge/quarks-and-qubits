@@ -1,0 +1,29 @@
+---
+import katex from 'katex';
+
+const { text, inline = false } = Astro.props as { text: string; inline?: boolean };
+const Tag = inline ? 'span' : 'p';
+// Preserve source wording. Only inline LaTeX is typeset; all other content is escaped by Astro.
+const parts = text
+  .split(/(\$[^$]+\$)/g)
+  .filter(Boolean)
+  .map((part) => ({
+    text: part,
+    math:
+      part.startsWith('$') && part.endsWith('$')
+        ? katex.renderToString(part.slice(1, -1), {
+            throwOnError: true,
+            trust: false,
+            output: 'htmlAndMathml',
+          })
+        : null,
+  }));
+---
+
+<Tag data-official-abstract={inline ? undefined : true}>
+  {
+    parts.map((part) =>
+      part.math ? <Fragment set:html={part.math} /> : part.text.replace(/\\([%&#_])/g, '$1'),
+    )
+  }
+</Tag>

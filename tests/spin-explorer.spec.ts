@@ -4,6 +4,8 @@ test.describe('Spin Correlation Explorer', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/demos/spin-explorer');
     await page.waitForSelector('canvas', { timeout: 10000 });
+    // The canvas exists in server-rendered HTML before React attaches input handlers.
+    await expect(page.getByText(/Reference data loaded/)).toBeVisible({ timeout: 10000 });
   });
 
   test('page loads the integration controls', async ({ page }) => {

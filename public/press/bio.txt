@@ -1,6 +1,6 @@
 AJ Wildridge - Short Bio
 
-AJ Wildridge is a PhD candidate in experimental high-energy particle physics. His work spans top-quark measurements, quantum-information observables, and machine-learning applications for collider data.
+AJ Wildridge is a postdoctoral researcher at Fermilab in experimental high-energy particle physics. His work spans top-quark measurements, quantum-information observables, and machine-learning applications for collider data.
 
 His current research includes spin-correlation and entanglement measurements in top-quark pair production, quantum-inspired reconstruction methods, and machine-learning tools for particle-physics discovery. Wildridge regularly presents this work at workshops, conferences, and collaboration forums.
 
@@ -8,14 +8,14 @@ His current research includes spin-correlation and entanglement measurements in 
 
 AJ Wildridge - Extended Bio
 
-AJ Wildridge works at the intersection of collider physics, quantum information, and machine learning. His research focuses on measurable quantum observables in high-energy particle collisions, especially top-quark spin correlations and entanglement signatures at the LHC.
+AJ Wildridge is a postdoctoral researcher at Fermilab working at the intersection of collider physics, quantum information, and machine learning. His research focuses on measurable quantum observables in high-energy particle collisions, especially top-quark spin correlations and entanglement signatures at the LHC.
 
 He also develops and studies computational methods for particle-physics reconstruction and discovery workflows, including quantum-inspired approaches and machine-learning models for complex detector data. His publications and presentations cover CMS measurements, quantum-information interpretations of collider observables, and machine-learning challenges for anomaly detection in science.
 
 ---
 
 Contact Information:
-Email: awildrid@purdue.edu
+Email: anwildri@fnal.gov
 Website: https://aj-wildridge.web.cern.ch
 INSPIRE-HEP: https://inspirehep.net/authors/1778335
 GitHub: https://github.com/AWildridge

@@ -582,7 +582,7 @@ _When you answer in chat, I’ll copy the decisions into this section and procee
 
 **Identity & Branding**
 
-- **Name/Titles/Affiliations:** Andrew (AJ) James Wildridge — PhD Student, Purdue University; CTO, Quantum Research Sciences (QRS).
+- **Name/Titles/Affiliations:** Andrew (AJ) James Wildridge — Postdoctoral Researcher, Fermilab; CTO, Quantum Research Sciences (QRS).
 - **Pronouns:** (TBD)
 - **Bios/Headshots:** (Awaiting assets)
 
@@ -590,7 +590,7 @@ _When you answer in chat, I’ll copy the decisions into this section and procee
 
 - **Primary domain:** [https://aj-wildridge.web.cern.ch/](https://aj-wildridge.web.cern.ch/) (CERN hosting).
 - **Sub-apps domain:** apps.aj-wildridge.web.cern.ch (optional later).
-- **Contact:** [andrew.james.wildridge@cern.ch](mailto:andrew.james.wildridge@cern.ch) (mailto link, obfuscated on page).
+- **Contact:** [anwildri@fnal.gov](mailto:anwildri@fnal.gov) (mailto link, obfuscated on page).
 - **Analytics:** Plausible (no cookies).
 
 **Home Hero**

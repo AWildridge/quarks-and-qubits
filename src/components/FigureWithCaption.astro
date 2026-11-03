@@ -3,7 +3,15 @@ const { src, alt, caption } = Astro.props as { src: string; alt: string; caption
 ---
 
 <figure class="my-4">
-  <img src={src} alt={alt} class="max-w-full rounded" />
+  <img
+    src={src}
+    alt={alt}
+    width="720"
+    height="520"
+    loading="lazy"
+    decoding="async"
+    class="w-full h-auto rounded"
+  />
   {
     caption && (
       <figcaption class="mt-2 text-sm text-gray-600 dark:text-gray-400">{caption}</figcaption>

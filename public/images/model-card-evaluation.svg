@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 720 520">
+  <title id="title">Evaluating a classifier threshold</title>
+  <desc id="desc">A synthetic classifier score is compared with a threshold, producing a confusion matrix and evaluation metrics. No trained physics model is used.</desc>
+  <rect width="720" height="520" rx="16" fill="#eff2ed"/>
+  <g font-family="system-ui, sans-serif" fill="#1c2a30">
+    <text x="32" y="44" font-size="16" letter-spacing="2">MODEL CARD · SYNTHETIC DEMONSTRATION</text>
+    <text x="32" y="100" font-size="24">Choose a threshold</text>
+    <path d="M40 198H306" stroke="#b8c7bd" stroke-width="5"/>
+    <path d="M40 198H184" stroke="#13635b" stroke-width="5"/>
+    <circle cx="184" cy="198" r="15" fill="#13635b"/>
+    <text x="40" y="243" font-size="20">0</text><text x="294" y="243" font-size="20">1</text>
+    <text x="353" y="205" font-size="40">→</text>
+    <g transform="translate(444 84)" text-anchor="middle" font-size="24">
+      <rect width="220" height="200" rx="9" fill="#fffef9" stroke="#b8c7bd"/>
+      <path d="M110 0V200M0 100H220" stroke="#b8c7bd"/>
+      <text x="55" y="59">TP</text><text x="165" y="59">FP</text>
+      <text x="55" y="159">FN</text><text x="165" y="159">TN</text>
+    </g>
+    <text x="32" y="345" font-size="22">Precision · recall · specificity · F1 score</text>
+    <text x="32" y="430" font-size="20" fill="#4f6167">Compare decisions as the threshold moves.</text>
+    <text x="32" y="468" font-size="18" fill="#4f6167">Illustrative profiles, not a trained physics model.</text>
+  </g>
+</svg>

@@ -3,23 +3,28 @@ title: Bumblebee Foundation Model Studies
 date: 2024-09-26
 tags: [particle-physics, foundation-model, anomaly-detection]
 language: Python
-summary: Foundation-model workflows for particle-physics discovery and anomaly-detection challenge design.
+summary: A transformer trained on masked particle four-vectors, with applications to top-quark reconstruction and classification.
 data: /publications/bumblebee-foundation-model-for-particle-physics-di-2024/
 citation: AJ Wildridge et al., Bumblebee foundation-model studies, 2024.
 metrics:
-  - Particle-physics discovery workflow framed around reusable learned representations
-  - Anomaly-detection challenge design connected to model evaluation
-  - Documentation links project assumptions to publication and talk records
+  - Masked pretraining on generator- and reconstruction-level four-vectors
+  - Downstream studies of top-quark reconstruction, toponium discrimination, and initial states
+  - Permutation-invariant inputs without positional encodings
 reproduce:
   - Review the linked publication record and associated talks
-  - Compare foundation-model outputs with task-specific anomaly metrics
-  - Track model-card limitations for shifted benchmark samples
+  - Examine the reconstruction and classification tasks described in the paper
+  - Use the published benchmarks to distinguish pretraining from downstream performance
 architecture:
   image: /images/ml-model-card.svg
-  alt: Diagram showing event data flowing through representation learning, task heads, and model evaluation.
-  caption: Foundation-model studies separate reusable event representations from task-specific evaluation and documentation.
+  alt: Schematic of masked particle inputs, a transformer, and reconstruction and classification outputs.
+  caption: Bumblebee learns event representations from masked four-vectors and is evaluated on separate downstream tasks.
 ---
 
-Bumblebee-related work studies how reusable representations can support particle-physics discovery
-tasks. The site tracks the publication, talks, and evaluation vocabulary needed to connect model
-behavior to analysis decisions.
+Bumblebee adapts masked representation learning to particle physics. Particle four-vectors replace
+word tokens, and removing positional encodings avoids assigning meaning to an arbitrary ordering
+of the particles. The model uses both generator- and reconstruction-level information.
+
+The published study evaluates dileptonic top-quark reconstruction, toponium discrimination, and
+initial-state classification. See the linked paper for the training setup, benchmarks, and reported
+performance. The model-card demo on this website uses synthetic profiles and is a separate teaching
+tool; it is not a demonstration of trained Bumblebee weights.

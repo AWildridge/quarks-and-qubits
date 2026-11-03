@@ -10,6 +10,7 @@ export default [
   {
     ignores: [
       'dist/**',
+      'dist-deploy/**',
       'node_modules/**',
       'playwright-report/**',
       '.astro/**',

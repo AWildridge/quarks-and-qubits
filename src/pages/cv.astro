@@ -2,7 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import rawCvData from '../data/cv.json';
 import { getCollection } from 'astro:content';
-import { sortPublicationsByDate } from '../lib/bibtex';
+import { sortPublicationsByDate, formatAuthors } from '../lib/bibtex';
+import OfficialAbstract from '../components/OfficialAbstract.astro';
 type CV = {
   name: string;
   title: string;
@@ -256,7 +257,8 @@ function publicationLink(pub: { doi?: string; url?: string }) {
             {cvData.publications.map((pub) => (
               <div class="publication-entry print:text-sm">
                 <p class="text-gray-700 dark:text-gray-300 print:text-xs">
-                  <span class="font-medium">{pub.authors.join(', ')}</span>. &quot;{pub.title}
+                  <span class="font-medium">{formatAuthors(pub.authors)}</span>. &quot;
+                  <OfficialAbstract text={pub.title} inline />
                   &quot;.
                   <span class="italic">{pub.venue}</span>, {pub.year}.
                   {publicationLink(pub) && (

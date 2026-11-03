@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getEntry, getCollection, render } from 'astro:content';
+import { getEntry, getCollection } from 'astro:content';
+import OfficialAbstract from '../../components/OfficialAbstract.astro';
+import officialSources from '../../data/publication-sources.json';
+import { formatAuthors } from '../../lib/bibtex';
 import { parseBibTeXEntries, toBibTeX, type PublicationRecord } from '../../lib/bibtex';
 import { readFile } from 'node:fs/promises';
 
@@ -14,8 +17,20 @@ if (!slug) throw new Error('Missing slug');
 const entry = await getEntry('publications', slug);
 if (!entry) throw new Error(`Publication not found: ${slug}`);
 
-const { title, authors, year, date, venue, doi, url, tags = [], bibtexKey } = entry.data;
-const { Content } = await render(entry);
+const {
+  title,
+  authors,
+  year,
+  date,
+  venue,
+  doi,
+  url,
+  resultsUrl,
+  tags = [],
+  bibtexKey,
+} = entry.data;
+const source = officialSources[slug as keyof typeof officialSources];
+if (!source?.abstract) throw new Error(`Missing official abstract for ${slug}`);
 const bibliography = await readFile('public/bibliography.bib', 'utf8').catch(() => '');
 const bibliographyEntries = parseBibTeXEntries(bibliography);
 const sourceLabel = url?.includes('cds.cern.ch')
@@ -68,17 +83,27 @@ const publicationSchema = {
 
 <BaseLayout
   title={title}
-  description={`Publication: ${title} by ${authors.join(', ')} (${year})`}
+  description={`Publication: ${title} by ${formatAuthors(authors)} (${year})`}
   type="article"
   publishedTime={publishedDate}
   schema={publicationSchema}
 >
   <article itemscope itemtype="https://schema.org/ScholarlyArticle">
     <header>
-      <h1 itemprop="name">{title}</h1>
+      <h1 itemprop="name"><OfficialAbstract text={title} inline /></h1>
       <p class="mt-2 text-gray-700 dark:text-gray-300" itemprop="author">
-        {authors.join(', ')}
+        {formatAuthors(authors)}
       </p>
+      {
+        authors.length > 8 && (
+          <details class="mt-2 text-sm">
+            <>
+              <summary>View all {authors.length} authors</summary>
+              <p class="mt-2">{authors.join(', ')}</p>
+            </>
+          </details>
+        )
+      }
       <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
         {
           venue && (
@@ -108,6 +133,15 @@ const publicationSchema = {
     <section class="mt-8" aria-labelledby="links-heading">
       <h2 id="links-heading" class="text-lg font-semibold">Links</h2>
       <ul class="mt-2 space-y-1">
+        {
+          resultsUrl && (
+            <li>
+              <a href={resultsUrl} class="text-blue-700 dark:text-blue-400 hover:underline">
+                CMS result and figures
+              </a>
+            </li>
+          )
+        }
         {
           url && (
             <li>
@@ -156,8 +190,21 @@ const publicationSchema = {
     </section>
 
     <section class="mt-8 prose dark:prose-invert max-w-none" itemprop="description">
-      <h2>Abstract</h2>
-      <Content />
+      <h2>Official abstract</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        <a href={'versionUrl' in source ? source.versionUrl : source.url}
+          >Source: {source.source.kind === 'arxiv' ? `arXiv ${source.version}` : 'CERN CDS'}</a
+        >
+        {
+          source.updated && (
+            <>
+              {' '}
+              · Updated <time datetime={source.updated}>{source.updated}</time>
+            </>
+          )
+        }
+      </p>
+      <OfficialAbstract text={source.abstract} />
     </section>
 
     <section class="mt-8" aria-labelledby="citation-heading">

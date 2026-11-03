@@ -109,6 +109,14 @@
         margin-bottom: 1rem;
       }
 
+      .headshot {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+      }
+
       .bio-section {
         background: #f9f9f9;
         padding: 1.5rem;
@@ -143,18 +151,27 @@
     </style>
   </head>
   <body>
-    <div class="container">
+    <main class="container">
       <h1>Press Kit</h1>
-      <p class="subtitle">AJ Wildridge - Physicist &amp; ML Researcher</p>
+      <p class="subtitle">AJ Wildridge — Postdoctoral Researcher at Fermilab</p>
 
       <section>
         <h2>Downloadable Assets</h2>
         <div class="assets-grid">
           <div class="asset-card">
-            <div class="placeholder">Headshot</div>
+            <img
+              class="headshot"
+              src="aj-wildridge-headshot.jpg"
+              alt="AJ Wildridge seated in front of a whiteboard"
+              width="512"
+              height="512"
+            />
             <h3>Professional Headshot</h3>
-            <p>Downloadable profile image for media pages and event programs.</p>
-            <a href="aj-wildridge-headshot.svg" download class="download-btn">Download SVG</a>
+            <p>
+              Original 512 × 512 photograph from
+              <a href="https://a3d3.ai/team/graduate-students/">AJ’s A3D3 profile</a>.
+            </p>
+            <a href="aj-wildridge-headshot.jpg" download class="download-btn">Download JPEG</a>
           </div>
 
           <div class="asset-card">
@@ -181,9 +198,9 @@
       <section class="bio-section">
         <h2>Short Biography</h2>
         <p>
-          AJ Wildridge is a PhD candidate in experimental high-energy particle physics whose work
-          spans top-quark measurements, quantum-information observables, and machine-learning
-          applications for collider data.
+          AJ Wildridge is a postdoctoral researcher at Fermilab in experimental high-energy particle
+          physics whose work spans top-quark measurements, quantum-information observables, and
+          machine-learning applications for collider data.
         </p>
         <p>
           His current research includes spin-correlation and entanglement measurements in top-quark
@@ -195,7 +212,7 @@
 
       <section class="contact-info">
         <h3>Contact Information</h3>
-        <p><strong>Email:</strong> <a href="mailto:awildrid@purdue.edu">awildrid@purdue.edu</a></p>
+        <p><strong>Email:</strong> <a href="mailto:anwildri@fnal.gov">anwildri@fnal.gov</a></p>
         <p>
           <strong>Website:</strong>
           <a href="https://aj-wildridge.web.cern.ch">aj-wildridge.web.cern.ch</a>
@@ -215,6 +232,6 @@
           specific questions or custom requests.
         </p>
       </section>
-    </div>
+    </main>
   </body>
 </html>

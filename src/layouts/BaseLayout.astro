@@ -1,6 +1,7 @@
 ---
 import 'katex/dist/katex.min.css';
 import '../styles/global.css';
+import cvData from '../data/cv.json';
 
 export interface Props {
   title?: string;
@@ -30,7 +31,6 @@ const {
 const navItems = [
   ['/', 'Home'],
   ['/research/', 'Research'],
-  ['/projects/', 'Projects'],
   ['/publications/', 'Publications'],
   ['/talks/', 'Talks'],
   ['/cv/', 'CV'],
@@ -51,12 +51,12 @@ const personSchema = {
   name: 'Andrew James Wildridge',
   alternateName: 'AJ Wildridge',
   url: SITE_URL,
-  jobTitle: 'PhD Student',
+  jobTitle: 'Postdoctoral Researcher',
   affiliation: {
     '@type': 'Organization',
-    name: 'Purdue University',
+    name: 'Fermilab',
   },
-  email: 'andrew.james.wildridge@cern.ch',
+  email: cvData.email,
   sameAs: [
     'https://github.com/AWildridge',
     'https://inspirehep.net/authors/1778335',

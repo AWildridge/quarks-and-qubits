@@ -2,6 +2,7 @@ node_modules
 top-smeft/
 dist
 dist-deploy
+publication-check.txt
 .out
 .vercel
 .netlify

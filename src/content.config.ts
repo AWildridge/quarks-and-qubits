@@ -38,6 +38,8 @@ const publications = defineCollection({
     url: z.url().optional(),
     tags: z.array(z.string()).default([]),
     bibtexKey: z.string().optional(),
+    citationType: z.enum(['article', 'inproceedings', 'techreport']).optional(),
+    resultsUrl: z.url().optional(),
     draft: z.boolean().default(false),
   }),
 });
