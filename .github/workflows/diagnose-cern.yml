@@ -1,0 +1,25 @@
+name: Diagnose CERN EOS access
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify diagnostic behavior
+        run: python3 -m unittest discover -s tests -p 'cern_diagnostics_test.py'
+      - name: Check directory access without publishing
+        env:
+          CERN_USER: ${{ secrets.CERN_USER }}
+          CERN_PASSWORD: ${{ secrets.CERN_PASSWORD }}
+          EOS_PATH: ${{ secrets.EOS_PATH }}
+        run: python3 scripts/diagnose-cern.py
