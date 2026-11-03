@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="520" viewBox="0 0 720 520" role="img" aria-labelledby="title desc">
+  <title id="title">Adding timing to the collision picture</title>
+  <desc id="desc">Tracks from two overlapping collisions can be distinguished using timing information alongside their spatial positions.</desc>
+  <rect width="720" height="520" rx="18" fill="#f0f1e9"/>
+  <g font-family="Arial, sans-serif" fill="#213b40">
+    <text x="44" y="55" font-size="14" letter-spacing="2">POSITION + TIME</text>
+    <text x="44" y="96" font-size="25">One crossing. Several collisions.</text>
+    <rect x="40" y="132" width="294" height="278" rx="12" fill="#fafaf5" stroke="#c9d3cd"/>
+    <rect x="386" y="132" width="294" height="278" rx="12" fill="#fafaf5" stroke="#c9d3cd"/>
+    <text x="61" y="164" font-size="15">Spatial information</text>
+    <text x="407" y="164" font-size="15">With timing information</text>
+    <g stroke-width="3" fill="none">
+      <path d="M63 296H311" stroke="#a6b5b1" stroke-dasharray="5 6"/>
+      <path d="M176 296 86 219M176 296 294 203M176 296 130 366" stroke="#177e88"/>
+      <path d="M194 296 107 192M194 296 302 246M194 296 251 371" stroke="#b4633e"/>
+      <path d="M414 360H650M430 367V195" stroke="#94a8a3" stroke-width="1.5"/>
+      <path d="M458 322 490 254M490 254 548 297M490 254 582 229" stroke="#177e88"/>
+      <path d="M472 240 520 195M520 195 583 256M520 195 631 212" stroke="#b4633e"/>
+      <path d="M349 269H371M363 261 371 269 363 277" stroke="#476a6c" stroke-width="2"/>
+    </g>
+    <g fill="#177e88"><circle cx="176" cy="296" r="7"/><circle cx="490" cy="254" r="7"/></g>
+    <g fill="#b4633e"><circle cx="194" cy="296" r="7"/><circle cx="520" cy="195" r="7"/></g>
+    <text x="267" y="320" font-size="13">z</text>
+    <text x="638" y="381" font-size="13">z</text>
+    <text x="413" y="188" font-size="13">t</text>
+    <text x="61" y="390" font-size="13" fill="#526967">Nearby origins can overlap.</text>
+    <text x="407" y="390" font-size="13" fill="#526967">Timing helps separate them.</text>
+    <text x="44" y="456" font-size="17">CMS Endcap Timing Layer · ETL</text>
+    <text x="44" y="484" font-size="13" fill="#526967">Conceptual illustration of collision separation</text>
+  </g>
+</svg>

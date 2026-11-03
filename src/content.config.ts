@@ -2,30 +2,6 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
-const projects = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    tags: z.array(z.string()).default([]),
-    language: z.string().optional(),
-    summary: z.string().optional(),
-    repo: z.url().optional(),
-    demo: z.string().optional(),
-    data: z.string().optional(),
-    citation: z.string().optional(),
-    architecture: z
-      .object({
-        image: z.string(),
-        alt: z.string(),
-        caption: z.string(),
-      })
-      .optional(),
-    metrics: z.array(z.string()).default([]),
-    reproduce: z.array(z.string()).default([]),
-  }),
-});
-
 const publications = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/publications' }),
   schema: z.object({
@@ -121,7 +97,6 @@ const professionalDevelopment = defineCollection({
 });
 
 export const collections = {
-  projects,
   publications,
   talks,
   posters,

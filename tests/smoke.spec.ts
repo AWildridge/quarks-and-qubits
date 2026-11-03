@@ -16,8 +16,8 @@ test('research replaces projects in navigation and old URLs still reach the work
   await expect(page.getByRole('navigation', { name: 'Primary' })).not.toContainText('Projects');
   await expect(page.getByRole('heading', { name: 'Studies & interactive tools' })).toBeVisible();
   await page.goto('/projects/example/');
-  await page.waitForURL('**/research/spin-correlation-explorer/');
-  await expect(page.locator('h1')).toHaveText('Spin Correlation Explorer');
+  await page.waitForURL('**/demos/spin-explorer/');
+  await expect(page.locator('h1')).toHaveText('Interactive Spin Correlation Explorer');
 });
 
 test('every displayed abstract matches its official saved source including math', async ({
@@ -46,16 +46,17 @@ test('every displayed abstract matches its official saved source including math'
   }
 });
 
-test('project filters work on a static site and preserve query links', async ({ page }) => {
-  await page.goto('/research/?tag=quantum');
-  const projects = page.locator('#project-list > a:visible');
-  await expect(projects).toHaveCount(1);
-  await expect(projects.first()).toContainText('Quantum Annealing');
-  await page.getByRole('searchbox', { name: 'Search' }).fill('nothing matches this search');
-  await expect(projects).toHaveCount(0);
-  await expect(page.locator('[data-filter-empty]')).toBeVisible();
-  await page.getByRole('link', { name: 'Clear filters' }).click();
-  await expect(projects).toHaveCount(4);
+test('research lists only the two working explorers and links directly to them', async ({
+  page,
+}) => {
+  await page.goto('/research/');
+  const tools = page.locator('#tools .tool-card');
+  await expect(tools).toHaveCount(2);
+  await expect(tools.nth(0)).toHaveAttribute('href', '/demos/spin-explorer/');
+  await expect(tools.nth(1)).toHaveAttribute('href', '/demos/cpcg-embedding/');
+  await expect(page.getByText('Read about the reconstruction study')).toHaveCount(0);
+  await page.goto('/research/quantum-annealing-vertexing/');
+  await page.waitForURL('**/research/#quantum-heading');
 });
 
 test('publications year filter includes TOP-23-006 and the steering preprint', async ({ page }) => {
@@ -170,29 +171,6 @@ test('theme toggle forces light and dark modes independent of system preference'
   await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(13, 22, 29)');
 });
 
-test('pegasus embedder exports mapping JSON', async ({ page }) => {
-  await page.goto('/demos/pegasus-embedder/');
-
-  await expect(page.locator('h1')).toHaveText('Quantum Minor-Embedding Visualizer');
-  await page.locator('#left-size').fill('3');
-  await page.locator('#right-size').fill('5');
-  await expect(page.locator('#logical-count')).toHaveText('8');
-
-  const downloadPromise = page.waitForEvent('download');
-  await page.locator('#export-mapping').click();
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe('pegasus-mapping-k3-5.json');
-
-  const path = await download.path();
-  expect(path).toBeTruthy();
-  const content = await readFile(path as string, 'utf8');
-  const data = JSON.parse(content);
-
-  expect(data.schema).toBe('quarks-and-qubits/pegasus-mapping@1');
-  expect(data.graph).toEqual({ type: 'complete-bipartite', m: 3, n: 5 });
-  expect(data.mapping).toHaveLength(8);
-});
-
 test('CV and talks include the verified 2026 work', async ({ page }) => {
   await page.goto('/cv/');
   await expect(
@@ -223,7 +201,7 @@ for (const path of [
   '/talks/',
   '/cv/',
   '/demos/spin-explorer/',
-  '/demos/pegasus-embedder/',
+  '/demos/cpcg-embedding/',
   '/demos/model-card/',
 ]) {
   test(`production CSP permits page functionality: ${path}`, async ({ page }) => {
@@ -244,6 +222,11 @@ for (const path of [
     const response = await page.goto(path);
     expect(response?.headers()['content-security-policy']).toContain("object-src 'none'");
     if (path.includes('spin-explorer')) await expect(page.locator('canvas')).toHaveCount(3);
+    if (path.includes('cpcg-embedding'))
+      await expect(page.locator('[data-testid="embedding-status"]')).toHaveAttribute(
+        'data-valid',
+        'true',
+      );
     await page.getByRole('button', { name: 'Dark theme' }).click();
     await expect(page.locator('html')).toHaveClass(/dark/);
     expect(errors).toEqual([]);

@@ -5,7 +5,6 @@ const SITE_URL = 'https://aj-wildridge.web.cern.ch';
 
 export const GET: APIRoute = async () => {
   // Get all content collections
-  const projects = await getCollection('projects');
   const publications = await getCollection('publications', ({ data }) => !data.draft);
   const posts = await getCollection('posts', ({ data }) => !data.draft);
 
@@ -21,8 +20,7 @@ export const GET: APIRoute = async () => {
     { url: 'accessibility', priority: 0.3, changefreq: 'yearly' },
     { url: 'privacy', priority: 0.3, changefreq: 'yearly' },
     { url: 'demos/spin-explorer', priority: 0.8, changefreq: 'monthly' },
-    { url: 'demos/model-card', priority: 0.7, changefreq: 'monthly' },
-    { url: 'demos/pegasus-embedder', priority: 0.7, changefreq: 'monthly' },
+    { url: 'demos/cpcg-embedding', priority: 0.7, changefreq: 'monthly' },
   ];
 
   // Build sitemap URLs
@@ -32,12 +30,6 @@ export const GET: APIRoute = async () => {
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: page.changefreq,
       priority: page.priority,
-    })),
-    ...projects.map((project) => ({
-      url: `${SITE_URL}/research/${project.id}`,
-      lastmod: new Date().toISOString().split('T')[0],
-      changefreq: 'monthly',
-      priority: 0.7,
     })),
     ...posts.map((post) => ({
       url: `${SITE_URL}/posts/${post.id}/`,

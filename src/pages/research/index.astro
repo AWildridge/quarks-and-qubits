@@ -1,18 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FigureWithCaption from '../../components/FigureWithCaption.astro';
-import { getCollection } from 'astro:content';
-const projects = (await getCollection('projects')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
-const tags = [...new Set(projects.flatMap((p) => p.data.tags))].sort();
-const years = [...new Set(projects.map((p) => p.data.date.getUTCFullYear()))].sort((a, b) => b - a);
-const languages = [...new Set(projects.map((p) => p.data.language).filter(Boolean))].sort();
 ---
 
 <BaseLayout
   title="Research"
-  description="AJ Wildridge’s research at Fermilab: quantum information in top-quark pairs, machine learning for collider reconstruction, and quantum computing. Papers, studies, and interactive tools in one place."
+  description="AJ Wildridge’s research at Fermilab: quantum information in top-quark pairs, machine learning for collider reconstruction, quantum computing, and the CMS Endcap Timing Layer. Papers and interactive tools in one place."
 >
   <header class="research-intro">
     <p class="eyebrow">Physics, methods, and tools</p>
@@ -25,7 +18,8 @@ const languages = [...new Set(projects.map((p) => p.data.language).filter(Boolea
       <a href="#top-quark-heading">01 · Quantum information</a>
       <a href="#ml-heading">02 · Machine learning</a>
       <a href="#quantum-heading">03 · Quantum computing</a>
-      <a href="#tools">Studies &amp; tools ↓</a>
+      <a href="#etl-heading">04 · Precision timing</a>
+      <a href="#tools">Explore the work ↓</a>
     </nav>
   </header>
 
@@ -129,10 +123,6 @@ const languages = [...new Set(projects.map((p) => p.data.language).filter(Boolea
             >Track clustering with a quantum annealer ↗</a
           >
         </li>
-        <li>
-          <a href="/research/quantum-annealing-vertexing/">Read about the reconstruction study →</a>
-        </li>
-        <li><a href="/demos/pegasus-embedder/">Explore graph embedding on Pegasus →</a></li>
       </ul>
     </div>
     <FigureWithCaption
@@ -142,100 +132,59 @@ const languages = [...new Set(projects.map((p) => p.data.language).filter(Boolea
     />
   </section>
 
+  <section class="research-topic" aria-labelledby="etl-heading">
+    <div class="topic-copy">
+      <p class="eyebrow">04 / Detector development</p>
+      <h2 id="etl-heading">Adding time to the collision picture.</h2>
+      <p>
+        I also work on the CMS Endcap Timing Layer (ETL) at Fermilab. ETL is part of the MIP Timing
+        Detector upgrade for the High-Luminosity Large Hadron Collider.
+      </p>
+      <p>
+        Precise arrival-time measurements help distinguish charged particles from collisions that
+        overlap in the same bunch crossing. Timing adds another dimension to the spatial information
+        used to reconstruct an event.
+      </p>
+      <ul class="research-links">
+        <li>
+          <a href="https://cms.fnal.gov/phase-2-upgrades/">The CMS timing upgrade at Fermilab ↗</a>
+        </li>
+      </ul>
+    </div>
+    <FigureWithCaption
+      src="/images/etl-timing.svg"
+      alt="Conceptual comparison of overlapping collision tracks in space with their separation using arrival-time information."
+      caption="Position and timing provide complementary information for disentangling overlapping collisions."
+    />
+  </section>
+
   <section id="tools" class="research-tools" aria-labelledby="tools-heading">
     <p class="eyebrow">Explore the work</p>
     <h2 id="tools-heading">Studies &amp; interactive tools</h2>
     <p class="mt-3 max-w-3xl">
-      Publication-linked studies sit alongside browser demonstrations. Each entry explains what it
-      does and links to the paper, code, or demo.
+      Change the physics parameters, inspect a quantum state, or build an embedding and see what
+      happens when hardware goes missing.
     </p>
-    <p class="mt-5 text-sm" id="project-count" aria-live="polite">
-      Showing {projects.length} of {projects.length} studies and tools
-    </p>
-    <form
-      id="project-filters"
-      role="search"
-      aria-label="Research filters"
-      class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-      method="get"
-    >
-      <label
-        ><span class="block text-sm mb-1">Search</span><input
-          class="w-full border rounded px-3 py-2"
-          type="search"
-          name="q"
-          placeholder="Search research and tools"
-        /></label
-      >
-      <label
-        ><span class="block text-sm mb-1">Tag</span><select
-          class="w-full border rounded px-3 py-2"
-          name="tag"
-          ><option value="">All</option>{
-            tags.map((tag) => <option value={tag}>{tag}</option>)
-          }</select
-        ></label
-      >
-      <label
-        ><span class="block text-sm mb-1">Year</span><select
-          class="w-full border rounded px-3 py-2"
-          name="year"
-          ><option value="">All</option>{
-            years.map((year) => <option value={year}>{year}</option>)
-          }</select
-        ></label
-      >
-      <label
-        ><span class="block text-sm mb-1">Language</span><select
-          class="w-full border rounded px-3 py-2"
-          name="language"
-          ><option value="">All</option>{
-            languages.map((language) => <option value={language}>{language}</option>)
-          }</select
-        ></label
-      >
-      <div class="sm:col-span-2 lg:col-span-4 flex gap-4 items-center">
-        <button type="submit" class="button-primary">Apply filters</button><a
-          href="/research/#tools"
-          class="text-link">Clear filters</a
-        >
-      </div>
-    </form>
-    <div id="project-list" class="mt-8 grid gap-5 sm:grid-cols-2" data-label="studies and tools">
-      {
-        projects.map(({ id, data: project }) => (
-          <a
-            class="block border rounded p-6 hover:shadow-sm"
-            href={`/research/${id}/`}
-            data-filter-item
-            data-search={`${project.title} ${project.summary || ''}`}
-            data-tags={JSON.stringify(project.tags)}
-            data-year={project.date.getUTCFullYear()}
-            data-language={project.language || ''}
-          >
-            <p class="eyebrow mb-3">
-              {project.date.getUTCFullYear()} · {project.language || 'Research'}
-            </p>
-            <>
-              <h3 class="text-xl">{project.title}</h3>
-              <p class="mt-3 text-sm text-gray-700 dark:text-gray-300">{project.summary}</p>
-            </>
-            <p class="mt-5 text-xs text-gray-600 dark:text-gray-400">{project.tags.join(' · ')}</p>
-          </a>
-        ))
-      }
+    <div class="tool-cards">
+      <a class="tool-card" href="/demos/spin-explorer/">
+        <p class="eyebrow">Collider quantum information</p>
+        <h3>Spin Correlation Explorer</h3>
+        <p>
+          Explore top-quark spin correlations and steering geometry across production modes, bases,
+          energies, and scattering angles.
+        </p>
+        <span class="tool-action">Open the spin explorer →</span>
+      </a>
+      <a class="tool-card" href="/demos/cpcg-embedding/">
+        <p class="eyebrow">Quantum computing</p>
+        <h3>CPCG Embedding Explorer</h3>
+        <p>
+          Embed a Cartesian product of complete graphs on Pegasus or Chimera. Remove qubits and
+          couplings, inspect the chains, and export a verified mapping.
+        </p>
+        <span class="tool-action">Explore the hardware →</span>
+      </a>
     </div>
-    <p class="mt-8" data-filter-empty hidden>
-      No studies or tools match these filters. Try another search or clear the filters.
-    </p>
-    <script>
-      import { enhanceFilters } from '../../lib/filter-list';
-      enhanceFilters(
-        document.querySelector<HTMLFormElement>('#project-filters')!,
-        document.querySelector<HTMLElement>('#project-list')!,
-        document.querySelector<HTMLElement>('#project-count')!,
-      );
-    </script>
   </section>
 </BaseLayout>
 
@@ -297,6 +246,42 @@ const languages = [...new Set(projects.map((p) => p.data.language).filter(Boolea
   }
   .research-tools h2 {
     margin-top: 0.75rem;
+  }
+  .tool-cards {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .tool-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem;
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 10px;
+  }
+  .tool-card:hover {
+    border-color: rgb(var(--color-accent));
+  }
+  .tool-card h3 {
+    font-family: Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+  }
+  .tool-card > p:not(.eyebrow) {
+    color: rgb(var(--color-muted));
+  }
+  .tool-action {
+    margin-top: auto;
+    padding-top: 0.7rem;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  @media (min-width: 700px) {
+    .tool-cards {
+      grid-template-columns: 1fr 1fr;
+    }
   }
   @media (min-width: 960px) {
     .research-topic {

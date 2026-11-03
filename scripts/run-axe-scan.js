@@ -7,10 +7,6 @@ const base = process.env.AXE_BASE_URL || preview.url;
 const pages = [
   '/',
   '/research/',
-  '/research/spin-correlation-explorer/',
-  '/research/model-card-demo/',
-  '/research/quantum-annealing-vertexing/',
-  '/research/bumblebee-foundation-model/',
   '/publications/',
   '/cv/',
   '/contact/',
@@ -20,7 +16,7 @@ const pages = [
   '/posts/hello-world/',
   '/demos/spin-explorer/',
   '/demos/model-card/',
-  '/demos/pegasus-embedder/',
+  '/demos/cpcg-embedding/',
   '/privacy/',
   '/accessibility/',
 ];
@@ -41,6 +37,8 @@ try {
       if (path.includes('spin-explorer')) await page.locator('canvas').first().waitFor();
       if (path.includes('model-card') && path.startsWith('/demos/'))
         await page.locator('#precision-value:not(:empty)').waitFor();
+      if (path.includes('cpcg-embedding'))
+        await page.locator('[data-testid="embedding-status"][data-busy="false"]').waitFor();
       const results = await new AxeBuilder({ page }).analyze();
       violations += results.violations.length;
       console.log(`${colorScheme} ${path}: ${results.violations.length} accessibility violations`);

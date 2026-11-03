@@ -12,7 +12,7 @@ const paths = [
   '/contact/',
   '/demos/spin-explorer/',
   '/demos/model-card/',
-  '/demos/pegasus-embedder/',
+  '/demos/cpcg-embedding/',
   '/posts/',
   '/publications/',
   '/research/',

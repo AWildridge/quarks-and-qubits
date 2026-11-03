@@ -26,7 +26,7 @@ pnpm preview    # built site at http://127.0.0.1:4321 with security headers
 
 ## Content and CV
 
-- Research and studies share `/research/`; former `/projects/` URLs redirect to their research equivalents. Content entries stay in `src/content/projects/` for authoring.
+- `/research/` covers collider quantum information, machine learning, quantum computing, and the CMS Endcap Timing Layer. “Explore the work” links directly to the Spin Correlation Explorer and CPCG Embedding Explorer. Retired study pages redirect to the relevant research section or tool.
 - `src/content/publications/` and `src/content/talks/` supply the website and CV. Official publication metadata and abstracts are pinned in `src/data/publication-sources.json`.
 - `src/data/cv.json` holds personal details and other CV sections.
 - `src/data/Andrew_Wildridge_CV.docx` is the editable Word CV; it includes the new 2026 papers and talks. Import with `pnpm cv:extract`, review the result, then use `pnpm cv:generate` to add missing records. Existing curated records are preserved by title and year, even when their filenames differ.
@@ -48,6 +48,14 @@ TOP-23-006 is included as a CMS Physics Analysis Summary, with its full abstract
 To add a paper, create a publication entry with tags and a stable `bibtexKey`, then add its slug and `source` (`{"kind":"arxiv","id":"..."}` or `{"kind":"cds","id":"..."}`) to the source JSON before refreshing. Published entries without an official source fail CI.
 
 The media kit includes the original 512 × 512 JPEG from [AJ’s A3D3 profile](https://a3d3.ai/team/graduate-students/). Its source is recorded in `public/press/photo-source.json`.
+
+## CPCG embedding explorer
+
+`/demos/cpcg-embedding/` constructs the Cartesian product K_m □ K_n on real Chimera and Pegasus graphs. The old `/demos/pegasus-embedder/` URL redirects here. The template port follows `AWildridge/PrimaryVertexing` commit `2eee5972bf8a459286b3ef3712df4f70c53bb039`, specifically `generate_ideal_CPCG_embedding` in `src/embedding/embedding_utils.py` and `minor_embed` in `src/Missing_Qubit_Correction.py` (also present in the Pegasus CPCG notebook). Coordinates are validated before conversion to Ocean integer labels.
+
+The original Pegasus template leaves missing logical bus couplings for nexus sizes 17–24. The solver considers a larger K32 nexus with unused chains removed, the opposite nexus orientation, and verified repairs. Every result must have nonempty, disjoint, connected chains and a functioning physical coupling for every logical edge. Disabled qubits and couplings are removed from the graph used by the validator and repair search. The repair search uses unused paths and translated templates in a worker, with a bounded runtime; unsuccessful search is not a proof that no embedding exists. Only a newly verified result can be exported. The Zephyr invitation concerns this structured CPCG construction, not general Zephyr embedding.
+
+`tests/fixtures/embedding-reference.json` contains independent D-Wave NetworkX 0.8.18 graph fingerprints (all nodes and edges) and chain lists generated from the original Python functions at that commit. The tests check both topology families, the original templates, missing interactions, defects, repairs, and rejected exports. Browser tests cover both topologies, hardware editing, undo, failure states, and exports.
 
 ## CI and publication
 
