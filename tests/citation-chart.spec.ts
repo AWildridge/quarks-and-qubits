@@ -23,9 +23,10 @@ test('first citation bar clears the y-axis and both themes use their intended pa
   await expect(bar).toHaveAttribute('fill', '#287985');
   await expect(page.locator('#citation-chart > rect').first()).toHaveAttribute('fill', '#f8f7f3');
   await page.getByRole('button', { name: 'Dark theme', exact: true }).click();
-  await expect(bar).toHaveAttribute('fill', '#60a5fa');
+  await expect(bar).toHaveCSS('fill', 'rgb(129, 211, 188)');
   await expect(page.locator('#citation-chart > rect').first()).toHaveAttribute('fill', '#111827');
   await page.getByRole('button', { name: 'Cumulative', exact: true }).click();
+  await expect(page.locator('#citation-chart polyline')).toHaveCSS('stroke', 'rgb(129, 211, 188)');
   const points = await page.locator('#citation-chart polyline').getAttribute('points');
   expect(Number(points!.split(',')[0])).toBeGreaterThan(Number(await axis.getAttribute('x1')));
 });

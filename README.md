@@ -26,7 +26,7 @@ pnpm preview    # built site at http://127.0.0.1:4321 with security headers
 
 ## Content and CV
 
-- `/research/` covers collider quantum information, machine learning, quantum computing, and the CMS Endcap Timing Layer. “Explore the work” links directly to the Spin Correlation Explorer and CPCG Embedding Explorer. Retired study pages redirect to the relevant research section or tool.
+- `/research/` covers collider quantum information, machine learning, and the CMS Endcap Timing Layer. “Explore the work” links directly to the Spin Correlation Explorer and CPCG Embedding Explorer. Primary vertexing remains in the publication archive and CPCG tool rather than the active research areas. Retired study pages redirect to the relevant research section or tool.
 - `src/content/publications/` and `src/content/talks/` supply the website and CV. Official publication metadata and abstracts are pinned in `src/data/publication-sources.json`.
 - `src/data/cv.json` holds personal details and other CV sections.
 - `src/data/Andrew_Wildridge_CV.docx` is the editable Word CV; it includes the new 2026 papers and talks. Import with `pnpm cv:extract`, review the result, then use `pnpm cv:generate` to add missing records. Existing curated records are preserved by title and year, even when their filenames differ.
@@ -61,7 +61,7 @@ The original Pegasus template leaves missing logical bus couplings for nexus siz
 
 CI uses a frozen lockfile, read-only repository permissions, and actions pinned to verified release commits. It runs the same checks listed above and packages the selected publication, including hidden Apache configuration, as `site-dist.tar.gz` inside the `verified-site-<commit>` workflow artifact. PRs have no deployment secrets. Dependabot proposes dependency and action updates.
 
-**Production is currently in coming-soon mode**, selected in `deployment/config.json`. `pnpm dev`, `pnpm build`, and `pnpm preview` still show the full site locally. After checking that build, CI prepares `dist-deploy/` with an explicit allowlist: only the holding page, its stylesheet, robots policy, and server headers. The deployment sync removes previous pages, media, and downloads, then verifies that the holding page is live and representative retired URLs return 404 or 410. Future pushes retain this mode. To launch the complete site, deliberately change `mode` to `full` and review that change before pushing.
+**Production publishes the full site**, selected by `"mode": "full"` in `deployment/config.json`. CI checks the build and official publication sources, then copies the complete site to `dist-deploy/` for deployment. `pnpm dev`, `pnpm build`, and `pnpm preview` also show the full site locally. To restore the holding page, change `mode` to `coming-soon`: CI then packages only the holding page, its stylesheet, robots policy, and server headers. The deployment sync removes other pages, media, and downloads, and verifies that the holding page is live and representative retired URLs return 404 or 410. Future pushes retain the selected mode.
 
 Publishing runs after pushes to `main` and can also be started manually on `main`. CERN EOS/WebDAV is the only deployment route. The credential-bearing job downloads the tested artifact and does not rebuild it.
 

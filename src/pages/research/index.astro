@@ -5,7 +5,7 @@ import FigureWithCaption from '../../components/FigureWithCaption.astro';
 
 <BaseLayout
   title="Research"
-  description="AJ Wildridge’s research at Fermilab: quantum information in top-quark pairs, machine learning for collider reconstruction, quantum computing, and the CMS Endcap Timing Layer. Papers and interactive tools in one place."
+  description="AJ Wildridge’s research at Fermilab: quantum information in top-quark pairs, machine learning for collider reconstruction, and the CMS Endcap Timing Layer. Papers and interactive tools in one place."
 >
   <header class="research-intro">
     <p class="eyebrow">Physics, methods, and tools</p>
@@ -17,8 +17,7 @@ import FigureWithCaption from '../../components/FigureWithCaption.astro';
     <nav class="topic-nav" aria-label="Research topics">
       <a href="#top-quark-heading">01 · Quantum information</a>
       <a href="#ml-heading">02 · Machine learning</a>
-      <a href="#quantum-heading">03 · Quantum computing</a>
-      <a href="#etl-heading">04 · Precision timing</a>
+      <a href="#etl-heading">03 · Precision timing</a>
       <a href="#tools">Explore the work ↓</a>
     </nav>
   </header>
@@ -103,38 +102,9 @@ import FigureWithCaption from '../../components/FigureWithCaption.astro';
     />
   </section>
 
-  <section class="research-topic" aria-labelledby="quantum-heading">
-    <div class="topic-copy">
-      <p class="eyebrow">03 / Quantum computing for reconstruction</p>
-      <h2 id="quantum-heading">Which tracks came from the same collision?</h2>
-      <p>
-        Several proton collisions can occur in the same bunch crossing. Primary-vertex
-        reconstruction groups charged-particle tracks according to where they originated.
-      </p>
-      <p>
-        My quantum-annealing work encodes this assignment as an optimization problem and tests small
-        instances on artificial collider events. The study examines embedding, annealing settings,
-        and comparisons with simulated annealing, including the limits imposed by hardware size and
-        connectivity.
-      </p>
-      <ul class="research-links">
-        <li>
-          <a href="/publications/track-clustering-with-a-quantum-annealer-for-prima-2019/"
-            >Track clustering with a quantum annealer ↗</a
-          >
-        </li>
-      </ul>
-    </div>
-    <FigureWithCaption
-      src="/images/quantum-workflow.svg"
-      alt="Tracks from two vertices are encoded as binary assignments, mapped to a quantum annealer, and decoded into track groups."
-      caption="The path from track compatibility to a vertex assignment. This conceptual diagram does not imply a speedup over classical reconstruction."
-    />
-  </section>
-
   <section class="research-topic" aria-labelledby="etl-heading">
     <div class="topic-copy">
-      <p class="eyebrow">04 / Detector development</p>
+      <p class="eyebrow">03 / Detector development</p>
       <h2 id="etl-heading">Adding time to the collision picture.</h2>
       <p>
         I also work on the CMS Endcap Timing Layer (ETL) at Fermilab. ETL is part of the MIP Timing
@@ -175,7 +145,7 @@ import FigureWithCaption from '../../components/FigureWithCaption.astro';
         </p>
         <span class="tool-action">Open the spin explorer →</span>
       </a>
-      <a class="tool-card" href="/demos/cpcg-embedding/">
+      <a id="quantum-heading" class="tool-card" href="/demos/cpcg-embedding/">
         <p class="eyebrow">Quantum computing</p>
         <h3>CPCG Embedding Explorer</h3>
         <p>

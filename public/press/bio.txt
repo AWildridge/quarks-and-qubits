@@ -2,7 +2,7 @@ AJ Wildridge - Short Bio
 
 AJ Wildridge is a postdoctoral researcher at Fermilab in experimental high-energy particle physics. His work spans top-quark measurements, quantum-information observables, and machine-learning applications for collider data.
 
-His current research includes spin-correlation and entanglement measurements in top-quark pair production, quantum-inspired reconstruction methods, and machine-learning tools for particle-physics discovery. He also works on the CMS Endcap Timing Layer (ETL). Wildridge regularly presents this work at workshops, conferences, and collaboration forums.
+His current research includes spin-correlation and entanglement measurements in top-quark pair production and machine-learning tools for particle-physics discovery. He also works on the CMS Endcap Timing Layer (ETL). Wildridge regularly presents this work at workshops, conferences, and collaboration forums.
 
 ---
 

@@ -509,9 +509,9 @@ function dateTimeValue(pub: PublicationRecord) {
             grid: '#374151',
             text: '#d1d5db',
             muted: '#9ca3af',
-            bar: '#60a5fa',
-            line: '#93c5fd',
-            dot: '#bfdbfe',
+            bar: 'rgb(var(--color-accent))',
+            line: 'rgb(var(--color-accent))',
+            dot: 'rgb(var(--color-accent))',
           }
         : {
             background: '#f8f7f3',
@@ -751,7 +751,8 @@ function dateTimeValue(pub: PublicationRecord) {
     background: #111827;
   }
   :global(.dark) .citation-mode-button[aria-pressed='true'] {
-    background: #2563eb;
-    border-color: #2563eb;
+    background: rgb(var(--color-accent));
+    border-color: rgb(var(--color-accent));
+    color: rgb(var(--color-bg));
   }
 </style>
