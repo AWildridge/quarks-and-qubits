@@ -68,7 +68,7 @@
     "autoprefixer": "^10.6.2",
     "baseline-browser-mapping": "^2.11.34",
     "caniuse-lite": "^1.0.30001820",
-    "cspell": "^8.19.4",
+    "cspell": "^10.4.0",
     "eslint": "^10.14.0",
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-astro": "^3.2.1",
