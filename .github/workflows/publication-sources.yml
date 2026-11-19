@@ -37,8 +37,6 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Install browser for public CERN metadata access
-        run: pnpm exec playwright install --with-deps chromium
       - name: Compare abstracts, metadata, and versions with official sources
         run: pnpm publications:verify
       - name: Save source comparison report

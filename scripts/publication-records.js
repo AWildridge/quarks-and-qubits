@@ -1,4 +1,5 @@
 import { parse } from 'parse5';
+import { XMLParser } from 'fast-xml-parser';
 import { setTimeout } from 'node:timers/promises';
 
 export const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
@@ -128,32 +129,74 @@ export function parseCds(json, id, officialDate) {
   };
 }
 
-export async function fetchCdsJson(id) {
-  if (!/^\d+$/.test(id)) throw new Error('Invalid CERN CDS identifier');
-  const url = `https://cds.cern.ch/record/${id}?of=recjson`;
-  const body = await fetchText(url);
-  if (body.trimStart().startsWith('[')) return JSON.parse(body);
-  // Some CERN networks receive a JavaScript browser check before public exports.
-  // Open the normal public page, let it load, and reuse that browser session.
-  const { chromium } = await import('@playwright/test');
-  const browser = await chromium.launch();
-  try {
-    const page = await browser.newPage();
-    await page.goto(`https://cds.cern.ch/record/${id}`, {
-      waitUntil: 'domcontentloaded',
-      timeout: 45000,
-    });
-    await page.waitForFunction(
-      () => document.title.includes('CERN Document Server'),
-      {},
-      { timeout: 60000 },
-    );
-    const response = await page.request.get(url, { timeout: 30000 });
-    if (!response.ok()) throw new Error(`CERN CDS HTTP ${response.status()}`);
-    return await response.json();
-  } finally {
-    await browser.close();
+const marcParser = new XMLParser({
+  removeNSPrefix: true,
+  ignoreAttributes: false,
+  parseTagValue: false,
+  isArray: (name) => ['controlfield', 'datafield', 'subfield'].includes(name),
+});
+
+// The public OAI-PMH feed includes the MARC record revision and attachment manifest.
+// Only the detailed CDS JSON export includes the independent numeric file versions.
+function cdsFromMarc(xml, id, reviewed) {
+  const envelope = marcParser.parse(xml, true)['OAI-PMH']?.GetRecord?.record;
+  const record = envelope?.metadata?.record;
+  const control = (tag) => record?.controlfield?.find((field) => field['@_tag'] === tag)?.['#text'];
+  if (
+    envelope?.header?.identifier !== `oai:cds.cern.ch:${id}` ||
+    envelope.header['@_status'] === 'deleted' ||
+    control('001') !== id
+  ) {
+    throw new Error(`Wrong or unavailable CERN OAI record: ${id}`);
   }
+  const stamp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})\.\d$/.exec(control('005'));
+  if (!stamp) throw new Error(`Missing CERN CDS record revision: ${id}`);
+  const [, year, month, day, hour, minute, second] = stamp;
+  const revision = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+  if (revision !== reviewed?.recordModified || !Array.isArray(reviewed.files)) {
+    throw new Error(
+      `CDS ${id} revision ${revision} needs a full JSON export to verify file versions`,
+    );
+  }
+
+  const fields = (tag) => (record.datafield || []).filter((field) => field['@_tag'] === tag);
+  const sub = (field, code) => field.subfield?.find((part) => part['@_code'] === code)?.['#text'];
+  const values = (tag, code) =>
+    fields(tag)
+      .map((field) => sub(field, code))
+      .filter(Boolean);
+  const filePrefix = `https://cds.cern.ch/record/${id}/files/`;
+  const files = [];
+  for (const field of fields('856')) {
+    const url = sub(field, 'u')?.replace(/^http:/, 'https:');
+    if (!url?.startsWith(filePrefix) || sub(field, 'x') || sub(field, 'z') === 'Figure') continue;
+    const name = decodeURIComponent(new URL(url).pathname.split('/').at(-1));
+    const size = Number(sub(field, 's'));
+    const saved = reviewed.files.find((file) => file.url === url);
+    if (!saved || saved.name !== name || saved.size !== size || !Number.isInteger(saved.version)) {
+      throw new Error(`CDS ${id}: changed attachment ${name} needs a full JSON export`);
+    }
+    files.push({ full_name: name, size, url, version: saved.version });
+  }
+  if (
+    files.length !== reviewed.files.length ||
+    new Set(files.map((file) => file.url)).size !== files.length
+  )
+    throw new Error(`CDS ${id}: changed attachment list needs a full JSON export`);
+  const collaborations = values('710', 'g');
+  return {
+    recid: id,
+    version_id: revision,
+    title: { title: values('245', 'a')[0] },
+    abstract: { summary: values('520', 'a')[0] },
+    primary_report_number: values('037', 'a')[0],
+    prepublication: { date: values('269', 'c')[0] },
+    corporate_name: (collaborations.length ? collaborations : values('110', 'a')).map(
+      (collaboration) => ({ collaboration }),
+    ),
+    authors: [...values('100', 'a'), ...values('700', 'a')].map((full_name) => ({ full_name })),
+    files,
+  };
 }
 
 export function parseCmsDate(html, report) {
@@ -168,10 +211,27 @@ export function parseCmsDate(html, report) {
   return date;
 }
 
-export async function fetchCds(id, dateSource) {
-  const json = await fetchCdsJson(id);
+export async function fetchCds(id, dateSource, reviewed, read = fetchText) {
+  if (!/^\d+$/.test(id)) throw new Error('Invalid CERN CDS identifier');
+  const detailUrl = `https://cds.cern.ch/record/${id}?of=recjson`;
+  let json;
+  try {
+    const body = await read(detailUrl);
+    if (!body.trimStart().startsWith('['))
+      throw new Error('CDS returned a webpage for the JSON export');
+    json = JSON.parse(body);
+  } catch (error) {
+    const url = `https://cds.cern.ch/oai2d?verb=GetRecord&identifier=oai:cds.cern.ch:${id}&metadataPrefix=marcxml`;
+    try {
+      json = [cdsFromMarc(await read(url), id, reviewed)];
+    } catch (marcError) {
+      throw new Error(`${marcError.message} (detailed export: ${error.message})`, {
+        cause: marcError,
+      });
+    }
+  }
   const officialDate = dateSource
-    ? parseCmsDate(await fetchText(dateSource), json[0]?.primary_report_number)
+    ? parseCmsDate(await read(dateSource), json[0]?.primary_report_number)
     : undefined;
   return parseCds(json, id, officialDate);
 }

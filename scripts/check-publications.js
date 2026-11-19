@@ -91,7 +91,7 @@ async function main() {
         if (source.kind === 'arxiv') {
           latest = parseArxiv(await fetchText(`https://arxiv.org/abs/${source.id}`), source.id);
         } else if (source.kind === 'cds') {
-          latest = await fetchCds(source.id, source.dateSource);
+          latest = await fetchCds(source.id, source.dateSource, previous);
         } else throw new Error(`Unsupported official source: ${source.kind}`);
         const fields = changedFields(previous, latest);
         if (fields.length) {

@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   changedFields,
+  fetchCds,
   parseArxiv,
   parseCds,
   parseCmsDate,
@@ -80,6 +81,65 @@ test('CERN metadata preserves the abstract, record revision, and file versions',
       'files',
     ),
   );
+});
+
+const cdsId = '2944724';
+const pdfUrl = `https://cds.cern.ch/record/${cdsId}/files/note.pdf`;
+const reviewed = {
+  recordModified: '2026-10-14T16:14:12',
+  files: [{ name: 'note.pdf', size: 1024, url: pdfUrl, version: 2 }],
+};
+const marc = `<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"><GetRecord><record>
+  <header><identifier>oai:cds.cern.ch:2944724</identifier></header>
+  <metadata><marc:record xmlns:marc="http://www.loc.gov/MARC21/slim">
+    <marc:controlfield tag="001">2944724</marc:controlfield>
+    <marc:controlfield tag="005">20261014161412.0</marc:controlfield>
+    <marc:datafield tag="037"><marc:subfield code="a">CMS-NOTE</marc:subfield></marc:datafield>
+    <marc:datafield tag="245"><marc:subfield code="a">Official title</marc:subfield></marc:datafield>
+    <marc:datafield tag="520"><marc:subfield code="a">${abstract.replace('&', '&amp;')}</marc:subfield></marc:datafield>
+    <marc:datafield tag="710"><marc:subfield code="g">CMS Collaboration</marc:subfield></marc:datafield>
+    <marc:datafield tag="856"><marc:subfield code="s">1024</marc:subfield><marc:subfield code="u">${pdfUrl}</marc:subfield></marc:datafield>
+  </marc:record></metadata></record></GetRecord></OAI-PMH>`;
+
+test('the public CERN feed verifies the paper when the detailed export returns a webpage', async () => {
+  const dateSource = 'https://cms-results.web.cern.ch/result';
+  const cms = '<title>CMS-NOTE</title><div class="dateline">2026-10-06</div>';
+  const urls = [];
+  const read = async (url) => {
+    urls.push(url);
+    if (url === dateSource) return cms;
+    return url.includes('/oai2d?') ? marc : '<html>Browser check</html>';
+  };
+  const record = await fetchCds(cdsId, dateSource, reviewed, read);
+  assert.equal(record.title, 'Official title');
+  assert.equal(record.abstract, abstract);
+  assert.equal(record.date, '2026-10-06');
+  assert.deepEqual(record.authors, ['CMS Collaboration']);
+  assert.deepEqual(record.files, [{ name: 'note.pdf', version: 2, size: 1024, url: pdfUrl }]);
+  assert.deepEqual(urls, [
+    `https://cds.cern.ch/record/${cdsId}?of=recjson`,
+    `https://cds.cern.ch/oai2d?verb=GetRecord&identifier=oai:cds.cern.ch:${cdsId}&metadataPrefix=marcxml`,
+    dateSource,
+  ]);
+});
+
+test('unavailable exports cannot validate a different record, revision, or attachment', async () => {
+  for (const [response, message] of [
+    ['<html>Browser check</html>', /Wrong or unavailable/],
+    [marc.replace('oai:cds.cern.ch:2944724', 'oai:cds.cern.ch:42'), /Wrong or unavailable/],
+    [marc.replace('<header>', '<header status="deleted">'), /Wrong or unavailable/],
+    [marc.replace('20261014161412.0', '20261015161412.0'), /revision .* needs a full JSON export/],
+    [marc.replace('>1024<', '>2048<'), /changed attachment/],
+    [marc.replace(pdfUrl, pdfUrl.replace('note.pdf', 'other.pdf')), /changed attachment/],
+    [marc.replace('tag="856"', 'tag="999"'), /changed attachment list/],
+  ]) {
+    await assert.rejects(
+      fetchCds(cdsId, undefined, reviewed, async (url) =>
+        url.includes('/oai2d?') ? response : Promise.reject(new Error('HTTP 503')),
+      ),
+      message,
+    );
+  }
 });
 
 test('local consistency check rejects paraphrases, changed metadata, and missing sources', () => {
